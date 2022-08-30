@@ -34,9 +34,6 @@ module.exports  = (Sequelize) =>{
             type: DataTypes.STRING,
             allowNull: false
         },
-        group_id:{
-            type: DataTypes.INTEGER
-        }
 
 
     })
