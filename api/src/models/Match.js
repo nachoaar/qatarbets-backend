@@ -1,9 +1,9 @@
-const {DataTypes} = require('sequelize')
+const {DataTypes,Sequelize} = require('Sequelize')
 
-module.exports  = (sequelize) =>{
-    sequelize.define('match',{
+module.exports  = (Sequelize) =>{
+    Sequelize.define('match',{
         id:{
-            type: DataTypes.UUID,
+            type: DataTypes.INTEGER,
             allowNull: false,
             primaryKey: true,
         },
