@@ -5,17 +5,17 @@ module.exports = (sequelize) => {
     id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true,
+      primaryKey: true
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false,
-    },
-    img: {
-      type: DataTypes.STRING,
       allowNull: false
     },
-    num: {
+    number: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    age: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
@@ -23,8 +23,9 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    condition: {
+    photo: {
       type: DataTypes.STRING,
-    },
-  })
-}
+      allowNull: false
+    }
+  }, { timestamps: false })
+};
