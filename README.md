@@ -3,7 +3,7 @@
 AGREGAR UN ARCHIVO .env DENTRO DE LA CARPETA /api QUE CONSISTA DE LA SIGUIENTE FORMA:
 
 ```env
-FRONT_HOST=http://localhost:hostDelFrontEnd
-BACK_HOST=http://localhost:hostDelBackEnd
+FRONT_HOST=hostDelFrontEnd
+BACK_HOST=hostDelBackEnd
 API_KEY=apiKeyDeAPISport
 ```
