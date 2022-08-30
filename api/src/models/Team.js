@@ -23,7 +23,7 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
       },
       code: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(3),
       },
       founded: {
         type: DataTypes.INTEGER,
