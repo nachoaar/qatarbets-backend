@@ -27,14 +27,16 @@ router.get('/', async (req, res, next) => {
     })
 
     result.forEach( async (el) => {
-      await Match.create({
-        id: el.id,
-        date: el.date,
-        status: el.status,
-        home_team_id: el.home_team_id,
-        away_team_id: el.away_team_id,
-        stadium_name: el.stadium_name,
-        city: el.city
+      await Match.findOrCreate({
+        where: {
+          id: el.id,
+          date: el.date,
+          status: el.status,
+          home_team_id: el.home_team_id,
+          away_team_id: el.away_team_id,
+          stadium_name: el.stadium_name,
+          city: el.city
+        }
       })
     });
 
