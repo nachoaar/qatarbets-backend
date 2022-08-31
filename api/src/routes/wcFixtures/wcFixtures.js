@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { Router } = require('express');
 const axios = require('axios');
-// const { Match } = require('../../db.js');
+const { Match } = require('../../db.js');
 
 const router = Router();
 
@@ -25,7 +25,7 @@ router.get('/', async (req, res, next) => {
         city: el.fixture.venue.city,
       }
     })
-/* 
+
     result.forEach( async (el) => {
       await Match.create({
         id: el.id,
@@ -37,11 +37,34 @@ router.get('/', async (req, res, next) => {
         city: el.city
       })
     });
- */
-    res.send(result)
+
+    res.status(200).send("Datos subidos a la base de datos con exito!!")
   } catch (error) {
     next(error);
   }
-})
+});
+
+router.get('/get', async (req, res, next) => {
+  try {
+    let matches = await Match.findAll();
+    res.status(200).send(matches);
+  } catch (error) {
+    next(error)
+  }
+});
+
+router.get('/:id', async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    let match = await Match.findAll({
+      where: {
+        id: id,
+      }
+    })
+    res.status(200).send(match)
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = router;
