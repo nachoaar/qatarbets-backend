@@ -1,12 +1,11 @@
 const { Router } = require('express');
+
 const router = Router();
 
+const PostBet = require('./bet/bet.js');
 
-const AllTeams = require('./worldCupTeams/worldCupTeams.js');
-const fixtureRoute = require('./wcFixtures/wcFixtures.js');
+router.use('/bet', PostBet);
 
-router.use('/Teams&Squads', AllTeams);
-router.use('/fixture', fixtureRoute);
 
 
 module.exports = router;

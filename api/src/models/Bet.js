@@ -3,9 +3,10 @@ const {DataTypes, Sequelize, DATE} = require('sequelize')
 module.exports = (Sequelize) =>{
     Sequelize.define('bet' ,{
         id:{
-            type: DataTypes.INTEGER,
+            type: DataTypes.UUID,
             allowNull:false,
-            prymaryKey: true,
+            primaryKey:true,
+            defaultValue: DataTypes.UUIDV4,
         },
         fecha_hora:{
             type: DataTypes.DATE,
@@ -23,7 +24,7 @@ module.exports = (Sequelize) =>{
             type: DataTypes.STRING,
             allowNull: false
         },
-        expected_profict:{
+        expected_profit:{
             type: DataTypes.FLOAT,
             allowNull: false
         },
@@ -32,4 +33,4 @@ module.exports = (Sequelize) =>{
         }
 
     })
-}
+} 
