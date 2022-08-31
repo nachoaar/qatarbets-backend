@@ -53,7 +53,10 @@ Group.hasMany(Team);
 
 // relacion 1 a n de group con matchs
 Group.hasMany(Match);
-
+// relacion de 1 a n de match con team
+Match.hasMany(Team)
+// relacion de 1 a n de team con match
+Team.hasMany(Match)
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
