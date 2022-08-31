@@ -30,7 +30,6 @@ sequelize.models = Object.fromEntries(capsEntries);
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
 // const { } = sequelize.models;
-
 const {Group, Match} = sequelize.models
 
 // Aca vendrian las relaciones
@@ -39,9 +38,6 @@ const {Group, Match} = sequelize.models
 Group.hasMany(Match,{foreignKey:"group_id"})
 Match.hasOne(Group)
 
-
-
-// ejemplo de realacion--> Dog.belongsToMany(Temper, {through: "Dog_temper_Id"})
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
