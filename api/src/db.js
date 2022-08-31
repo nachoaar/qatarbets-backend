@@ -44,11 +44,15 @@ const { Group, Match, Player, Team } = sequelize.models;
 // Aca vendrian las relaciones
 // Product.hasMany(Reviews);
 
-/* Group.hasMany(Match);
-Match.hasOne(Group); */
 
+// relacion 1 a n de team con players
 Team.hasMany(Player);
-//player.belongsTo(Team);
+
+// relacion 1 a n de group con teams
+Group.hasMany(Team);
+
+// relacion 1 a n de group con matchs
+Group.hasMany(Match);
 
 
 module.exports = {
