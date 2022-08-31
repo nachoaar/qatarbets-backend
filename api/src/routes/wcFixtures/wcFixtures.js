@@ -55,6 +55,23 @@ router.get('/get', async (req, res, next) => {
   }
 });
 
+router.get('/players', async (req, res, next) => {
+  try {
+    
+    let players = ( await axios.get('https://v3.football.api-sports.io/players?league=1&season=2022', {
+      headers: {
+        'x-rapidapi-key': `${process.env.API_KEY}`,
+        "x-rapidapi-host": "v3.football.api-sports.io",
+      }
+    })).data
+
+    res.send(players)
+  } catch (error) {
+    next(error)
+  }
+})
+
+
 router.get('/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
@@ -68,5 +85,6 @@ router.get('/:id', async (req, res, next) => {
     next(error);
   }
 });
+
 
 module.exports = router;
