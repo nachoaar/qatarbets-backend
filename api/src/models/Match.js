@@ -8,7 +8,7 @@ module.exports  = (Sequelize) =>{
             primaryKey: true,
         },
         date:{
-            type: DataTypes.DATE,
+            type: DataTypes.STRING,
             allowNull: false,
         },
         status:{
@@ -23,7 +23,9 @@ module.exports  = (Sequelize) =>{
             allowNull:false,
         },
         result_match:{
-            type: DataTypes.ENUM,
+            type: DataTypes.ENUM({
+              values: ['home', 'tie', 'away']
+            }),
             allowNull:false
         },
         stadium_name:{
