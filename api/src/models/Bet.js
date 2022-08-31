@@ -6,7 +6,7 @@ module.exports = (Sequelize) =>{
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4, 
             allowNull:false,
-            prymaryKey: true,
+            primaryKey: true,
         },
         fecha_hora:{
             type: DataTypes.DATE,
