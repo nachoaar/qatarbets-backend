@@ -20,21 +20,6 @@ server.use((req, res, next) => {
   next();
 });
 
-//configuracion de express para usuario
-server.use('', express.static('public'));
-server.use('', express.static(__dirname + '/public'));
-
-// se establece el motor de plantilla 
-server.set('view engine', 'ejs');
-
-// variable de session
-const session = require('express-session');
-server.use(session({
-  secret: 'secret',
-  resave: true,
-  saveUninitialized: true
-}));
-
 server.use('/', routes);
 
 server.use((err, req, res, next) => {
