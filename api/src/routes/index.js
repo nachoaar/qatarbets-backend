@@ -7,23 +7,23 @@ router.get('/', async (req, res) => {
     res.json(await User.findAll())
  })
 
-// router.post('/login', async (req, res) => {
-//     try{
-//     const {name, pass, email} = req.body;
-//     let passwordHash = await bcryptjs.hash(pass, 8);
-
-//     const NameVal = await User.findOne({ where: { name: name } });
-//     if(!NameVal) return res.json('No existe una cuenta con ese nombre de usuario')
-//     const EmailVal = await User.findOne({ where: { email: email} });
-//     if(!EmailVal) return res.json('No existe una cuenta con ese mail')
-//     const PassVal = await User.findOne({ where: {pass: pass} })
-//     if(!await bcryptjs.compare(pass, PassVal)) res.json('La contraseña es incorrecta')
-//     if(NameVal && EmailVal && PassVal) {
-//         res.json('Usuario conectado correctamente');
-//     }
-
-//    } catch(error){res.json(error)}
-//  })
+router.post('/login', async (req, res) => {
+    const {pass, email} = req.body;
+    const session = req.session;
+    try{ 
+        if(!pass || !email) return res.json('Complete todos los parametros')  
+        const UserInfo = await User.findOne({ where: { email: email} });
+        const UserEmail = UserInfo.email;
+        const UserPass = UserInfo.pass;
+        const UserName = UserInfo.name;
+        if(!UserEmail) return res.json('Cuenta con email inexistente');
+        if(!await bcryptjs.compare(pass, UserPass)) return res.json('Contraseña incorrecta')
+        else{
+            session.name = UserName;
+            res.send('Logueado correctamente como ')
+        }
+    }catch(error){res.json('a' + error)}
+ })
 
 router.post('/register', async (req, res) => {
    const { name, pass, email, avatar, rol} = req.body;
@@ -58,5 +58,8 @@ router.post('/register', async (req, res) => {
    }} catch(error){res.send(error)}
 })
 
+router.get('/', async (req, res) => {
+    
+ })
 
 module.exports = router;
