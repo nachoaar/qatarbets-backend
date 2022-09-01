@@ -82,6 +82,12 @@ Bet.belongsTo(HisBets)
 
 
 
+HisBets.hasMany(Bet)
+HisBets.hasMany(User)
+
+Match.hasMany(Bet)
+
+User.hasMany(Bet)
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');

@@ -4,9 +4,9 @@ module.exports = (Sequelize) =>{
     Sequelize.define('bet' ,{
         id:{
             type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV4, 
             allowNull:false,
-            primaryKey:true,
-            defaultValue: DataTypes.UUIDV4,
+            primaryKey: true,
         },
         fecha_hora:{
             type: DataTypes.DATE,
@@ -33,4 +33,4 @@ module.exports = (Sequelize) =>{
         }
 
     })
-} 
+}
