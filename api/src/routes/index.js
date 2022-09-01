@@ -1,13 +1,48 @@
 const { Router } = require('express');
-
+const bcryptjs = require('bcryptjs');
 const router = Router();
+const { User } = require('../db');
 
 router.get('/', async (req, res) => {
-    res.json('que onda pa')
-})
+    res.json(await User.findAll())
+ })
 
-router.post('/CreateUser', async (req, res) => {
+router.post('/login', async (req, res) => {
+    const {name, pass, email} = req.body;
     
+ })
+
+router.post('/register', async (req, res) => {
+   const { name, pass, email, avatar, rol} = req.body;
+   try{
+   //hago una variable llamada passwordHash la cual me encripta la pass
+   let passwordHash = await bcryptjs.hash(pass, 8);
+   
+   //valiaciones del register para que hayan datos 
+   if (!name) return res.json("El nombre es obligatorio" );
+   if(!pass) return res.json("La contraseña es obligatoria" );
+   if(!email) return res.json("El email es obligatorio");
+   if (pass.length < 8) return res.json("La contraseña debe tener 8 caracteres como minimo");
+   //validacion para que no se repitan datos en db 
+   const NameVal = await User.findOne({ where: { name: name } });
+   if(NameVal) return res.json('Ya existe ese nombre de usuario')
+   const EmailVal = await User.findOne({ where: { email: email} });
+   if(EmailVal) return res.json('Ya existe una cuenta con ese mail')
+   //validacion de si existen los datos, que cree al usuario
+   if(name && pass && email){
+    //defino la variable que me va a crear al usuario
+    let usuario = await User.create({
+        name: name,
+        pass: passwordHash,
+        email: email,
+        avatar: avatar,
+        rol: rol,
+    })
+    //creo al usuario :D
+    await usuario;
+    res.json('Usuario creado correctamente')
+    console.log(usuario)
+   }} catch(error){res.send(error)}
 })
 
 

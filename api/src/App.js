@@ -27,9 +27,6 @@ server.use('', express.static(__dirname + '/public'));
 // se establece el motor de plantilla 
 server.set('view engine', 'ejs');
 
-// invoco a bcryptjs
-const bcryptjs = require('bcryptjs');
-
 // variable de session
 const session = require('express-session');
 server.use(session({
@@ -37,9 +34,6 @@ server.use(session({
   resave: true,
   saveUninitialized: true
 }));
-
-//invoca al modulo de conexion a la db
-const connection = require('../database/db');
 
 server.use('/', routes);
 

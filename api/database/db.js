@@ -1,5 +1,4 @@
 const { Client } = require('pg');
-const User = require('../src/models/User');
 
 
 const connection = new Client({

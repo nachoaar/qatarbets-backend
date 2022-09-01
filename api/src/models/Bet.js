@@ -1,12 +1,12 @@
-const {DataTypes, Sequelize, DATE} = require('sequelize')
+const {DataTypes} = require('sequelize')
 
-module.exports = (Sequelize) =>{
-    Sequelize.define('bet' ,{
+module.exports = (sequelize) =>{
+    sequelize.define('bet' ,{
         id:{
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4, 
             allowNull:false,
-            prymaryKey: true,
+            primaryKey: true,
         },
         fecha_hora:{
             type: DataTypes.DATE,
