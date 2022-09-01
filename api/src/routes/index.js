@@ -2,7 +2,6 @@ const { Router } = require('express');
 const bcryptjs = require('bcryptjs');
 const router = Router();
 const { User } = require('../db');
-const { restart } = require('nodemon');
 
 router.get('/', async (req, res) => {
     res.json(await User.findAll())
