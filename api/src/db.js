@@ -75,6 +75,9 @@ Bet.belongsTo(User)
 HisBets.hasMany(User)
 User.belongsTo(HisBets)
 
+
+// relacion de 1 a n
+
 HisBets.hasMany(Bet)
 Bet.belongsTo(HisBets)
 
