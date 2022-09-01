@@ -7,16 +7,20 @@ module.exports = (sequelize) => {
     id: {
       type: int,
       primaryKey: true,
+      allowNull: false,
       defaultValue: DataTypes.UUIDV4,
     },
     name: {
-      type: DataTypes.STRING,    
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     pass: {
-        type: DataTypes.STRING,
+      type: DataTypes.STRING,
+      allowNull: false
     },
     email: {
       type: DataTypes.STRING,
+      allowNull: false
     },
     avatar: {
       type: DataTypes.STRING(500)
