@@ -8,8 +8,23 @@ module.exports = (Sequelize) => {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
+<<<<<<< Get_Routes_hisBet_MatiasM
+        allowNull: false
+      },
+      id_user:{
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    id_bet:{
+      type: DataTypes.INTEGER,
+      allowNull: false
+  },
+    },
+    
+=======
       },
     },
+>>>>>>> routes
     {
       timestamps: false,
     }

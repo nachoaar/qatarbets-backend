@@ -55,8 +55,16 @@ Team.belongsTo(Group);
 
 // relacion 1 a n de group con matchs
 Group.hasMany(Match);
+
 Match.belongsTo(Group)
 
+
+HisBets.hasMany(Bet)
+HisBets.hasMany(User)
+
+Match.hasMany(Bet)
+
+User.hasMany(Bet)
 
 // relacion de 1 a n de match con team
 Match.belongsToMany(Team, {through: 'match_team'})
