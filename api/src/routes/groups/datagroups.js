@@ -8,7 +8,7 @@ async function dataGroups() {
   })
 
   if(getGroupsDB.length === 0){
-    const data = ['groupo_A', 'groupo_B', 'groupo_C', 'groupo_D', 'groupo_E', 'groupo_F', 'groupo_G', 'groupo_H']
+    const data = ['grupo_A', 'grupo_B', 'grupo_C', 'grupo_D', 'grupo_E', 'grupo_F', 'grupo_G', 'grupo_H']
 
   const createDbGroup =  data.forEach( async (group) => {
     await Group.findOrCreate({
