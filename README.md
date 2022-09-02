@@ -6,6 +6,7 @@ AGREGAR UN ARCHIVO .env DENTRO DE LA CARPETA /api QUE CONSISTA DE LA SIGUIENTE F
 FRONT_HOST=hostDelFrontEnd
 BACK_HOST=hostDelBackEnd
 API_KEY=apiKeyDeAPISport
+<<<<<<< HEAD
 ```
 ------------------------------------
 Facu
@@ -16,7 +17,7 @@ porque no me dejaba abrir el localhost ya que me lo tiraba undefined
 Cambie node por nodemon en el npm start del package.json de /api porque resetea el server cuando guarda un archivo 
 (tambien me gusta que salgan colores cuando lo inicio)
 
-Instale dependencias para realizar el login, asi que van a tener que hacer un npm i de ejs(es para el front) y bcryptjs
+Instale dependencias para realizar el login, asi que van a tener que hacer un npm i de bcryptjs(Encriptacion de pass)
 
 modificar el .env y agregar lo siguiente:
 DB_USER = UsuarioDeSuDB
@@ -24,3 +25,4 @@ DB_PASSWORD = PassDeSuDB
 DB_DATABASE= NombreDeSuDB
 
 ------------------------------------
+

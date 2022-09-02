@@ -1,15 +1,15 @@
 const { Router } = require('express');
 const bcryptjs = require('bcryptjs');
 const router = Router();
-const { User } = require('../db');
+const { User, HisBets } = require('../../db');
 
 router.get('/', async (req, res) => {
     res.json(await User.findAll())
  })
 
+ //La ruta login con todas sus validaciones
 router.post('/login', async (req, res) => {
-    const {pass, email} = req.body;
-    const session = req.session;
+    const {pass, email} = req.body;     
     try{ 
         if(!pass || !email) return res.json('Complete todos los parametros')  
         const UserInfo = await User.findOne({ where: { email: email} });
@@ -19,12 +19,14 @@ router.post('/login', async (req, res) => {
         if(!UserEmail) return res.json('Cuenta con email inexistente');
         if(!await bcryptjs.compare(pass, UserPass)) return res.json('Contraseña incorrecta')
         else{
-            session.name = UserName;
-            res.send('Logueado correctamente como ')
+            req.session.
+            req.session.name = UserName;
+            res.send('Logueado correctamente como ' + UserName)
         }
     }catch(error){res.json('a' + error)}
  })
 
+//ruta register con las validaciones y relaciones
 router.post('/register', async (req, res) => {
    const { name, pass, email, avatar, rol} = req.body;
    try{
@@ -51,15 +53,13 @@ router.post('/register', async (req, res) => {
         avatar: avatar,
         rol: rol,
     })
+    //defino Bet
+    const UserBets = await HisBets.findOrCreate({ where : {id_user: name}})
     //creo al usuario :D
-    await usuario;
+    await usuario.addHisBets(UserBets);
     res.json('Usuario creado correctamente')
     console.log(usuario)
    }} catch(error){res.send(error)}
 })
-
-router.get('/', async (req, res) => {
-    
- })
 
 module.exports = router;
