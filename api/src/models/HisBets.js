@@ -8,7 +8,6 @@ module.exports = (Sequelize) => {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
-<<<<<<< Get_Routes_hisBet_MatiasM
         allowNull: false
       },
       id_user:{
@@ -20,11 +19,6 @@ module.exports = (Sequelize) => {
       allowNull: false
   },
     },
-    
-=======
-      },
-    },
->>>>>>> routes
     {
       timestamps: false,
     }
