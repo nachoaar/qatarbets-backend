@@ -2,11 +2,12 @@ const { DataTypes, Sequelize } = require("Sequelize");
 
 module.exports = (Sequelize) => {
   Sequelize.define(
-    "group",
+    "hisBets",
     {
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
       },
     },
     {
