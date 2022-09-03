@@ -4,9 +4,7 @@ const { Router } = require('express');
 
 const axios = require('axios');
 const { Team, Player } = require('../../db.js');
-const {
-  API_KEY
-} = process.env;
+const {API_KEY} = require('../../DB_variables.js');
 
 const router = Router();
 
@@ -39,7 +37,7 @@ const getTeamsDataApi = async function () {
   let AllTeamsDataApi = await axios.get('https://v3.football.api-sports.io/teams?league=1&season=2022', {
     headers: {
       "x-rapidapi-host": "v3.football.api-sports.io",
-      "x-rapidapi-key": `${API_KEY} `
+      "x-rapidapi-key": `${process.env.API_KEY || API_KEY} `
     }
   })
 
@@ -77,7 +75,6 @@ const getTeamsDataApi = async function () {
 router.get('/allTeams', async (req, res, next) => {
 
   //idGroup is missing, it must be created in data base. Later search for it in DB
-
   try {
     await getTeamsDataApi();
     /* console.log(A)   */

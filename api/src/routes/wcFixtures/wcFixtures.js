@@ -2,6 +2,7 @@ require('dotenv').config();
 const { Router } = require('express');
 const axios = require('axios');
 const { Match, Team } = require('../../db.js');
+const { API_KEY } = require('../../DB_variables.js');
 
 const router = Router();
 
@@ -9,7 +10,7 @@ router.get('/', async (req, res, next) => {
   try {
     let fixture = ( await axios.get('https://v3.football.api-sports.io/fixtures?league=1&season=2022&timezone=America/Argentina/Buenos_Aires', {
       headers: {
-        'x-rapidapi-key': `${process.env.API_KEY}`,
+        'x-rapidapi-key': `${process.env.API_KEY || API_KEY}`,
         "x-rapidapi-host": "v3.football.api-sports.io",
       }
     })).data.response
