@@ -3,7 +3,11 @@ const { Sequelize } = require("sequelize");
 const fs = require("fs");
 const path = require("path");
 const { match } = require("assert");
-const { PGUSER, PGPASSWORD, PGHOST, PGPORT, PGDATABASE, DB_USER, DB_PASSWORD, DB_HOST } = process.env;
+const { PGUSER, PGPASSWORD, PGHOST, PGPORT, PGDATABASE, } = process.env;
+
+const DB_USER="postgres"
+const DB_PASSWORD=2002
+const DB_HOST="localhost"
 
 /* const sequelize = new Sequelize(
   `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/qatarbets`,
