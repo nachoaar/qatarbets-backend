@@ -9,15 +9,6 @@ const { conn } = require("./src/db.js");
   });
 }); */
 
-/* server.listen(process.env.PORT || PORT, () => {
+server.listen(process.env.PORT || PORT, () => {
   console.log(`Servidor Activo!`);
-}); */
-
-async function start() {
-  await conn.sync();
-  server.listen(process.env.PORT || PORT, () => {
-    console.log(`Servidor Activo!`);
-  });
-}
-
-start();
+});
