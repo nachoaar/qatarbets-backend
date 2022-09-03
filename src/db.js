@@ -37,7 +37,7 @@ let sequelize =
       ssl: true,
     })
     : new Sequelize(
-      `postgresql://${{ PGUSER }}:${{ PGPASSWORD }}@${{ PGHOST }}:${{ PGPORT }}/${{ PGDATABASE }}`,
+      `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/qatarbets`,
       { logging: false, native: false }
     );
 
