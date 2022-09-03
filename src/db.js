@@ -37,9 +37,12 @@ let sequelize =
       ssl: true,
     })
     : new Sequelize(
-      `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/qatarbets`,
+      `postgresql://${{ PGUSER }}:${{ PGPASSWORD }}@${{ PGHOST }}:${{ PGPORT }}/${{ PGDATABASE }}`,
       { logging: false, native: false }
     );
+
+//`postgresql://${{ PGUSER }}:${{ PGPASSWORD }}@${{ PGHOST }}:${{ PGPORT }}/${{ PGDATABASE }}`
+//`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/qatarbets`
 
 const basename = path.basename(__filename);
 
