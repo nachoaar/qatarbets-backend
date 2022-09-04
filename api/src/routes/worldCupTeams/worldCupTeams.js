@@ -4,30 +4,14 @@ const { Router } = require('express');
 
 const axios = require('axios');
 const { Team, Player } = require('../../db.js');
-const {API_KEY} = require('../../DB_variables.js');
+/* const {
+  API_KEY
+} = process.env; */
+const { API_KEY } = require('../../DB_variables.js');
 
 const router = Router();
 
-/* const getCoachDataApi = async function (teamId) {
 
-  let coachDataApiAux2
-
-  let coachDataApiAux1 = await axios.get(`https://v3.football.api-sports.io/coachs?team=${teamId}`, {
-    headers: {
-      "x-rapidapi-host": "v3.football.api-sports.io",
-      "x-rapidapi-key": `${API_KEY} `
-    }
-  })
-
-  if (!coachDataApiAux1.data.response[0].name) {
-    coachDataApiAux2 = 'There is no coach'
-  } else {
-    coachDataApiAux2 = await coachDataApiAux1.data.response[0].name // the endpoint gets many coachs, so the main coach is the one into the array in position 0
-
-  }
-
-  return coachDataApiAux2
-} */
 
 const getTeamsDataApi = async function () {
 
@@ -37,7 +21,7 @@ const getTeamsDataApi = async function () {
   let AllTeamsDataApi = await axios.get('https://v3.football.api-sports.io/teams?league=1&season=2022', {
     headers: {
       "x-rapidapi-host": "v3.football.api-sports.io",
-      "x-rapidapi-key": `${process.env.API_KEY || API_KEY} `
+      "x-rapidapi-key": `${API_KEY} `
     }
   })
 
@@ -75,6 +59,7 @@ const getTeamsDataApi = async function () {
 router.get('/allTeams', async (req, res, next) => {
 
   //idGroup is missing, it must be created in data base. Later search for it in DB
+
   try {
     await getTeamsDataApi();
     /* console.log(A)   */
@@ -142,12 +127,8 @@ router.get('/get', async (req, res, next) => {
 
 router.get('/squad/:id', async (req, res, next) => {
 
-  /* console.log('hola') */
-
   const id = req.params.id;
 
-  /* console.log(id) */
-  //idGroup is missing, it must be created in data base. Later search for it in DB
   try {
     let A = await Team.findAll({
       where: {
@@ -162,7 +143,50 @@ router.get('/squad/:id', async (req, res, next) => {
   }
 });
 
+var coachArray=[]
 
+const getCoachDataApi = async function (teamId) {
+
+ let coachDataApiAux2
+
+ let coachDataApiAux1 = await axios.get(`https://v3.football.api-sports.io/coachs?team=${teamId}`, {
+   headers: {
+     "x-rapidapi-host": "v3.football.api-sports.io",
+     "x-rapidapi-key": `${API_KEY} `
+   }
+ })
+
+   coachDataApiAux2 = await coachDataApiAux1.data.response[0].name // the endpoint gets many coachs, so the main coach is the one into the array in position 0
+
+  let coachObject ={
+    coach: coachDataApiAux2,
+    teamId: teamId
+  }
+
+ return coachObject
+} 
+  
+  router.get('/coachApi/:id', async (req, res, next) => {
+  
+    const idCoach = req.params.id;
+    
+     try {
+       let coachFound = await getCoachDataApi(idCoach);
+       coachArray.push(coachFound)
+      
+       await Team.update({
+        coach: coachFound.coach,
+    }, {
+        where: {
+            id: coachFound.teamId,   
+        }
+    });
+       res.status(200).send(coachFound)
+    }  
+     catch (error) {
+      next(error)
+    } 
+  });
 
 
 
