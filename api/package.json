@@ -21,7 +21,8 @@
     "express-session": "^1.17.3",
     "morgan": "^1.10.0",
     "pg": "^8.8.0",
-    "sequelize": "^6.21.4"
+    "sequelize": "^6.21.4",
+    "sequelize-cli": "^6.4.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.19"

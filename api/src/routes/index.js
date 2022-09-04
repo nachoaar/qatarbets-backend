@@ -7,6 +7,7 @@ const groups = require('./groups/groups.js')
 const hisBetsRoute = require('./hisBets/hisBets.js');
 const UserConfig= require('./user/user');
 
+
 const router = Router();
 router.use(express.json());
 
@@ -16,7 +17,7 @@ router.use('/hisBets', hisBetsRoute);
 router.use('/fixture', getDates);
 router.use('/teams', getTeams);
 router.use('/groups', groups);
+router.use('/players', playersRoute);
 router.use('/login', UserConfig);
 router.use('/register', UserConfig);
-
 module.exports = router;
