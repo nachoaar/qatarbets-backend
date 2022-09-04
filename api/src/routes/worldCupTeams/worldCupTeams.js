@@ -11,7 +11,7 @@ const { API_KEY } = require('../../DB_variables.js');
 
 const router = Router();
 
-
+ 
 
 const getTeamsDataApi = async function () {
 
@@ -210,13 +210,146 @@ router.get('/coachApi/:id', async (req, res, next) => {
   }
 });
 
+
+
+const allCoachs= [
+  {
+      "coach": "Roberto Martínez",
+      "teamId": 1
+  },
+  {
+      "coach": "D. Deschamps",
+      "teamId": 2
+  },
+  {
+      "coach": "Z. Dalić",
+      "teamId": 3
+  },
+  {
+      "coach": "Tite",
+      "teamId": 6
+  },
+  {
+      "coach": "Luis Enrique",
+      "teamId": 9
+  },
+  {
+      "coach": "G. Southgate",
+      "teamId": 10
+  },
+  {
+      "coach": "H. Moriyasu",
+      "teamId": 12
+  },
+  {
+      "coach": "A. Cissé",
+      "teamId": 13
+  },
+  {
+      "coach": "D. Stojković",
+      "teamId": 14
+  },
+  {
+      "coach": "M. Yakin",
+      "teamId": 15
+  },
+  {
+      "coach": "G. Martino",
+      "teamId": 16
+  },
+  {
+      "coach": "Paulo Bento",
+      "teamId": 17
+  },
+  {
+      "coach": "G. Arnold",
+      "teamId": 20
+  },
+  {
+      "coach": "K. Hjulmand",
+      "teamId": 21
+  },
+  {
+      "coach": "Carlos Queiroz",
+      "teamId": 22
+  },
+  {
+      "coach": "H. Renard",
+      "teamId": 23
+  },
+  {
+      "coach": "C. Michniewicz",
+      "teamId": 24
+  },
+  {
+      "coach": "J. Löw",
+      "teamId": 25
+  },
+  {
+      "coach": "Fernando Santos",
+      "teamId": 27
+  },
+  {
+      "coach": "M. Kbaïer",
+      "teamId": 28
+  },
+  {
+      "coach": "G. Matosas",
+      "teamId": 29
+  },
+  {
+      "coach": "V. Halilhodžić",
+      "teamId": 31
+  },
+  {
+      "coach": "R. Giggs",
+      "teamId": 767
+  },
+  {
+      "coach": "D. Lodeweges",
+      "teamId": 1118
+  },
+  {
+      "coach": "K. Appiah",
+      "teamId": 1504
+  },
+  {
+      "coach": "C. Seedorf",
+      "teamId": 1530
+  },
+  {
+      "coach": "Felix Sanchez",
+      "teamId": 1569
+  },
+  {
+      "coach": "G. Alfaro",
+      "teamId": 2382
+  },
+  {
+      "coach": "G. Berhalter",
+      "teamId": 2384
+  },
+  {
+      "coach": "J. Herdman",
+      "teamId": 5529
+  },
+  {
+      "coach": "L. Scaloni",
+      "teamId": 26
+  },
+  {
+      "coach": "Ó. Tabárez",
+      "teamId": 7
+  }
+]
+
 router.get('/coachDB', async (req, res, next) => {
 
   console.log(coachArray)
 
   try {
 
-     coachArray.map(async (el) => {
+    allCoachs.map(async (el) => {
 
       let teamDB = await Team.findByPk(el.teamId)
 
@@ -224,7 +357,7 @@ router.get('/coachDB', async (req, res, next) => {
       console.log(dbId)
       console.log(dbId.team.dataValues.id) */
 
-      if ((Number(el.teamId)) === teamDB.id) {
+      if (el.teamId === teamDB.id) {
 
         await Team.update({
           coach: el.coach,
@@ -238,6 +371,80 @@ router.get('/coachDB', async (req, res, next) => {
     res.status(200).send('all coachs added')
     }
   
+  catch (error) {
+    next(error)
+  }
+});
+
+ const getSquadDataApi = async function (id) {
+
+   let AllSquadDataApiAux2
+   let AllSquadDataApiAux3
+
+   let AllSquadDataApiAux1 = await axios.get(`https://v3.football.api-sports.io/players/squads?team=${id}`, {
+     headers: {
+       "x-rapidapi-host": "v3.football.api-sports.io",
+       "x-rapidapi-key": `${API_KEY} `
+     }
+   })
+
+   AllSquadDataApiAux1 = AllSquadDataApiAux1.data.response[0]
+   AllSquadDataApiAux3 = AllSquadDataApiAux1.team.id
+
+   AllSquadDataApiAux2 = await AllSquadDataApiAux1.players.map(el => {
+
+    return {
+      id: el.id,
+       name: el.name,
+      age: el.age,
+       /* number: el.number, */   // el campo suele estar en null por eso no lo envio
+       position: el.position,
+      photo: el.photo,
+      // el campo estado no va en la base de datos, se va a sacar
+      id_team: AllSquadDataApiAux3
+    };
+   });
+
+  AllSquadDataApiAux2.map(async (el) => {
+    await Player.findOrCreate({
+      where: {
+       id: el.id,
+      name: el.name,
+       age: el.age,
+    /* number: el.number, */   // el campo suele estar en null por eso no lo envio
+       position: el.position,
+       photo: el.photo,
+       // el campo estado no va en la base de datos, se va a sacar
+       id_team: AllSquadDataApiAux3
+      }
+     })
+   });
+   return AllSquadDataApiAux2
+ }
+
+ router.get('/playersSquadApi/:id', async (req, res, next) => {
+
+  const idApi = req.params.id;
+  console.log('hola')
+
+   try {
+    let V = await getSquadDataApi(idApi) 
+    res.status(200).send(V) 
+   }
+  catch (error) {
+    next(error)
+  } 
+});
+
+router.get('/playersSquadDb/:id', async (req, res, next) => {
+
+  const idDbS = req.params.id;
+
+  try {
+    let S = await Player.findByPk(idDbS)
+
+    res.status(200).send(S)
+  }
   catch (error) {
     next(error)
   }
