@@ -143,7 +143,7 @@ router.get('/squad/:id', async (req, res, next) => {
   }
 });
 
-var coachArray = []
+const coachArray = []
 
 const getCoachDataApi = async function (teamId) {
 
@@ -166,7 +166,7 @@ const getCoachDataApi = async function (teamId) {
   return coachObject
 }
 
-router.get('/coachApi/:id', async (req, res, next) => {
+/* router.get('/coachApi/:id', async (req, res, next) => {
 
   const idCoach = req.params.id;
 
@@ -194,7 +194,55 @@ router.get('/coachApi/:id', async (req, res, next) => {
   catch (error) {
     next(error)
   }
+}); */
+
+router.get('/coachApi/:id', async (req, res, next) => {
+
+  const idCoach = req.params.id;
+
+  try {
+    let coachFound = await getCoachDataApi(idCoach);
+    coachArray.push(coachFound)
+    res.status(200).send(coachArray)
+  }
+  catch (error) {
+    next(error)
+  }
 });
+
+router.get('/coachDB', async (req, res, next) => {
+
+  console.log(coachArray)
+
+  try {
+
+     coachArray.map(async (el) => {
+
+      let teamDB = await Team.findByPk(el.teamId)
+
+      /* console.log('dbId')
+      console.log(dbId)
+      console.log(dbId.team.dataValues.id) */
+
+      if ((Number(el.teamId)) === teamDB.id) {
+
+        await Team.update({
+          coach: el.coach,
+        }, {
+          where: {
+            id: el.teamId,
+          }
+        });
+      }
+    })
+    res.status(200).send('all coachs added')
+    }
+  
+  catch (error) {
+    next(error)
+  }
+});
+
 
 
 
