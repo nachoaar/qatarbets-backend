@@ -1,6 +1,6 @@
 require("dotenv").config();
 const { Router } = require("express");
-const { Bet, Match } = require("../../db.js");
+const { Bet, Match, User } = require("../../db.js");
 
 const router = Router();
 
@@ -15,6 +15,7 @@ router.post("/newBet", async (req, res, next) => {
       expected_profit,
       final_profit,
       matchId,
+      userId
     } = req.body;
 
     let newBet = await Bet.findOrCreate({
@@ -25,17 +26,31 @@ router.post("/newBet", async (req, res, next) => {
         condition,
         expected_profit,
         final_profit,
-        matchId
+        matchId,
+        userId
       },
     });
-
-
 
     res.status(201).send(newBet);
   } catch (error) {
     next(error);
   }
 });
+
+router.get('/userBets/:id', async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    let bets = await Bet.findAll({
+      where: {
+        userId: id
+      }
+    })
+
+    res.send(bets)
+  } catch (error) {
+    next(error)
+  }
+})
 
 router.get("/betId/:id", async (req, res, next) => {
   const id = req.params.id;

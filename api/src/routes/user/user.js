@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const bcryptjs = require('bcryptjs');
 const router = Router();
-const { User, HisBets } = require('../../db');
+const { User, HisBets, Bet } = require('../../db');
 
 router.get('/', async (req, res) => {
     res.json(await User.findAll())
@@ -26,7 +26,7 @@ router.post('/login', async (req, res) => {
  })
 
 //ruta register con las validaciones y relaciones
-router.post('/register', async (req, res) => {
+router.post('/register', async (req, res, next) => {
    const { name, pass, email, avatar, rol} = req.body;
    try{
    //hago una variable llamada passwordHash la cual me encripta la pass
@@ -53,12 +53,12 @@ router.post('/register', async (req, res) => {
         rol: rol,
     })
     //defino Bet
-    const UserBets = await HisBets.findOrCreate({ where : {id_user: name}})
+    // const UserBets = await HisBets.findOrCreate({ where : {id_user: name}})
     //creo al usuario :D
-    await usuario.addHisBets(UserBets);
+    // await usuario.addHisBets(UserBets);
+    await usuario
     res.json('Usuario creado correctamente')
-    console.log(usuario)
-   }} catch(error){res.send(error)}
+   }} catch(error){next(error)}
 })
 
 module.exports = router;

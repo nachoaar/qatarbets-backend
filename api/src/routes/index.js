@@ -17,6 +17,5 @@ router.use('/hisBets', hisBetsRoute);
 router.use('/fixture', getDates);
 router.use('/teams', getTeams);
 router.use('/groups', groups);
-router.use('/login', UserConfig);
-router.use('/register', UserConfig);
+router.use('/user', UserConfig);
 module.exports = router;
