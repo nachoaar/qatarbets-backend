@@ -106,11 +106,19 @@ Team.belongsToMany(Match, {through: 'match_team'})
 Match.hasMany(Bet)
 Bet.belongsTo(Match)
 
+// relacion de 1 a n
+User.hasMany(Bet)
+Bet.belongsTo(User)
+
 
 // relacion de 1 a n
 HisBets.hasMany(User)
 User.belongsTo(HisBets)
 
+
+// relacion de 1 a n
+HisBets.hasMany(Bet)
+Bet.belongsTo(HisBets)
 
 
 
