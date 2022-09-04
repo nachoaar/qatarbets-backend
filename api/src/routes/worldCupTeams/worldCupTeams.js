@@ -143,50 +143,58 @@ router.get('/squad/:id', async (req, res, next) => {
   }
 });
 
-var coachArray=[]
+var coachArray = []
 
 const getCoachDataApi = async function (teamId) {
 
- let coachDataApiAux2
+  let coachDataApiAux2
 
- let coachDataApiAux1 = await axios.get(`https://v3.football.api-sports.io/coachs?team=${teamId}`, {
-   headers: {
-     "x-rapidapi-host": "v3.football.api-sports.io",
-     "x-rapidapi-key": `${API_KEY} `
-   }
- })
+  let coachDataApiAux1 = await axios.get(`https://v3.football.api-sports.io/coachs?team=${teamId}`, {
+    headers: {
+      "x-rapidapi-host": "v3.football.api-sports.io",
+      "x-rapidapi-key": `${API_KEY} `
+    }
+  })
 
-   coachDataApiAux2 = await coachDataApiAux1.data.response[0].name // the endpoint gets many coachs, so the main coach is the one into the array in position 0
+  coachDataApiAux2 = await coachDataApiAux1.data.response[0].name // the endpoint gets many coachs, so the main coach is the one into the array in position 0
 
-  let coachObject ={
+  let coachObject = {
     coach: coachDataApiAux2,
     teamId: teamId
   }
 
- return coachObject
-} 
-  
-  router.get('/coachApi/:id', async (req, res, next) => {
-  
-    const idCoach = req.params.id;
-    
-     try {
-       let coachFound = await getCoachDataApi(idCoach);
-       coachArray.push(coachFound)
-      
-       await Team.update({
+  return coachObject
+}
+
+router.get('/coachApi/:id', async (req, res, next) => {
+
+  const idCoach = req.params.id;
+
+  try {
+    let coachFound = await getCoachDataApi(idCoach);
+    coachArray.push(coachFound)
+
+    let teamDB = await Team.findByPk(idCoach)
+
+    if (Number(coachFound.teamId) === teamDB.id) {
+
+      await Team.update({
         coach: coachFound.coach,
-    }, {
+      }, {
         where: {
-            id: coachFound.teamId,   
+          id: coachFound.teamId,
         }
-    });
-       res.status(200).send(coachFound)
-    }  
-     catch (error) {
-      next(error)
-    } 
-  });
+      });
+      res.status(200).send(coachFound)
+
+    } else {
+      res.status(200).send('coach not founded in DB')
+    }
+  }
+  catch (error) {
+    next(error)
+  }
+});
 
 
 
