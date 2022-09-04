@@ -36,7 +36,7 @@ server.use(session({
 }));
 
 //invoca al modulo de conexion a la db
-const connection = require('../database/db');
+
 
 server.use('/', routes);
 
