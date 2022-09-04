@@ -30,6 +30,10 @@ module.exports = (sequelize) => {
         type: DataTypes.ENUM({values: ['admin', 'gambler']}),
         allowNull: false,
         defaultValue: 'gambler'
+      },
+      age: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
       }
     }, { timestamps: false }
   );
