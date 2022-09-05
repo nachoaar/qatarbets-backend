@@ -15,7 +15,7 @@ module.exports = (sequelize) => {
       },
       number: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       age: {
         type: DataTypes.INTEGER,
@@ -27,6 +27,10 @@ module.exports = (sequelize) => {
       },
       photo: {
         type: DataTypes.STRING,
+        allowNull: false,
+      },
+      teamId: {
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
     },
