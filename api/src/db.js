@@ -96,7 +96,7 @@ HisBets.hasMany(User)
 
 Match.hasMany(Bet)
 
-User.hasMany(Bet)
+//User.hasMany(Bet)
 
 // relacion de 1 a n de match con team
 Match.belongsToMany(Team, {through: 'match_team'})
@@ -127,7 +127,7 @@ HisBets.hasMany(User)
 
 Match.hasMany(Bet)
 
-User.hasMany(Bet)
+//User.hasMany(Bet)
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
