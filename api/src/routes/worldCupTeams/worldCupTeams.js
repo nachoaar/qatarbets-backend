@@ -395,13 +395,12 @@ router.get('/coachDB', async (req, res, next) => {
 
     return {
       id: el.id,
-       name: el.name,
+      name: el.name,
       age: el.age,
-       /* number: el.number, */   // el campo suele estar en null por eso no lo envio
-       position: el.position,
+      number: el.number,    // el campo suele estar en null por eso no lo envio
+      position: el.position,
       photo: el.photo,
-      // el campo estado no va en la base de datos, se va a sacar
-      id_team: AllSquadDataApiAux3
+      teamId: AllSquadDataApiAux3
     };
    });
 
@@ -409,13 +408,12 @@ router.get('/coachDB', async (req, res, next) => {
     await Player.findOrCreate({
       where: {
        id: el.id,
-      name: el.name,
+       name: el.name,
        age: el.age,
-    /* number: el.number, */   // el campo suele estar en null por eso no lo envio
+       number: 0,   // el campo suele estar en null por eso no lo envio
        position: el.position,
        photo: el.photo,
-       // el campo estado no va en la base de datos, se va a sacar
-       id_team: AllSquadDataApiAux3
+       teamId: AllSquadDataApiAux3
       }
      })
    });
@@ -441,14 +439,75 @@ router.get('/playersSquadDb/:id', async (req, res, next) => {
   const idDbS = req.params.id;
 
   try {
-    let S = await Player.findByPk(idDbS)
-
+    let S = await Player.findAll({
+      where: {
+        teamId: idDbS
+      }
+    })
     res.status(200).send(S)
   }
   catch (error) {
     next(error)
   }
 });
+
+
+router.get('/playersSquadDb11/:id', async (req, res, next) => {
+
+  const idDbS11 = req.params.id;
+
+  try {
+    let S11 = await Player.findAll({
+      where: {
+        teamId: idDbS11
+      }
+    })
+
+    var lineupObject={
+      goalkeeper:[],
+      defenders:[],
+      midfielder:[],
+      attackers:[]
+    }
+
+    var goalkeeperCount=0;
+    var defendersCount=0;
+    var midfielderCount=0;
+    var attackersCount=0;
+
+    S11.map( async (el)=>{
+
+      if(el.position === "Goalkeeper" && goalkeeperCount < 1){
+        goalkeeperCount++;
+        lineupObject.goalkeeper.push(el)
+      }
+
+      if(el.position === "Defender" && defendersCount < 4){
+        defendersCount++;
+        lineupObject.defenders.push(el)
+      }
+
+      if(el.position === "Midfielder" && midfielderCount < 4){
+        midfielderCount++;
+        lineupObject.midfielder.push(el)
+      }
+
+      if(el.position === "Attacker" && attackersCount < 2){
+        attackersCount++;
+        lineupObject.attackers.push(el)
+      }
+
+    })
+
+    res.status(200).send(lineupObject)
+  }
+  catch (error) {
+    next(error)
+  }
+});
+
+
+
 
 
 
