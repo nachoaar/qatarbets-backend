@@ -32,6 +32,11 @@ module.exports = (sequelize) => {
         type: DataTypes.ENUM({values: ['admin', 'gambler']}),
         allowNull: false,
         defaultValue: 'gambler'
+      },
+      saldo: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+        defaultValue: 0,
       }
     }, { timestamps: false }
   );
