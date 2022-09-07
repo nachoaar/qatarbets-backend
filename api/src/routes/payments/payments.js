@@ -6,7 +6,7 @@ const stripe = new Stripe('sk_test_51LfBfGH8GSChtV84Al5MVXVlaqwTJi8mnNXKxrfkPZ1X
 
 const router = Router();
 
-router.get('/', async (req, res, next) => {
+router.post('/', async (req, res, next) => {
 
   const { id, amount } = req.body;
 
