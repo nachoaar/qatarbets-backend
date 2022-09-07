@@ -1,8 +1,9 @@
 require('dotenv').config();
 const { Router } = require('express');
 const axios = require('axios');
-const { Match, Team, HeadToHead } = require('../../db.js');
+const { Match, Team, Headtohead } = require('../../db.js');
 const { API_KEY } = require('../../DB_variables.js');
+
 
 const router = Router();
 
@@ -161,7 +162,31 @@ const headtoheadDataApi = async function (id1, id2) {
     };
   });
 
-  await headtoheadDataApiAux2.map((el) => {
+  headtoheadDataApiAux3 = headtoheadDataApiAux2.map((el) => {
+     
+    let actualResult="";
+    if (el.draw === true){
+      actualResult="tie";
+    } else if (el.draw === false && el.winnerHome === true){
+      actualResult="winner_home";
+    } else {actualResult="winner_away"}
+
+    let actualScore = `${el.goalsHome} - ${el.goalsAway}`
+
+    return {
+      id: el.id,
+      id_home: el.id_home,
+      id_away: el.id_away,
+      result: actualResult,
+      score: actualScore
+    };
+  });
+
+  /* console.log(headtoheadDataApiAux3) */
+
+
+
+  /* await headtoheadDataApiAux2.map((el) => {
     matchesArray.push({
         id: el.id,
         goalsHome: el.goalsHome,
@@ -170,45 +195,45 @@ const headtoheadDataApi = async function (id1, id2) {
         winnerAway: el.winnerAway,
         draw: el.draw,
       })
-  })
+  }) */
 
-  console.log(matchesArray)
+  /* console.log(matchesArray)
  
-  console.log(headtoheadDataApiAux2)
+  console.log(headtoheadDataApiAux2) */
 
-  /* headtoheadDataApiAux2.map(async (el) => {
-   await Player.findOrCreate({
+    headtoheadDataApiAux3.map(async (el) => {
+   await Headtohead.findOrCreate({
      where: {
       id: el.id,
-      name: el.name,
-      age: el.age,
-      number: 0,   // el campo suele estar en null por eso no lo envio
-      position: el.position,
-      photo: el.photo,
-      teamId: AllSquadDataApiAux3
+      id_home: el.id_home,
+      id_away: el.id_away,
+      result: el.result,
+      score: el.score
      }
     })
-  }); */
+  });  
 
-  headtoheadDataApiAux3 = {
+  /* headtoheadDataApiAux3 = {
     id_home: headtoheadDataApiAux2[0].id_home,
     id_away: headtoheadDataApiAux2[0].id_away,
     matches: matchesArray
-  }
+  } */
 
   
-    await HeadToHead.findOrCreate({ ///poner el modelo de headtohead
+    /*  await HeadToHead.findOrCreate({ ///poner el modelo de headtohead
       where: {
-        id_home: headtoheadDataApiAux3.id_home,
-        id_away: headtoheadDataApiAux3.id_away,
-        matches: headtoheadDataApiAux3.matches,
+      id: el.id,
+      id_home: el.id_home,
+      id_away: el.id_away,
+      result: actualResult,
+      score: actualScore
       }
-     })
+     })  */
   
   return headtoheadDataApiAux3
 }
 
-router.get('/headToHead/:id_home/:id_away', async (req, res, next) => {
+router.get('/headToHeadApi/:id_home/:id_away', async (req, res, next) => {
 
   let idApi1 = req.params.id_home;
   let idApi2 = req.params.id_away;
@@ -224,13 +249,13 @@ router.get('/headToHead/:id_home/:id_away', async (req, res, next) => {
   }
 });
 
-router.get('/headToHead/:id_home/:id_away', async (req, res, next) => {
+router.get('/headToHeadDb/:id_home/:id_away', async (req, res, next) => {
 
   let idDb1 = req.params.id_home;
   let idDb2 = req.params.id_away;
 
   try {
-    let J = await HeadToHead.findAll({   //poner el modelo de headtohead
+    let J = await Headtohead.findAll({   //poner el modelo de headtohead
       where: {
         id_home: idDb1,
         id_away: idDb2
