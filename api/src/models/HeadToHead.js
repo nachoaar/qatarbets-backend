@@ -19,15 +19,15 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      matches: {
-        type: DataTypes.ARRAY(),
-        get: function() {
-            return JSON.parse(this.getDataValue('matches'));
-        }, 
-        set: function(val) {
-            return this.setDataValue('matches', JSON.stringify(val));
-        }
-      },
+     // matches: {
+     //   type: DataTypes.ARRAY(),
+     //   get: function() {
+     //       return JSON.parse(this.getDataValue('matches'));
+     //   }, 
+     //   set: function(val) {
+     //       return this.setDataValue('matches', JSON.stringify(val));
+     //   }
+     // },
     },
     {
       timestamps: false,
