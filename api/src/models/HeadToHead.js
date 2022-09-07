@@ -19,6 +19,16 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      result: {
+        type: DataTypes.ENUM({
+          values: ["winner_home", "tie", "winner_away"],
+        }),
+        allowNull: false,
+      },
+      score: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
      // matches: {
      //   type: DataTypes.ARRAY(),
      //   get: function() {
