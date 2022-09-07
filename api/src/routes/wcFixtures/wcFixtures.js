@@ -1,24 +1,24 @@
 require('dotenv').config();
 const { Router } = require('express');
 const axios = require('axios');
-const { Match, Team } = require('../../db.js');
+const { Match, Team, HeadToHead } = require('../../db.js');
 const { API_KEY } = require('../../DB_variables.js');
 
 const router = Router();
 
 router.get('/', async (req, res, next) => {
   try {
-    let fixture = ( await axios.get('https://v3.football.api-sports.io/fixtures?league=1&season=2022&timezone=America/Argentina/Buenos_Aires', {
+    let fixture = (await axios.get('https://v3.football.api-sports.io/fixtures?league=1&season=2022&timezone=America/Argentina/Buenos_Aires', {
       headers: {
         'x-rapidapi-key': `${process.env.API_KEY || API_KEY}`,
         "x-rapidapi-host": "v3.football.api-sports.io",
       }
     })).data.response
-    
+
     let result = fixture.map(el => {
       return {
         id: el.fixture.id,
-        date: new Date (el.fixture.date),
+        date: new Date(el.fixture.date),
         status: el.fixture.status.long,
         home_team_id: el.teams.home.id,
         away_team_id: el.teams.away.id,
@@ -27,7 +27,7 @@ router.get('/', async (req, res, next) => {
       }
     })
 
-    result.forEach( async (el) => {
+    result.forEach(async (el) => {
       await Match.findOrCreate({
         where: {
           id: el.id,
@@ -59,8 +59,8 @@ router.get('/get', async (req, res, next) => {
       }, */
       raw: true,
     });
-    
-    let mapped =  matches.map( async (el) => {
+
+    let mapped = matches.map(async (el) => {
       let home = await Team.findByPk(el.home_team_id, { raw: true });
       let away = await Team.findByPk(el.away_team_id, { raw: true });
       let obj = {
@@ -95,7 +95,7 @@ router.get('/:id', async (req, res, next) => {
         id: id,
       }
     })
-    let mapped =  match.map( async (el) => {
+    let mapped = match.map(async (el) => {
       let home = await Team.findByPk(el.home_team_id, { raw: true });
       let away = await Team.findByPk(el.away_team_id, { raw: true });
       let obj = {
@@ -119,6 +119,127 @@ router.get('/:id', async (req, res, next) => {
     res.status(200).send(result)
   } catch (error) {
     next(error);
+  }
+});
+
+
+const headtoheadDataApi = async function (id1, id2) {
+
+  let headtoheadDataApiAux2
+  let headtoheadDataApiAux3
+
+  let headtoheadDataApiAux1 = await axios.get(`https://v3.football.api-sports.io/fixtures/headtohead?h2h=${id1}-${id2}`, {
+    headers: {
+      "x-rapidapi-host": "v3.football.api-sports.io",
+      "x-rapidapi-key": `${API_KEY} `
+    }
+  })
+
+  headtoheadDataApiAux1 = headtoheadDataApiAux1.data.response
+
+  let draw = function (goals1, goals2) {
+    if (goals1 === goals2) {
+      return true
+    } else { return false }
+  }
+
+  var matchesArray = []
+
+  /* console.log(headtoheadDataApiAux1) */
+
+  headtoheadDataApiAux2 = headtoheadDataApiAux1.map((el) => {
+
+    return {
+      id_home: el.teams.home.id,
+      id_away: el.teams.away.id,
+      id: el.fixture.id,
+      goalsHome: el.goals.home,
+      goalsAway: el.goals.away,
+      winnerHome: el.teams.home.winner,
+      winnerAway: el.teams.away.winner,
+      draw: draw(el.goals.home, el.goals.away),
+    };
+  });
+
+  await headtoheadDataApiAux2.map((el) => {
+    matchesArray.push({
+        id: el.id,
+        goalsHome: el.goalsHome,
+        goalsAway: el.goalsAway,
+        winnerHome: el.winnerHome,
+        winnerAway: el.winnerAway,
+        draw: el.draw,
+      })
+  })
+
+  console.log(matchesArray)
+ 
+  console.log(headtoheadDataApiAux2)
+
+  /* headtoheadDataApiAux2.map(async (el) => {
+   await Player.findOrCreate({
+     where: {
+      id: el.id,
+      name: el.name,
+      age: el.age,
+      number: 0,   // el campo suele estar en null por eso no lo envio
+      position: el.position,
+      photo: el.photo,
+      teamId: AllSquadDataApiAux3
+     }
+    })
+  }); */
+
+  headtoheadDataApiAux3 = {
+    id_home: headtoheadDataApiAux2[0].id_home,
+    id_away: headtoheadDataApiAux2[0].id_away,
+    matches: matchesArray
+  }
+
+  
+    await HeadToHead.findOrCreate({ ///poner el modelo de headtohead
+      where: {
+        id_home: headtoheadDataApiAux3.id_home,
+        id_away: headtoheadDataApiAux3.id_away,
+        matches: headtoheadDataApiAux3.matches,
+      }
+     })
+  
+  return headtoheadDataApiAux3
+}
+
+router.get('/headToHead/:id_home/:id_away', async (req, res, next) => {
+
+  let idApi1 = req.params.id_home;
+  let idApi2 = req.params.id_away;
+
+  console.log('hola')
+  
+  try {
+    let x = await headtoheadDataApi(idApi1, idApi2)
+    res.status(200).send(x)
+  }
+  catch (error) {
+    next(error)
+  }
+});
+
+router.get('/headToHead/:id_home/:id_away', async (req, res, next) => {
+
+  let idDb1 = req.params.id_home;
+  let idDb2 = req.params.id_away;
+
+  try {
+    let J = await HeadToHead.findAll({   //poner el modelo de headtohead
+      where: {
+        id_home: idDb1,
+        id_away: idDb2
+      }
+    })
+    res.status(200).send(J)
+  }
+  catch (error) {
+    next(error)
   }
 });
 
