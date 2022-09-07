@@ -52,6 +52,16 @@ router.get('/userBets/:id', async (req, res, next) => {
   }
 })
 
+router.get('/allBets', async (req, res, next) => {
+  
+  try {
+    let allbets = await Bet.findAll()
+    res.send(allbets)
+  } catch (error) {
+    next(error)
+  }
+})
+
 router.get("/betId/:id", async (req, res, next) => {
   const id = req.params.id;
 
