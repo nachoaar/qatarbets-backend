@@ -6,7 +6,7 @@ const getTeams= require('./worldCupTeams/worldCupTeams')
 const groups = require('./groups/groups.js')
 const hisBetsRoute = require('./hisBets/hisBets.js');
 const UserConfig= require('./user/user');
-
+const paymentRoute = require('./payments/payments');
 
 const router = Router();
 router.use(express.json());
@@ -18,4 +18,5 @@ router.use('/fixture', getDates);
 router.use('/teams', getTeams);
 router.use('/groups', groups);
 router.use('/user', UserConfig);
+router.use('/pay', paymentRoute)
 module.exports = router;
