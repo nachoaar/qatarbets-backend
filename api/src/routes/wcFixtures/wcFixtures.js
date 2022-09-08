@@ -144,10 +144,6 @@ const headtoheadDataApi = async function (id1, id2) {
     } else { return false }
   }
 
-  var matchesArray = []
-
-  /* console.log(headtoheadDataApiAux1) */
-
   headtoheadDataApiAux2 = headtoheadDataApiAux1.map((el) => {
 
     return {
@@ -182,25 +178,6 @@ const headtoheadDataApi = async function (id1, id2) {
     };
   });
 
-  /* console.log(headtoheadDataApiAux3) */
-
-
-
-  /* await headtoheadDataApiAux2.map((el) => {
-    matchesArray.push({
-        id: el.id,
-        goalsHome: el.goalsHome,
-        goalsAway: el.goalsAway,
-        winnerHome: el.winnerHome,
-        winnerAway: el.winnerAway,
-        draw: el.draw,
-      })
-  }) */
-
-  /* console.log(matchesArray)
- 
-  console.log(headtoheadDataApiAux2) */
-
     headtoheadDataApiAux3.map(async (el) => {
    await Headtohead.findOrCreate({
      where: {
@@ -213,23 +190,6 @@ const headtoheadDataApi = async function (id1, id2) {
     })
   });  
 
-  /* headtoheadDataApiAux3 = {
-    id_home: headtoheadDataApiAux2[0].id_home,
-    id_away: headtoheadDataApiAux2[0].id_away,
-    matches: matchesArray
-  } */
-
-  
-    /*  await HeadToHead.findOrCreate({ ///poner el modelo de headtohead
-      where: {
-      id: el.id,
-      id_home: el.id_home,
-      id_away: el.id_away,
-      result: actualResult,
-      score: actualScore
-      }
-     })  */
-  
   return headtoheadDataApiAux3
 }
 
@@ -255,7 +215,7 @@ router.get('/headToHeadDb/:id_home/:id_away', async (req, res, next) => {
   let idDb2 = req.params.id_away;
 
   try {
-    let J = await Headtohead.findAll({   //poner el modelo de headtohead
+    let J = await Headtohead.findAll({   
       where: {
         id_home: idDb1,
         id_away: idDb2
