@@ -37,7 +37,10 @@ router.get('/', async (req, res, next) => {
           home_team_id: el.home_team_id,
           away_team_id: el.away_team_id,
           stadium_name: el.stadium_name,
-          city: el.city
+          city: el.city,
+          profit_coef_home: 0,
+          profit_coef_draw: 0,
+          profit_coef_away: 0,
         }
       })
     });
@@ -74,6 +77,9 @@ router.get('/get', async (req, res, next) => {
         away_team: away,
         result_match: el.result_match,
         stadium_name: el.stadium_name,
+        profit_coef_home: el.profit_coef_home,
+        profit_coef_draw: el.profit_coef_draw,
+        profit_coef_away: el.profit_coef_away,
         city: el.city,
         groupId: el.groupId
       }
@@ -109,6 +115,9 @@ router.get('/:id', async (req, res, next) => {
         away_team: away,
         result_match: el.result_match,
         stadium_name: el.stadium_name,
+        profit_coef_home: el.profit_coef_home,
+        profit_coef_draw: el.profit_coef_draw,
+        profit_coef_away: el.profit_coef_away,
         city: el.city,
         groupId: el.groupId
       }

@@ -96,7 +96,7 @@ var worstTeams=[12,13,17,20,23,22,28,29,31,767,1504,1530,1569,5529];
 
  //home bestTeams
 
- if (bestTeams.includes(id1)) console.log("si")
+ /* if (bestTeams.includes(id1)) console.log("si") */
 
 if ( bestTeams.includes(id1) && bestTeams.includes(id2)){
   profitCoefHome = 1.4
@@ -171,6 +171,39 @@ router.get('/betProfit/:id_home/:id_away', async (req, res, next) => {
   catch (error) {
     next(error)
   }
+});
+
+router.get('/pushProfitsDb', async (req, res, next) => {
+
+   try { 
+
+      let allMatches = await Match.findAll() 
+
+       allMatches.map(async (el) => { 
+
+     let matchDB = await Match.findByPk(el.id) 
+
+     let currentProfit = identifyBet(el.home_team_id,el.away_team_id) 
+
+       if (el.id === matchDB.id) {  
+
+          await Match.update({
+        profit_coef_home:  currentProfit.profitCoefHome,
+        profit_coef_draw:  currentProfit.profitCoefTie, 
+        profit_coef_away:  currentProfit.profitCoefAway,
+         },  
+         {where: {
+            id: el.id,
+          }  
+          });
+      } 
+     })  
+     res.status(200).send('all profits added')
+    }  
+  
+   catch (error) {
+    next(error)
+  } 
 });
 
 module.exports = router;
