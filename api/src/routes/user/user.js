@@ -66,4 +66,22 @@ router.post('/register', async (req, res, next) => {
   }} catch(error){next(error)}
 })
 
+router.get('/userId/:id', async (req, res, next) => {
+
+  let idUser = req.params.id;
+
+  try {
+    let U = await User.findAll({
+      where: {
+        id: idUser
+      }
+    });
+
+    res.status(200).send(U)
+  }
+  catch (error) {
+    next(error)
+  }
+});
+
 module.exports = router;
