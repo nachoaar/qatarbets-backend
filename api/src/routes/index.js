@@ -11,7 +11,6 @@ const paymentRoute = require('./payments/payments');
 const router = Router();
 router.use(express.json());
 
-
 router.use('/bet', PostBet);
 router.use('/hisBets', hisBetsRoute);
 router.use('/fixture', getDates);
