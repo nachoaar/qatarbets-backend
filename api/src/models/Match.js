@@ -42,15 +42,15 @@ module.exports = (Sequelize) => {
       },
       profit_coef_home: {
         type: DataTypes.FLOAT,
-        allowNull: false
+        allowNull: true
       },
       profit_coef_draw: {
         type: DataTypes.FLOAT,
-        allowNull: false
+        allowNull: true
       },
       profit_coef_away: {
         type: DataTypes.FLOAT,
-        allowNull: false
+        allowNull: true
       },
       stadium_name: {
         type: DataTypes.STRING,
