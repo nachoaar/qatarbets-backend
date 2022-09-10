@@ -89,7 +89,7 @@ var worstTeams = [12, 13, 17, 20, 23, 22, 28, 29, 31, 767, 1504, 1530, 1569, 552
 var identifyBet = function (id1, id2) {
 
   var profitCoefHome
-  var profitCoefTie
+  var profitCoefDraw
   var profitCoefAway
 
   id1 = Number(id1)
@@ -101,17 +101,17 @@ var identifyBet = function (id1, id2) {
 
   if (bestTeams.includes(id1) && bestTeams.includes(id2)) {
     profitCoefHome = 1.4
-    profitCoefTie = 1.2
+    profitCoefDraw = 1.2
     profitCoefAway = 1.4
   }
   if (bestTeams.includes(id1) && regularTeams.includes(id2)) {
     profitCoefHome = 1.2
-    profitCoefTie = 1.3
+    profitCoefDraw = 1.3
     profitCoefAway = 1.5
   }
   if (bestTeams.includes(id1) && worstTeams.includes(id2)) {
     profitCoefHome = 1.15
-    profitCoefTie = 1.35
+    profitCoefDraw = 1.35
     profitCoefAway = 1.6
   }
 
@@ -119,17 +119,17 @@ var identifyBet = function (id1, id2) {
 
   if (regularTeams.includes(id1) && bestTeams.includes(id2)) {
     profitCoefHome = 1.5
-    profitCoefTie = 1.3
+    profitCoefDraw = 1.3
     profitCoefAway = 1.2
   }
   if (regularTeams.includes(id1) && regularTeams.includes(id2)) {
     profitCoefHome = 1.4
-    profitCoefTie = 1.2
+    profitCoefDraw = 1.2
     profitCoefAway = 1.4
   }
   if (regularTeams.includes(id1) && worstTeams.includes(id2)) {
     profitCoefHome = 1.2
-    profitCoefTie = 1.3
+    profitCoefDraw = 1.3
     profitCoefAway = 1.5
   }
 
@@ -137,23 +137,23 @@ var identifyBet = function (id1, id2) {
 
   if (worstTeams.includes(id1) && bestTeams.includes(id2)) {
     profitCoefHome = 1.6
-    profitCoefTie = 1.35
+    profitCoefDraw = 1.35
     profitCoefAway = 1.15
   }
   if (worstTeams.includes(id1) && regularTeams.includes(id2)) {
     profitCoefHome = 1.5
-    profitCoefTie = 1.3
+    profitCoefDraw = 1.3
     profitCoefAway = 1.2
   }
   if (worstTeams.includes(id1) && worstTeams.includes(id2)) {
     profitCoefHome = 1.4
-    profitCoefTie = 1.2
+    profitCoefDraw = 1.2
     profitCoefAway = 1.4
   }
 
   let betCoefobj = {
     profitCoefHome: profitCoefHome,
-    profitCoefTie: profitCoefTie,
+    profitCoefDraw: profitCoefDraw,
     profitCoefAway: profitCoefAway
   }
 
@@ -190,7 +190,7 @@ router.get('/pushProfitsDb', async (req, res, next) => {
 
         await Match.update({
           profit_coef_home: currentProfit.profitCoefHome,
-          profit_coef_draw: currentProfit.profitCoefTie,
+          profit_coef_draw: currentProfit.profitCoefDraw,
           profit_coef_away: currentProfit.profitCoefAway,
         },
           {
@@ -219,6 +219,21 @@ router.get('/calculateProfits', async (req, res, next) => {
     let matchId = Number (req.query.matchId)
     let matchWinner = req.query.matchWinner
 
+    if(matchWinner === "draw"){
+
+    await Match.update({
+      result_match: "tie"
+    },
+      {
+        where: {
+          id: matchId,
+        }
+      });
+
+    }
+
+    if(matchWinner !== "draw"){
+
     await Match.update({
       result_match: matchWinner
     },
@@ -227,6 +242,8 @@ router.get('/calculateProfits', async (req, res, next) => {
           id: matchId,
         }
       });
+
+    }  
 
     let allBets = await Bet.findAll({
       where: {
@@ -243,13 +260,38 @@ router.get('/calculateProfits', async (req, res, next) => {
       let actualCoef=-1
 
       if(matchWinner==="home") actualCoef = currentProfit.profitCoefHome
-      if(matchWinner==="tie") actualCoef = currentProfit.profitCoefTie
+      if(matchWinner==="draw") actualCoef = currentProfit.profitCoefDraw
       if(matchWinner==="away") actualCoef = currentProfit.profitCoefAway
 
        if (el.result === matchDB.result_match) { 
 
         await Bet.update({
+          expected_profit: el.money_bet*actualCoef,
           final_profit: el.money_bet*actualCoef,
+        },
+           {
+            where: {
+              id: el.id,
+            }
+          });
+       }
+       else if (el.result === "draw" && matchDB.result_match === "tie") { 
+
+        await Bet.update({
+          expected_profit: el.money_bet*actualCoef,
+          final_profit: el.money_bet*actualCoef,
+        },
+           {
+            where: {
+              id: el.id,
+            }
+          });
+       }
+       else /* (el.result !== matchDB.result_match) */ { 
+
+        await Bet.update({
+          expected_profit: el.money_bet*actualCoef,
+          final_profit: 0,
         },
            {
             where: {
