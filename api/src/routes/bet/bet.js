@@ -31,6 +31,7 @@ router.post("/newBet", async (req, res, next) => {
       },
     });
 
+
     res.status(201).send(newBet);
   } catch (error) {
     next(error);
@@ -53,7 +54,7 @@ router.get('/userBets/:id', async (req, res, next) => {
 })
 
 router.get('/allBets', async (req, res, next) => {
-  
+
   try {
     let allbets = await Bet.findAll()
     res.send(allbets)
@@ -81,83 +82,83 @@ router.get("/betId/:id", async (req, res, next) => {
 
 // in these arrays there are the id of the teams in order to identify which are que best ones, regular and worst ones
 
-var bestTeams = [1,2,6,9,10,25,1118,26];
-var regularTeams=[14,15,16,3,21,24,27,2382,2384,7];
-var worstTeams=[12,13,17,20,23,22,28,29,31,767,1504,1530,1569,5529];
+var bestTeams = [1, 2, 6, 9, 10, 25, 1118, 26];
+var regularTeams = [14, 15, 16, 3, 21, 24, 27, 2382, 2384, 7];
+var worstTeams = [12, 13, 17, 20, 23, 22, 28, 29, 31, 767, 1504, 1530, 1569, 5529];
 
- var identifyBet = function(id1,id2){
+var identifyBet = function (id1, id2) {
 
- var profitCoefHome 
- var profitCoefTie 
- var profitCoefAway
+  var profitCoefHome
+  var profitCoefTie
+  var profitCoefAway
 
- id1 = Number(id1)
- id2 = Number(id2)
+  id1 = Number(id1)
+  id2 = Number(id2)
 
- //home bestTeams
+  //home bestTeams
 
- /* if (bestTeams.includes(id1)) console.log("si") */
+  /* if (bestTeams.includes(id1)) console.log("si") */
 
-if ( bestTeams.includes(id1) && bestTeams.includes(id2)){
-  profitCoefHome = 1.4
-  profitCoefTie = 1.2
-  profitCoefAway = 1.4
+  if (bestTeams.includes(id1) && bestTeams.includes(id2)) {
+    profitCoefHome = 1.4
+    profitCoefTie = 1.2
+    profitCoefAway = 1.4
+  }
+  if (bestTeams.includes(id1) && regularTeams.includes(id2)) {
+    profitCoefHome = 1.2
+    profitCoefTie = 1.3
+    profitCoefAway = 1.5
+  }
+  if (bestTeams.includes(id1) && worstTeams.includes(id2)) {
+    profitCoefHome = 1.15
+    profitCoefTie = 1.35
+    profitCoefAway = 1.6
+  }
+
+  //home RegularTeams 
+
+  if (regularTeams.includes(id1) && bestTeams.includes(id2)) {
+    profitCoefHome = 1.5
+    profitCoefTie = 1.3
+    profitCoefAway = 1.2
+  }
+  if (regularTeams.includes(id1) && regularTeams.includes(id2)) {
+    profitCoefHome = 1.4
+    profitCoefTie = 1.2
+    profitCoefAway = 1.4
+  }
+  if (regularTeams.includes(id1) && worstTeams.includes(id2)) {
+    profitCoefHome = 1.2
+    profitCoefTie = 1.3
+    profitCoefAway = 1.5
+  }
+
+  //home worstTeams 
+
+  if (worstTeams.includes(id1) && bestTeams.includes(id2)) {
+    profitCoefHome = 1.6
+    profitCoefTie = 1.35
+    profitCoefAway = 1.15
+  }
+  if (worstTeams.includes(id1) && regularTeams.includes(id2)) {
+    profitCoefHome = 1.5
+    profitCoefTie = 1.3
+    profitCoefAway = 1.2
+  }
+  if (worstTeams.includes(id1) && worstTeams.includes(id2)) {
+    profitCoefHome = 1.4
+    profitCoefTie = 1.2
+    profitCoefAway = 1.4
+  }
+
+  let betCoefobj = {
+    profitCoefHome: profitCoefHome,
+    profitCoefTie: profitCoefTie,
+    profitCoefAway: profitCoefAway
+  }
+
+  return betCoefobj
 }
-if (bestTeams.includes(id1) && regularTeams.includes(id2)){
-  profitCoefHome = 1.2
-  profitCoefTie = 1.3
-  profitCoefAway = 1.5
-} 
-if (bestTeams.includes(id1) && worstTeams.includes(id2)){
-  profitCoefHome = 1.15
-  profitCoefTie = 1.35
-  profitCoefAway = 1.6
-}
-
-//home RegularTeams 
-
-if (regularTeams.includes(id1) && bestTeams.includes(id2)){
-  profitCoefHome = 1.5
-  profitCoefTie = 1.3
-  profitCoefAway = 1.2
-}
-if (regularTeams.includes(id1) && regularTeams.includes(id2)){
-  profitCoefHome = 1.4
-  profitCoefTie = 1.2
-  profitCoefAway = 1.4
-}
-if (regularTeams.includes(id1) && worstTeams.includes(id2)){
-  profitCoefHome = 1.2
-  profitCoefTie = 1.3
-  profitCoefAway = 1.5
-}
-
-//home worstTeams 
-
-if (worstTeams.includes(id1) && bestTeams.includes(id2)){
-  profitCoefHome = 1.6
-  profitCoefTie = 1.35
-  profitCoefAway = 1.15
-}
-if (worstTeams.includes(id1) && regularTeams.includes(id2)){
-  profitCoefHome = 1.5
-  profitCoefTie = 1.3
-  profitCoefAway = 1.2
-}
-if (worstTeams.includes(id1) && worstTeams.includes(id2)){
-  profitCoefHome = 1.4
-  profitCoefTie = 1.2
-  profitCoefAway = 1.4
-} 
-
- let betCoefobj={
-  profitCoefHome : profitCoefHome,
-  profitCoefTie : profitCoefTie,
-  profitCoefAway : profitCoefAway
-}
-
-return betCoefobj
-} 
 
 router.get('/betProfit/:id_home/:id_away', async (req, res, next) => {
 
@@ -165,7 +166,7 @@ router.get('/betProfit/:id_home/:id_away', async (req, res, next) => {
   let idAway = req.params.id_away;
 
   try {
-    let Bp = identifyBet(idHome,idAway)
+    let Bp = identifyBet(idHome, idAway)
     res.status(200).send(Bp)
   }
   catch (error) {
@@ -175,35 +176,94 @@ router.get('/betProfit/:id_home/:id_away', async (req, res, next) => {
 
 router.get('/pushProfitsDb', async (req, res, next) => {
 
-   try { 
+  try {
 
-      let allMatches = await Match.findAll() 
+    let allMatches = await Match.findAll()
 
-       allMatches.map(async (el) => { 
+    allMatches.map(async (el) => {
 
-     let matchDB = await Match.findByPk(el.id) 
+      let matchDB = await Match.findByPk(el.id)
 
-     let currentProfit = identifyBet(el.home_team_id,el.away_team_id) 
+      let currentProfit = identifyBet(el.home_team_id, el.away_team_id)
 
-       if (el.id === matchDB.id) {  
+      if (el.id === matchDB.id) {
 
-          await Match.update({
-        profit_coef_home:  currentProfit.profitCoefHome,
-        profit_coef_draw:  currentProfit.profitCoefTie, 
-        profit_coef_away:  currentProfit.profitCoefAway,
-         },  
-         {where: {
-            id: el.id,
-          }  
+        await Match.update({
+          profit_coef_home: currentProfit.profitCoefHome,
+          profit_coef_draw: currentProfit.profitCoefTie,
+          profit_coef_away: currentProfit.profitCoefAway,
+        },
+          {
+            where: {
+              id: el.id,
+            }
           });
-      } 
-     })  
-     res.status(200).send('all profits added')
-    }  
-  
-   catch (error) {
+      }
+    })
+    res.status(200).send('all profits added')
+  }
+
+  catch (error) {
     next(error)
-  } 
+  }
+});
+
+router.get('/calculateProfits', async (req, res, next) => {
+
+  try {
+
+    /* setTimeout(function(){
+      console.log("Hola Mundo");
+   },30000); */
+
+    let matchId = Number (req.query.matchId)
+    let matchWinner = req.query.matchWinner
+
+    await Match.update({
+      result_match: matchWinner
+    },
+      {
+        where: {
+          id: matchId,
+        }
+      });
+
+    let allBets = await Bet.findAll({
+      where: {
+        matchId: matchId,
+      },
+    });
+
+    allBets.map(async (el) => {
+
+      let matchDB = await Match.findByPk(matchId)
+
+      let currentProfit = identifyBet(matchDB.home_team_id, matchDB.away_team_id)
+
+      let actualCoef=-1
+
+      if(matchWinner==="home") actualCoef = currentProfit.profitCoefHome
+      if(matchWinner==="tie") actualCoef = currentProfit.profitCoefTie
+      if(matchWinner==="away") actualCoef = currentProfit.profitCoefAway
+
+       if (el.result === matchDB.result_match) { 
+
+        await Bet.update({
+          final_profit: el.money_bet*actualCoef,
+        },
+           {
+            where: {
+              id: el.id,
+            }
+          });
+       }
+    })
+    res.status(200).send('all final profits added')
+  }
+
+  catch (error) {
+    next(error)
+  }
 });
 
 module.exports = router;
