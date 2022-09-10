@@ -1,11 +1,16 @@
 require("dotenv").config();
 const { Router } = require("express");
 const { Bet, Match, User } = require("../../db.js");
+const { validateToken } = require('../user/JWT.js');
 
 const router = Router();
 
 router.post("/newBet", async (req, res, next) => {
   // el next esta para que luego se vaya al siguiente middleware, que es el control de errores que esta en app
+  const token = validateToken(req.cookies.acces_token || '');
+  if (token === '') {
+    res.json('Usuario invalido');
+  }
   try {
     var {
       fecha_hora,
@@ -14,8 +19,7 @@ router.post("/newBet", async (req, res, next) => {
       condition,
       expected_profit,
       final_profit,
-      matchId,
-      userId
+      matchId
     } = req.body;
 
     let newBet = await Bet.findOrCreate({
@@ -27,11 +31,11 @@ router.post("/newBet", async (req, res, next) => {
         expected_profit,
         final_profit,
         matchId,
-        userId
+        userId: token.id
       },
     });
 
-    res.status(201).send(newBet);
+    res.status(201).send('La apuesta se creo correctamente');
   } catch (error) {
     next(error);
   }
