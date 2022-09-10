@@ -4,6 +4,7 @@ const router = Router();
 const { User, HisBets, Bet } = require('../../db');
 const nodemailer = require("nodemailer");
 const jwt = require('jsonwebtoken');
+const { createTokens, validateToken } = require('../tokenController.js'); 
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -23,6 +24,10 @@ router.get('/', async (req, res) => {
   res.json(await User.findAll())
 })
 
+router.get('/profile', validateToken, (req, res) => {
+  res.json('profile');
+});
+
  //La ruta login con todas sus validaciones
 router.post('/login', async (req, res) => {
   const {pass, email} = req.body;
@@ -33,11 +38,25 @@ router.post('/login', async (req, res) => {
       const UserPass = UserInfo.pass;
       const UserName = UserInfo.name;
       if(!UserEmail) return res.json('Cuenta con email inexistente');
-      if(!await bcryptjs.compare(pass, UserPass)) return res.json('Contraseña incorrecta')
+      /* if(!await bcryptjs.compare(pass, UserPass)) return res.json('Contraseña incorrecta')
       else{
         req.session.name = UserName;
         res.send('Logueado correctamente como ' + UserName)
-      }
+      } */
+      bcryptjs.compare(pass, UserPass).then((match) => {
+        if (!match) {
+        res.status(400).json({ error: 'Combinacion de email y contraseña incorrecta' });
+        } else {
+          const accessToken = createTokens(UserInfo);
+
+          res.cookie('acces_token', accessToken, {
+            maxAge: 60 * 60 * 24 * 1000,
+            httpOnly: true,
+          });
+
+          res.json('LOGGED IN!');
+        }
+      })
   }catch(error){res.json('a' + error)}
 })
 
@@ -87,14 +106,15 @@ router.post('/register', async (req, res, next) => {
       html: `<b>Go to this link to verify your email</b>
       <a href=''>a</a>`, //Texto del mail
     });
-    const token = jwt.sign({id: usuario.id}, 'Toketoke', {
+    /* const token = jwt.sign({id: usuario.id}, 'Toketoke', {
       expiresIn: '24h',
     })
     res.json({
       jwt: token,
       key: passwordHash,
       message: `user created successfully, go to email ${email} for verification`
-    })
+    }) */
+    res.json('Usuario Registrado!');
   }} catch(error){next(error)}
 })
 
