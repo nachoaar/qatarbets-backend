@@ -219,9 +219,6 @@ router.get('/calculateProfits', async (req, res, next) => {
     let matchId = Number (req.query.matchId)
     let matchWinner = req.query.matchWinner
 
-    console.log(matchId)
-    console.log(matchWinner)
-
     await Match.update({
       result_match: matchWinner
     },
@@ -248,8 +245,6 @@ router.get('/calculateProfits', async (req, res, next) => {
       if(matchWinner==="home") actualCoef = currentProfit.profitCoefHome
       if(matchWinner==="tie") actualCoef = currentProfit.profitCoefTie
       if(matchWinner==="away") actualCoef = currentProfit.profitCoefAway
-
-      console.log(actualCoef)
 
        if (el.result === matchDB.result_match) { 
 
