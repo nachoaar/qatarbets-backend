@@ -1,7 +1,7 @@
 require("dotenv").config();
 const { Router } = require("express");
 const { Bet, Match, User } = require("../../db.js");
-const { validateToken } = require('../user/JWT.js');
+const { validateToken } = require('../tokenController.js');
 
 const router = Router();
 
