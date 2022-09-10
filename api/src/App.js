@@ -8,17 +8,35 @@ const { FRONT_HOST } = process.env;
 
 const server = express();
 
-server.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
-server.use(bodyParser.json({ limit: '50mb' }));
+server.use(express.urlencoded({ extended: false}));
+server.use(express.json() );
 server.use(cookieParser());
 server.use(morgan('dev'));
 server.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', `http://localhost:${FRONT_HOST}`);
+  res.header('Access-Control-Allow-Origin', `*`);
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
   next();
 });
+
+
+// Esto para poder usar codigo js en el front
+server.set('view engine', 'ejs');
+
+// invoco a bcryptjs
+const bcryptjs = require('bcryptjs');
+
+// variable de session
+const session = require('express-session');
+server.use(session({
+  secret: 'secret',
+  resave: true,
+  saveUninitialized: true
+}));
+
+//invoca al modulo de conexion a la db
+
 
 server.use('/', routes);
 

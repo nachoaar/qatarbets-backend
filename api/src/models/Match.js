@@ -1,4 +1,4 @@
-const { DataTypes, Sequelize } = require("Sequelize");
+const { DataTypes, Sequelize } = require("sequelize");
 
 module.exports = (Sequelize) => {
   Sequelize.define(
@@ -19,10 +19,20 @@ module.exports = (Sequelize) => {
       home_team_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        references: {
+          as: 'home',
+          model: 'teams',
+          key: 'id',
+        }
       },
       away_team_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        references: {
+          as: 'away',
+          model: 'teams',
+          key: 'id',
+        }
       },
       result_match: {
         type: DataTypes.ENUM({
