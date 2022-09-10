@@ -1,7 +1,32 @@
 const { Router } = require('express');
 const bcryptjs = require('bcryptjs');
 const router = Router();
+const jwt = require("jsonwebtoken");
 const { User, HisBets, Bet } = require('../../db');
+const config = require('./authConfig')
+const controller = require("./userControler")
+const authJwt = require("./middleware")
+
+router.use(function(req, res, next) {
+  res.header(
+    "Access-Control-Allow-Headers",
+    "x-access-token, Origin, Content-Type, Accept"
+  );
+  next();
+});
+
+router.get("/all", controller.allAccess);
+
+router.get("/gambler",
+  [authJwt.verifyToken],
+  controller.userBoard
+);
+
+router.get("/admin",
+  [authJwt.verifyToken, authJwt.isAdmin],
+  controller.adminBoard
+);
+
 
 router.get('/', async (req, res) => {
   res.json(await User.findAll())
@@ -11,36 +36,45 @@ router.get('/', async (req, res) => {
 router.post('/login', async (req, res) => {
   const {pass, email} = req.body;
   try{
-      if(!pass || !email) return res.json('Complete todos los parametros')
+      if(!pass || !email) return res.json({message:'Complete todos los parametros'})
       const UserInfo = await User.findOne({ where: { email: email} });
       const UserEmail = UserInfo.email;
       const UserPass = UserInfo.pass;
       const UserName = UserInfo.name;
-      if(!UserEmail) return res.json('Cuenta con email inexistente');
-      if(!await bcryptjs.compare(pass, UserPass)) return res.json('Contraseña incorrecta')
+      if(!UserEmail) return res.json({message:'Cuenta con email inexistente'});
+      if(!await bcryptjs.compare(pass, UserPass)) return res.json({accessToken: null, message:'Contraseña incorrecta'})
       else{
-        req.session.name = UserName;
-        res.send('Logueado correctamente como ' + UserName)
+        var token = jwt.sign({ id: UserInfo.id }, config.secret, {
+          expiresIn: 86400
+        })
+        res.status(200).send({
+          id: UserInfo.id,
+          username: UserInfo.email,
+          rol: UserInfo.rol,
+          accessToken: token
+        })
       }
   }catch(error){res.json('a' + error)}
 })
+
+
 
 //ruta register con las validaciones y relaciones
 router.post('/register', async (req, res, next) => {
   const { name, age, pass, email, avatar, rol} = req.body;
   try{
    //valiaciones del register para que hayan datos
-  if (!name) return res.json("the name is required" );
-  if(!pass) return res.json("the password is required" );
-  if(!email) return res.json("the email is required");
-  if(!age) return res.json("the age is required");
-  if(age < 18) return res.json("Minors not allowed");
-  if (pass.length < 8) return res.json("the password must have a minimun of 8 characters");
+  if (!name) return res.json({message:"el nombre es requerido"});
+  if(!pass) return res.json({message:"la contraseña es requerida"});
+  if(!email) return res.json({message: "el correo es rquerido"});
+  if(!age) return res.json({message: "la edad es requerida"});
+  if(age < 18) return res.json({message:"No se permiten menores de edad"});
+  if (pass.length < 8) return res.json({message:"la contraseña debe tener un mínimo de 8 caracteres"});
    //validacion para que no se repitan datos en db
   const NameVal = await User.findOne({ where: { name: name } });
-  if(NameVal) return res.json('existing username and email')
+  if(NameVal) return res.json({message:'correo y nombre invalidos'})
   const EmailVal = await User.findOne({ where: { email: email} });
-  if(EmailVal) return res.json('existing username and email')
+  if(EmailVal) return res.json({message:'correo y nombre invalidos'})
     //hago una variable llamada passwordHash la cual me encripta la pass
     let passwordHash = await bcryptjs.hash(pass, 8);
    //validacion de si existen los datos, que cree al usuario
@@ -60,8 +94,7 @@ router.post('/register', async (req, res, next) => {
     // await usuario.addHisBets(UserBets);
     await usuario
     res.json({
-      key: passwordHash,
-      message: `user created successfully, go to email ${email} for verification`
+      message: `usuario creado con exito`
     })
   }} catch(error){next(error)}
 })
