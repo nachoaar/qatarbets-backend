@@ -54,7 +54,10 @@ router.post('/login', async (req, res) => {
             httpOnly: true,
           });
 
-          res.json('LOGGED IN!');
+          res.json({
+            avatar: UserInfo.avatar,
+            name: UserInfo.name
+          });
         }
       })
   }catch(error){res.json('a' + error)}
@@ -118,14 +121,17 @@ router.post('/register', async (req, res, next) => {
   }} catch(error){next(error)}
 })
 
-router.get('/userId/:id', async (req, res, next) => {
+router.get('/userId', async (req, res, next) => {
 
-  let idUser = req.params.id;
+  const token = validateToken(req.cookies.acces_token || '');
+  if (token === '') {
+    res.json('Usuario invalido');
+  }
 
   try {
     let U = await User.findAll({
       where: {
-        id: idUser
+        id: token.id
       }
     });
 
