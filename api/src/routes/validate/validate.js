@@ -1,5 +1,5 @@
 const express = require('express');
-const { destroyToken } = require('../tokenController');
+const { validateToken } = require('../tokenController');
 
 const router = express()
 
@@ -7,12 +7,28 @@ router.get('/', (req, res, next) => {
   try {
     const token = req.cookies.acces_token || '';
     if (token) {
-      res.json('todo bien aca')
+      res.json(true)
     }else {
-      res.json('todo mal aca')
+      res.json(false)
+    }
+  } catch (error) {    
+    res.status(400).json({ error: error.message })
+  }
+})
+
+router.get('/rol', (req, res, next) => {
+  const token = validateToken(req.cookies.acces_token || '');
+  if (token === '') {
+    res.json('Usuario invalido');
+  }
+  try {
+    if (token.rol === 'admin') {
+      return res.json(true);
+    }else {
+      return res.json(false)
     }
   } catch (error) {
-    res.json('sigue todo mal')
+    res.status(400).json({ error: error.message })
   }
 })
 
