@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const { User, HisBets, Bet } = require('../../db');
 const config = require('./authConfig')
 const controller = require("./userControler")
-const authJwt = require("./middleware")
+const authJwt = require("./middleware/authJwt")
 
 router.use(function(req, res, next) {
   res.header(
@@ -49,7 +49,8 @@ router.post('/login', async (req, res) => {
         })
         res.status(200).send({
           id: UserInfo.id,
-          username: UserInfo.email,
+          username: UserInfo.name,
+          email: UserInfo.email,
           rol: UserInfo.rol,
           accessToken: token
         })

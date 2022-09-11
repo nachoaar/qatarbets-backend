@@ -59,7 +59,7 @@ router.get('/get', async (req, res, next) => {
         on: {
           'id': { [Op.eq]: { [Op.col]: 'matches.home_team_id' } }
         },
-        
+
       }, */
       raw: true,
     });
@@ -168,7 +168,7 @@ const headtoheadDataApi = async function (id1, id2) {
   });
 
   headtoheadDataApiAux3 = headtoheadDataApiAux2.map((el) => {
-     
+
     let actualResult="";
     if (el.draw === true){
       actualResult="tie";
@@ -197,7 +197,7 @@ const headtoheadDataApi = async function (id1, id2) {
       score: el.score
      }
     })
-  });  
+  });
 
   return headtoheadDataApiAux3
 }
@@ -207,8 +207,6 @@ router.get('/headToHeadApi/:id_home/:id_away', async (req, res, next) => {
   let idApi1 = req.params.id_home;
   let idApi2 = req.params.id_away;
 
-  console.log('hola')
-  
   try {
     let x = await headtoheadDataApi(idApi1, idApi2)
     res.status(200).send(x)
@@ -224,7 +222,7 @@ router.get('/headToHeadDb/:id_home/:id_away', async (req, res, next) => {
   let idDb2 = req.params.id_away;
 
   try {
-    let J = await Headtohead.findAll({   
+    let J = await Headtohead.findAll({
       where: {
         id_home: idDb1,
         id_away: idDb2
