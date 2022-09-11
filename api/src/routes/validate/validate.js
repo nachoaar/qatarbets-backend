@@ -1,4 +1,5 @@
 const express = require('express');
+const { destroyToken } = require('../tokenController');
 
 const router = express()
 
@@ -12,6 +13,18 @@ router.get('/', (req, res, next) => {
     }
   } catch (error) {
     res.json('sigue todo mal')
+  }
+})
+
+router.get('/logout', (req, res, next) => {
+  try {
+    res.cookie('acces_token', '', {
+      maxAge: 1,
+      httpOnly: true,
+    });
+    res.send('Listo')
+  } catch (error) {
+    res.status(400).json({ error: error.message })
   }
 })
 
