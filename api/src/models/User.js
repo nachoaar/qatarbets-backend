@@ -32,6 +32,11 @@ module.exports = (sequelize) => {
         allowNull: false,
         defaultValue: false
       },
+      onlineToken: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: "offline"
+      },
       avatar: {
         type: DataTypes.STRING,
         allowNull: false,

@@ -4,6 +4,8 @@ const router = Router();
 const { User, HisBets, Bet } = require('../../db');
 const nodemailer = require("nodemailer");
 const jwt = require('jsonwebtoken');
+const { TOKEN_KEY } = process.env;
+
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -19,12 +21,24 @@ transporter.verify().then(() => {
   console.log('Listo para enviar emails')
 });
 
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers['authorization']
+  const token = authHeader
+  if(token === null) return res.json("No tiene autorización")
+  jwt.verify(token, TOKEN_KEY, (err, email) => {
+    if(err) return res.json('token invalido');
+    console.log(email)
+    req.email = email
+    next();
+  })
+}
+
 router.get('/', async (req, res) => {
   res.json(await User.findAll())
 })
 
  //La ruta login con todas sus validaciones
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res, next) => {
   const {pass, email} = req.body;
   try{
       if(!pass || !email) return res.json('Complete todos los parametros')
@@ -34,11 +48,41 @@ router.post('/login', async (req, res) => {
       const UserName = UserInfo.name;
       if(!UserEmail) return res.json('Cuenta con email inexistente');
       if(!await bcryptjs.compare(pass, UserPass)) return res.json('Contraseña incorrecta')
-      else{
-        req.session.name = UserName;
-        res.send('Logueado correctamente como ' + UserName)
-      }
-  }catch(error){res.json('a' + error)}
+
+      const token = jwt.sign({id: UserInfo.id}, TOKEN_KEY, {
+        expiresIn: '24h',
+      })
+      await UserInfo.update({onlineToken: token}, {where: { onlineToken : "offline"} });
+
+        res.send({
+          token: token,
+          id: UserInfo.id,
+          message:'Logueado correctamente como ' + UserName,})
+
+  }catch(error){
+    next(error)
+  }
+})
+
+// router.get('/userSessionInfo', verifyToken ,async (req, res, next) => {
+//   console.log( 'este es el token ' +)
+//   if(verifyToken) {
+//     const userinfo = await User.findOne({where : { onlineToken : }});
+//     return res.json(userinfo)
+//   }
+//   else return res.json('no se encontro al usuario');
+// })
+
+router.put('/logout', async (req, res, next) => {
+  const onlineToke = req.headers['online']
+  try{
+      const user = await User.findOne({where : { onlineToken : onlineToke }});
+      const userOldToken = user.onlineToken;
+      await user.update({onlineToken: "offline"}, {where: { onlineToken : userOldToken }})
+      res.json('Deslogueado correctamente')
+  }catch(error){
+    next(error)
+  }
 })
 
 //ruta register con las validaciones y relaciones
@@ -87,11 +131,10 @@ router.post('/register', async (req, res, next) => {
       html: `<b>Go to this link to verify your email</b>
       <a href=''>a</a>`, //Texto del mail
     });
-    const token = jwt.sign({id: usuario.id}, 'Toketoke', {
+    const token = jwt.sign({id: usuario.id}, TOKEN_KEY, {
       expiresIn: '24h',
     })
     res.json({
-      jwt: token,
       key: passwordHash,
       message: `user created successfully, go to email ${email} for verification`
     })
@@ -99,7 +142,7 @@ router.post('/register', async (req, res, next) => {
 })
 
 router.get('/userId/:id', async (req, res, next) => {
-
+// 
   let idUser = req.params.id;
 
   try {
@@ -115,7 +158,7 @@ router.get('/userId/:id', async (req, res, next) => {
     next(error)
   }
 });
-
+// 
 router.put('/userForgottenPass', async (req, res, next) => {
   const { email } = req.body;
   try{
@@ -123,7 +166,7 @@ router.put('/userForgottenPass', async (req, res, next) => {
     const EmailVal = await User.findOne({ where: { email: email } });
     if(!EmailVal) res.json('nonexistent email');
 
-    const token = jwt.sign({id: EmailVal.id}, 'Toketoke', {
+    const token = jwt.sign({id: EmailVal.id}, TOKEN_KEY, {
       expiresIn: '10m',
     })
     const LinkPass = `localhost:3001/user/newPass/${token}`;
@@ -152,7 +195,6 @@ router.put('/newPass', async (req, res, next) => {
     res.json('Completa todos los campos')
   }
   if (newPass.length < 8) return res.json("the password must have a minimun of 8 characters");
-  const jwtPayload = jwt.verify(resetToken, 'Toketoke');
   const user = await User.findOne({where: { resetToken: resetToken }})
   const UserOldPass = user.pass
   let passwordHash = await bcryptjs.hash(newPass, 8);

@@ -1,18 +1,10 @@
 
 //Variables Mati B
 
-<<<<<<< HEAD
 // const DB_USER="postgres";
 // const DB_PASSWORD=2002;
 // const DB_HOST="localhost";
 const API_KEY="24a8ce846af0f2ea149d31a7d48f829b";  
- 
-=======
-    const DB_USER="postgres";
-const DB_PASSWORD=2002;
-const DB_HOST="localhost";
-const API_KEY="24a8ce846af0f2ea149d31a7d48f829b";   
->>>>>>> 14cb2b6f7ca0450cd5ea710f420106c2604c85fd
 
  
 //variables MatiasM
