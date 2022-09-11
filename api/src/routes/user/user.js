@@ -104,7 +104,7 @@ router.post('/register', async (req, res, next) => {
       to: email, //Receptor
       subject: "Mail Verification", //Asunto
       html: `<b>Go to this link to verify your email</b>
-      <a href=''>a</a>`, //Texto del mail
+      <a href='https://www.youtube.com/watch?v=ffHN6_8HDuI'>link</a>`, //Texto del mail
     });
     /* const token = jwt.sign({id: usuario.id}, 'Toketoke', {
       expiresIn: '24h',
