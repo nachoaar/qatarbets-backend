@@ -105,7 +105,7 @@ router.post('/register', async (req, res, next) => {
       to: email, //Receptor
       subject: "Mail Verification", //Asunto
       html: `<b>Verify your email in this </b>
-      <a href='http://localhost:3001/validate/verify/${EmailVerify}'>link</a>`, //Texto del mail
+      <a href=' https://qatarbets-backend-production-ab54.up.railway.app/validate/verify/${EmailVerify}'>link</a>`, //Texto del mail
     });
 
     res.json('Usuario registrado, confirme su cuenta en el email enviado');
@@ -147,7 +147,7 @@ router.post('/userForgottenPass', async (req, res, next) => {
       to: email, //Receptor
       subject: "Forgotten Password", //Asunto
       html: `<b>Go to this link to get a new password</b>
-      <a href="http://localhost:3001/validate/changePass/${token}">Change your password</a>` //Texto del mail
+      <a href=" https://qatarbets-backend-production-ab54.up.railway.app/validate/changePass/${token}">Change your password</a>` //Texto del mail
     });
     res.json(`Mail de recuperacion enviado a ${email}`)
   }
