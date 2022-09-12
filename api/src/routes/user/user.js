@@ -6,7 +6,7 @@ const nodemailer = require("nodemailer");
 const jwt = require('jsonwebtoken');
 const { createTokens, validateToken } = require('../tokenController.js'); 
 
-const transporter = nodemailer.createTransport({
+ const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
   secure: true, // true for 465, false for other ports
@@ -14,7 +14,12 @@ const transporter = nodemailer.createTransport({
     user: 'QatarBets2022@gmail.com', // generated ethereal user
     pass: 'pcuclpxdckaayvbw', // generated ethereal password
   },
-});
+  // habilitar la siguiente linea de codigo para que funcione el back en local host
+ /*   tls: {
+    // do not fail on invalid certs
+    rejectUnauthorized: false
+ },  */
+});  
 
 transporter.verify().then(() => {
   console.log('Listo para enviar emails')
