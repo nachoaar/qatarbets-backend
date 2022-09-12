@@ -28,6 +28,6 @@ const validateToken = (accessToken) => {
 }
 
 module.exports = {
-  createTokens,
-  validateToken,
+   createTokens,
+  validateToken, 
 };
