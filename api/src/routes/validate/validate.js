@@ -1,5 +1,7 @@
 const express = require('express');
-const { destroyToken } = require('../tokenController');
+const { validateToken } = require('../tokenController');
+const { User } = require('../../db');
+const bcryptjs = require('bcryptjs');
 
 const router = express()
 
@@ -27,5 +29,66 @@ router.get('/logout', (req, res, next) => {
     res.status(400).json({ error: error.message })
   }
 })
+
+router.get('/verify/:token', async (req, res, next) => {
+  const { token } = req.params;
+  try{
+    const datos = await validateToken(token)
+    console.log(datos.email);
+    if(datos === null){
+      return res.json('Token invalido o inexistente')
+    }
+    const { email } = datos;
+
+    const user = await User.findOne({ email }) || null;
+
+    if(user === null){
+      return res.json('Usuario inexistente')
+    }
+    
+    await user.update({emailvalidate: true}, { where: { emailvalidate : false} });
+
+    res.json('Estas validado pa')
+    
+
+  } catch(error) {
+    next(error)
+  }
+})
+
+router.post('/changePass/:token', async (req, res, next) => {
+  const { token } = req.params;
+  const { newPass } = req.body;
+  try{
+    if(!newPass){
+      res.json('Ingrese su nueva contraseña')
+      console.log(newPass)
+    }
+
+
+    const datos = await validateToken(token)
+    if(datos === null){
+      return res.json('Token invalido o inexistente')
+    }
+    const { email } = datos;
+    
+    const user = await User.findOne({where: { email: email }})
+    const UserOldPass = user.pass
+    let passwordHash = await bcryptjs.hash(newPass, 8);
+    await user.update({pass: passwordHash }, {where: { pass : UserOldPass }});
+
+    res.json('contraseña cambiada corrrectamente')
+    
+  
+
+    res.json('Estas validado pa')
+    
+
+  } catch(error) {
+    next(error)
+  }
+})
+
+
 
 module.exports = router;

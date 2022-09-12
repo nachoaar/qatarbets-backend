@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const bcryptjs = require('bcryptjs');
 const router = Router();
-const { User, HisBets, Bet } = require('../../db');
+const { User } = require('../../db');
 const nodemailer = require("nodemailer");
 const jwt = require('jsonwebtoken');
 const { createTokens, validateToken } = require('../tokenController.js'); 
@@ -10,6 +10,9 @@ const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
   secure: true, // true for 465, false for other ports
+  tls: {
+    rejectUnauthorized: false
+  },
   auth: {
     user: 'QatarBets2022@gmail.com', // generated ethereal user
     pass: 'pcuclpxdckaayvbw', // generated ethereal password
@@ -92,29 +95,20 @@ router.post('/register', async (req, res, next) => {
       rol: rol,
     })
 
+    const EmailVerify = jwt.sign({email: email, name: name }, "jwtsecretplschange", {
+      expiresIn: '1h',
+    })
 
-    //defino Bet
-    // const UserBets = await Bets.findOrCreate({ where : {id_user: name}})
-    //creo al usuario :D
-    // await usuario.addHisBets(UserBets);
-    await usuario
     //Hago en envío del mail de verificación
     await transporter.sendMail({
       from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
       to: email, //Receptor
       subject: "Mail Verification", //Asunto
-      html: `<b>Go to this link to verify your email</b>
-      <a href='https://www.youtube.com/watch?v=ffHN6_8HDuI'>link</a>`, //Texto del mail
+      html: `<b>Verify your email in this </b>
+      <a href='http://localhost:3001/validate/verify/${EmailVerify}'>link</a>`, //Texto del mail
     });
-    /* const token = jwt.sign({id: usuario.id}, 'Toketoke', {
-      expiresIn: '24h',
-    })
-    res.json({
-      jwt: token,
-      key: passwordHash,
-      message: `user created successfully, go to email ${email} for verification`
-    }) */
-    res.json('Usuario Registrado!');
+
+    res.json('Usuario registrado, confirme su cuenta en el email enviado');
   }} catch(error){next(error)}
 })
 
@@ -136,18 +130,16 @@ router.get('/userId/:id', async (req, res, next) => {
   }
 });
 
-router.put('/userForgottenPass', async (req, res, next) => {
+router.post('/userForgottenPass', async (req, res, next) => {
   const { email } = req.body;
   try{
     if(!email) res.json("the email is required")
     const EmailVal = await User.findOne({ where: { email: email } });
     if(!EmailVal) res.json('nonexistent email');
 
-    const token = jwt.sign({id: EmailVal.id}, 'Toketoke', {
-      expiresIn: '10m',
+    const token = jwt.sign({email: EmailVal.email}, "jwtsecretplschange", {
+      expiresIn: '15m',
     })
-    const LinkPass = `localhost:3001/user/newPass/${token}`;
-    await EmailVal.update({resetToken: token}, {where: { resetToken : null} });
 
     //Envio del mail para recuperacion de contraseña
     await transporter.sendMail({
@@ -155,7 +147,7 @@ router.put('/userForgottenPass', async (req, res, next) => {
       to: email, //Receptor
       subject: "Forgotten Password", //Asunto
       html: `<b>Go to this link to get a new password</b>
-      <a href="${LinkPass}">${LinkPass}</a>` //Texto del mail
+      <a href="http://localhost:3001/validate/changePass/${token}">Change your password</a>` //Texto del mail
     });
     res.json(`Mail de recuperacion enviado a ${email}`)
   }
@@ -164,29 +156,25 @@ router.put('/userForgottenPass', async (req, res, next) => {
   }
 });
 
-router.put('/newPass', async (req, res, next) => {
-  const { newPass } = req.body;
-  const resetToken = req.headers['reset']
-  try{
-  if(!resetToken || !newPass){
-    res.json('Completa todos los campos')
-  }
-  if (newPass.length < 8) return res.json("the password must have a minimun of 8 characters");
-  const jwtPayload = jwt.verify(resetToken, 'Toketoke');
-  const user = await User.findOne({where: { resetToken: resetToken }})
-  const UserOldPass = user.pass
-  let passwordHash = await bcryptjs.hash(newPass, 8);
-  await user.update({pass: passwordHash }, {where: { pass : UserOldPass }});
-  await user.update({resetToken: null}, {where: { resetToken : resetToken }});
-  res.json('contraseña cambiada corrrectamente')
+// router.post('/newPass', async (req, res, next) => {
+//   const { newPass } = req.body;
+//   const resetToken = req.headers['reset']
+//   try{
+//   if(!resetToken || !newPass){
+//     res.json('Completa todos los campos')
+//   }
+//   if (newPass.length < 8) return res.json("the password must have a minimun of 8 characters");
+//   const jwtPayload = jwt.verify(resetToken, 'Toketoke');
+//   const user = await User.findOne({where: { resetToken: resetToken }})
+//   const UserOldPass = user.pass
+//   let passwordHash = await bcryptjs.hash(newPass, 8);
+//   await user.update({pass: passwordHash }, {where: { pass : UserOldPass }});
+//   await user.update({resetToken: null}, {where: { resetToken : resetToken }});
+//   res.json('contraseña cambiada corrrectamente')
   
-} catch (error) {
-  res.json(error)
-}
-});
-
-router.put('/userVerify', async (req, res, next) => {
-
-})
+// } catch (error) {
+//   res.json(error)
+// }
+// });
 
 module.exports = router;
