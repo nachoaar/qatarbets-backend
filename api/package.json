@@ -21,9 +21,11 @@
     "express-session": "^1.17.3",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
+    "nodemailer": "^6.7.8",
     "pg": "^8.8.0",
     "sequelize": "^6.21.4",
-    "sequelize-cli": "^6.4.1"
+    "sequelize-cli": "^6.4.1",
+    "stripe": "^10.7.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.19"

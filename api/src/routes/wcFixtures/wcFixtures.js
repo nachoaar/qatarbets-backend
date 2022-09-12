@@ -222,13 +222,20 @@ router.get('/headToHeadDb/:id_home/:id_away', async (req, res, next) => {
   let idDb2 = req.params.id_away;
 
   try {
-    let J = await Headtohead.findAll({
+    let j = await Headtohead.findAll({   
       where: {
         id_home: idDb1,
         id_away: idDb2
       }
     })
-    res.status(200).send(J)
+    let h = await Headtohead.findAll({   
+      where: {
+        id_home: idDb2,
+        id_away: idDb1
+      }
+    })
+    let t = j.concat(h)
+    res.status(200).send(t)
   }
   catch (error) {
     next(error)
