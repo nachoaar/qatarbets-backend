@@ -1,10 +1,13 @@
 const { sign, verify } = require("jsonwebtoken");
+const { TOKEN_SECRET } = process.env;
+
 
 const createTokens = (user) => {
   const accessToken = sign({
     name: user.name,
+    rol: user.rol,
     id: user.id,
-  }, "jwtsecretplschange");
+  }, `${TOKEN_SECRET}`);
 
   return accessToken;
 };
@@ -12,7 +15,7 @@ const createTokens = (user) => {
 const validateToken = (accessToken) => {
   
   try {
-    const validToken = verify(accessToken, "jwtsecretplschange");
+    const validToken = verify(accessToken, `${TOKEN_SECRET}`);
     if (validToken) {
       return validToken;
     } else {
@@ -25,6 +28,6 @@ const validateToken = (accessToken) => {
 }
 
 module.exports = {
-  createTokens,
-  validateToken,
+   createTokens,
+  validateToken, 
 };
