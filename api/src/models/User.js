@@ -42,6 +42,10 @@ module.exports = (sequelize) => {
         allowNull: false,
         defaultValue: false
       },
+      resetToken:{
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       rol: {
         type: DataTypes.ENUM({values: ['admin', 'gambler']}),
         allowNull: false,
