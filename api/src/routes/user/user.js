@@ -15,10 +15,10 @@ const { createTokens, validateToken } = require('../tokenController.js');
     pass: 'pcuclpxdckaayvbw', // generated ethereal password
   },
   // habilitar la siguiente linea de codigo para que funcione el back en local host
- /*   tls: {
+   /*  tls: {
     // do not fail on invalid certs
     rejectUnauthorized: false
- },  */
+  }, */  
 });  
 
 transporter.verify().then(() => {
