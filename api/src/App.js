@@ -13,7 +13,7 @@ server.use(express.json() );
 server.use(cookieParser());
 server.use(morgan('dev'));
 server.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', `*`); 
+  res.header('Access-Control-Allow-Origin', `https://qatarbets-frontend-git-develop-nachoaar.vercel.app`); 
   //const allowedOrigins = [ process.env.DEPLOY_URL, 'https://qatarbets-frontend-git-develop-nachoaar.vercel.app', 'http://localhost:3000'];
   //const origin = req.headers.origin;
   //if (allowedOrigins.includes(origin)) {
