@@ -51,14 +51,18 @@ router.get("/logout", (req, res, next) => {
 router.get('/verify/:token', async (req, res, next) => {
   const { token } = req.params;
   try{
-    const datos = await validateToken(token)
+    const datos = validateToken(token)
     console.log(datos.email);
     if(datos === null){
       return res.json('Token invalido o inexistente')
     }
     const { email } = datos;
 
-    const user = await User.findOne({ email }) || null;
+    const user = await User.findOne({
+      where: {
+        email: email
+      }
+    }) || null;
 
     if(user === null){
       return res.json('Usuario inexistente')
