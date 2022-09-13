@@ -19,11 +19,13 @@ const transporter = nodemailer.createTransport({
     pass: "pcuclpxdckaayvbw", // generated ethereal password
   },
   // habilitar la siguiente linea de codigo para que funcione el back en local host
+
   /*   tls: {
     // do not fail on invalid certs
     rejectUnauthorized: false
  },  */
 });
+
 
 transporter.verify().then(() => {
   console.log("Listo para enviar emails");

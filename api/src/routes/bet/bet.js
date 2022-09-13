@@ -1,6 +1,6 @@
 require("dotenv").config();
 const { Router } = require("express");
-const { Bet, Match, User } = require("../../db.js");
+const { Bet, Match, User, Team } = require("../../db.js");
 const { validateToken } = require('../tokenController.js');
 
 const router = Router();
@@ -372,6 +372,20 @@ router.get('/bets5', async (req, res, next) => {
       await sliceArray.map((el2)=>{
       if (el2.matchId===el1.id) auxMatches.push(el1)
     })})
+
+    for (let g = 0; g < auxMatches.length; g++){
+     let homeName = await Team.findByPk(auxMatches[g].home_team_id,{
+      attributes: ['name']
+     }) 
+     let awayName = await Team.findByPk(auxMatches[g].away_team_id,{
+      attributes: ['name']
+     })
+     auxMatches[g] = {
+      matchData: auxMatches[g],
+      homeName: homeName,
+      awayName: awayName 
+    }   
+    }
 
     res.status(200).send(auxMatches)
   }
