@@ -1,7 +1,7 @@
 require("dotenv").config();
 const {Router} = require('express');
 const Stripe = require('stripe');
-const stripe = new Stripe('sk_test_51LfBfGH8GSChtV84Al5MVXVlaqwTJi8mnNXKxrfkPZ1XcBg4wnYvrQqGSdMJZiFCzead3KQ7XAve9r1KHWPcfN2h00gaHi5Soe');
+const stripe = new Stripe(`${process.env.STRIPE_SECRET}`);
 const nodemailer = require('nodemailer');
 const { validateToken } = require("../tokenController");
 
