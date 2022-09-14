@@ -4,44 +4,66 @@ const { User } = require('../../db');
 const bcryptjs = require('bcryptjs');
 const { where } = require('sequelize/types');
 
-const router = express()
+const router = express();
 
-router.get('/', (req, res, next) => {
+router.get("/", (req, res, next) => {
   try {
-    const token = req.cookies.acces_token || '';
+    const token = req.cookies.acces_token || "";
     if (token) {
-      res.json('todo bien aca')
-    }else {
-      res.json('todo mal aca')
+      res.json(true);
+    } else {
+      res.json(false);
     }
   } catch (error) {
-    res.json('sigue todo mal')
+    res.status(400).json({ error: error.message });
   }
-})
+});
 
-router.get('/logout', (req, res, next) => {
+router.get("/rol", (req, res, next) => {
+  const token = validateToken(req.cookies.acces_token || "");
+  if (token === "") {
+    res.json("Usuario invalido");
+  }
   try {
-    res.cookie('acces_token', '', {
+    if (token.rol === "admin") {
+      return res.json(true);
+    } else {
+      return res.json(false);
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+router.get("/logout", (req, res, next) => {
+  try {
+    res.cookie("acces_token", "", {
       maxAge: 1,
+      sameSite: "none",
+      secure: true,
       httpOnly: true,
     });
-    res.send('Listo')
+    res.send("Listo");
   } catch (error) {
-    res.status(400).json({ error: error.message })
+    res.status(400).json({ error: error.message });
   }
-})
+});
 
 router.get('/verify/:token', async (req, res, next) => {
   const { token } = req.params;
   try{
-    const datos = await validateToken(token)
+    const datos = validateToken(token)
     console.log(datos.email);
     if(datos === null){
       return res.json('Token invalido o inexistente')
     }
     const { email } = datos;
 
-    const user = await User.findOne({where :{ email }}) || null;
+    const user = await User.findOne({
+      where: {
+        email: email
+      }
+    }) || null;
 
     if(user === null){
       return res.json('Usuario inexistente')

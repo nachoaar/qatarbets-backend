@@ -1,10 +1,11 @@
-const { Router } = require('express');
-const bcryptjs = require('bcryptjs');
+const { Router } = require("express");
+const bcryptjs = require("bcryptjs");
 const router = Router();
 const { User } = require('../../db');
 const nodemailer = require("nodemailer");
-const jwt = require('jsonwebtoken');
-const { createTokens, validateToken } = require('../tokenController.js'); 
+const jwt = require("jsonwebtoken");
+const { createTokens, validateToken } = require("../tokenController.js");
+const { TOKEN_SECRET } = process.env;
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -14,71 +15,86 @@ const transporter = nodemailer.createTransport({
     rejectUnauthorized: false
   },
   auth: {
-    user: 'QatarBets2022@gmail.com', // generated ethereal user
-    pass: 'pcuclpxdckaayvbw', // generated ethereal password
+    user: "QatarBets2022@gmail.com", // generated ethereal user
+    pass: "pcuclpxdckaayvbw", // generated ethereal password
   },
+  // habilitar la siguiente linea de codigo para que funcione el back en local host
+
+  /*   tls: {
+    // do not fail on invalid certs
+    rejectUnauthorized: false
+ },  */
 });
+
 
 transporter.verify().then(() => {
-  console.log('Listo para enviar emails')
+  console.log("Listo para enviar emails");
 });
 
-router.get('/', async (req, res) => {
-  res.json(await User.findAll())
-})
-
-router.get('/profile', validateToken, (req, res) => {
-  res.json('profile');
+router.get("/", async (req, res) => {
+  res.json(await User.findAll());
 });
 
- //La ruta login con todas sus validaciones
-router.post('/login', async (req, res) => {
-  const {pass, email} = req.body;
-  try{
-      if(!pass || !email) return res.json('Complete todos los parametros')
-      const UserInfo = await User.findOne({ where: { email: email} });
-      const UserEmail = UserInfo.email;
-      const UserPass = UserInfo.pass;
-      const UserName = UserInfo.name;
-      if(!UserEmail) return res.json('Cuenta con email inexistente');
-      /* if(!await bcryptjs.compare(pass, UserPass)) return res.json('Contraseña incorrecta')
+router.get("/profile", validateToken, (req, res) => {
+  res.json("profile");
+});
+
+//La ruta login con todas sus validaciones
+router.post("/login", async (req, res) => {
+  const { pass, email } = req.body;
+  try {
+    if (!pass || !email) return res.json({ error: "Complete todos los parametros"});
+    const UserInfo = await User.findOne({ where: { email: email } })
+    if (!UserInfo) return res.json({ error: "Combinacion de email y contraseña incorrecta" });
+    const UserPass = UserInfo.pass;
+    // const UserEmail = UserInfo.email;
+    // const UserName = UserInfo.name;
+    /* if(!await bcryptjs.compare(pass, UserPass)) return res.json('Contraseña incorrecta')
       else{
         req.session.name = UserName;
         res.send('Logueado correctamente como ' + UserName)
       } */
-      bcryptjs.compare(pass, UserPass).then((match) => {
-        if (!match) {
-        res.status(400).json({ error: 'Combinacion de email y contraseña incorrecta' });
-        } else {
-          const accessToken = createTokens(UserInfo);
+    bcryptjs.compare(pass, UserPass).then((match) => {
+      if (match === false) {
+        res.json({ error: "Combinacion de email y contraseña incorrecta" });
+      } else {
+        const accessToken = createTokens(UserInfo);
 
-          res.cookie('acces_token', accessToken, {
-            maxAge: 60 * 60 * 24 * 1000,
-            httpOnly: true,
-          });
+        res.cookie("acces_token", accessToken, {
+          maxAge: 60 * 60 * 24 * 1000,
+          sameSite: "none",
+          secure: true,
+          httpOnly: true,
+        });
 
-          res.json('LOGGED IN!');
-        }
-      })
-  }catch(error){res.json('a' + error)}
-})
+        res.json({
+          avatar: UserInfo.avatar,
+          name: UserInfo.name,
+        });
+      }
+    });
+  } catch (error) {
+    res.json("a" + error);
+  }
+});
 
 //ruta register con las validaciones y relaciones
-router.post('/register', async (req, res, next) => {
-  const { name, age, pass, email, avatar, rol} = req.body;
-  try{
+router.post("/register", async (req, res, next) => {
+  const { name, age, pass, email, avatar, rol } = req.body;
+  try {
+    //valiaciones del register para que hayan datos
+    if (!name) return res.json("Se requiere un nombre!");
+    if (!pass) return res.json("Se requiere una contraseña!");
+    if (!email) return res.json("Se requiere un mail!");
+    if (!age) return res.json("Se requiere una edad!");
+    if (isNaN(Number(age))) return res.json("La edad debe ser un número!");
+    if (age < 18) return res.json("Se debe ser mayor de edad!");
+    if (pass.length < 8)
+      return res.json("La contraseña tiene que tener un minimo de 8 caracteres!");
 
-   //valiaciones del register para que hayan datos
-  if (!name) return res.json("the name is required" );
-  if(!pass) return res.json("the password is required" );
-  if(!email) return res.json("the email is required");
-  if(!age) return res.json("the age is required");
-  if(age < 18) return res.json("Minors not allowed");
-  if (pass.length < 8) return res.json("the password must have a minimun of 8 characters");
-
-   //validacion para que no se repitan datos en db
-  const EmailVal = await User.findOne({ where: { email: email} });
-  if(EmailVal) return res.json('existing email')
+    //validacion para que no se repitan datos en db
+    const EmailVal = await User.findOne({ where: { email: email } });
+    if (EmailVal) return res.json("El mail ya existe!");
 
     //hago una variable llamada passwordHash la cual me encripta la pass
     let passwordHash = await bcryptjs.hash(pass, 8);
@@ -95,7 +111,7 @@ router.post('/register', async (req, res, next) => {
       rol: rol,
     })
 
-    const EmailVerify = jwt.sign({email: email, name: name }, "jwtsecretplschange", {
+    const EmailVerify = jwt.sign({email: email, name: name }, `${TOKEN_SECRET}`, {
       expiresIn: '1h',
     })
 
@@ -112,32 +128,33 @@ router.post('/register', async (req, res, next) => {
   }} catch(error){next(error)}
 })
 
-router.get('/userId/:id', async (req, res, next) => {
-
-  let idUser = req.params.id;
+router.get("/userId", async (req, res, next) => {
+  const token = validateToken(req.cookies.acces_token || "");
+  if (token === "") {
+    res.json("Usuario invalido");
+  }
 
   try {
     let U = await User.findAll({
       where: {
-        id: idUser
-      }
+        id: token.id,
+      },
     });
 
-    res.status(200).send(U)
-  }
-  catch (error) {
-    next(error)
+    res.status(200).send(U);
+  } catch (error) {
+    next(error);
   }
 });
 
 router.post('/userForgottenPass', async (req, res, next) => {
   const { email } = req.body;
-  try{
-    if(!email) res.json("the email is required")
+  try {
+    if (!email) res.json("the email is required");
     const EmailVal = await User.findOne({ where: { email: email } });
-    if(!EmailVal) res.json('nonexistent email');
+    if (!EmailVal) res.json("nonexistent email");
 
-    const token = jwt.sign({email: EmailVal.email}, "jwtsecretplschange", {
+    const token = jwt.sign({email: EmailVal.email}, `${TOKEN_SECRET}`, {
       expiresIn: '15m',
     })
 
@@ -149,10 +166,9 @@ router.post('/userForgottenPass', async (req, res, next) => {
       html: `<b>Go to this link to get a new password</b>
       <a href=" https://qatarbets-backend-production-ab54.up.railway.app/validate/changePass/${token}">Change your password</a>` //Texto del mail
     });
-    res.json(`Mail de recuperacion enviado a ${email}`)
-  }
-  catch(error){
-    next(error)
+    res.json(`Mail de recuperacion enviado a ${email}`);
+  } catch (error) {
+    next(error);
   }
 });
 

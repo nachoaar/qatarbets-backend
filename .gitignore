@@ -218,6 +218,7 @@ $RECYCLE.BIN/
 # package-lock.json
 package-lock.json
 
+# DB_variables
 /api/src/DB_variables.js
 
 # End of https://www.toptal.com/developers/gitignore/api/node,windows,linux,macos
