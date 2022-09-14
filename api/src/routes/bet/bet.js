@@ -289,7 +289,7 @@ router.get('/calculateProfits', async (req, res, next) => {
             }
           });
       }
-      else /* (el.result !== matchDB.result_match) */ {
+      else {
 
         await Bet.update({
           expected_profit: el.money_bet * actualCoef,

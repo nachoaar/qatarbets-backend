@@ -22,6 +22,10 @@ module.exports = (sequelize) => {
       coach: {
         type: DataTypes.STRING,
       },
+      group_points: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
       code: {
         type: DataTypes.STRING(3),
       },
