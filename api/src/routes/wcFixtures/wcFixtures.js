@@ -168,13 +168,13 @@ const headtoheadDataApi = async function (id1, id2) {
   });
 
   headtoheadDataApiAux3 = headtoheadDataApiAux2.map((el) => {
-     
-    let actualResult="";
-    if (el.draw === true){
-      actualResult="tie";
-    } else if (el.draw === false && el.winnerHome === true){
-      actualResult="winner_home";
-    } else {actualResult="winner_away"}
+
+    let actualResult = "";
+    if (el.draw === true) {
+      actualResult = "tie";
+    } else if (el.draw === false && el.winnerHome === true) {
+      actualResult = "winner_home";
+    } else { actualResult = "winner_away" }
 
     let actualScore = `${el.goalsHome} - ${el.goalsAway}`
 
@@ -187,17 +187,17 @@ const headtoheadDataApi = async function (id1, id2) {
     };
   });
 
-    headtoheadDataApiAux3.map(async (el) => {
-   await Headtohead.findOrCreate({
-     where: {
-      id: el.id,
-      id_home: el.id_home,
-      id_away: el.id_away,
-      result: el.result,
-      score: el.score
-     }
+  headtoheadDataApiAux3.map(async (el) => {
+    await Headtohead.findOrCreate({
+      where: {
+        id: el.id,
+        id_home: el.id_home,
+        id_away: el.id_away,
+        result: el.result,
+        score: el.score
+      }
     })
-  });  
+  });
 
   return headtoheadDataApiAux3
 }
@@ -208,7 +208,7 @@ router.get('/headToHeadApi/:id_home/:id_away', async (req, res, next) => {
   let idApi2 = req.params.id_away;
 
   console.log('hola')
-  
+
   try {
     let x = await headtoheadDataApi(idApi1, idApi2)
     res.status(200).send(x)
@@ -224,13 +224,13 @@ router.get('/headToHeadDb/:id_home/:id_away', async (req, res, next) => {
   let idDb2 = req.params.id_away;
 
   try {
-    let j = await Headtohead.findAll({   
+    let j = await Headtohead.findAll({
       where: {
         id_home: idDb1,
         id_away: idDb2
       }
     })
-    let h = await Headtohead.findAll({   
+    let h = await Headtohead.findAll({
       where: {
         id_home: idDb2,
         id_away: idDb1
@@ -238,6 +238,128 @@ router.get('/headToHeadDb/:id_home/:id_away', async (req, res, next) => {
     })
     let t = j.concat(h)
     res.status(200).send(t)
+  }
+  catch (error) {
+    next(error)
+  }
+});
+
+router.put('/matchSimulation', async (req, res, next) => {
+
+  try {
+
+    let id = Number(req.query.id)
+    let simulate = req.query.sim
+
+     let poitnsObj = {
+      win: 3,
+      draw: 1,
+      tie: 1,
+      lose: 0
+    }
+
+    function getMatchResult() {
+      function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+      }
+      let a = ["home","away","tie"]
+      let b = a[getRandomInt(3)]
+      return b
+    }
+
+    if (simulate === "simulate") {
+        
+          await Match.update({
+            result_match: getMatchResult(),
+            status: "Finished"
+          },
+            {
+              where: {
+                id: id,
+              }
+            });
+   let matchFound = await Match.findAll({where:{id:id}})   
+      res.status(200).send(matchFound)
+    }
+
+    if (simulate === "reset") {
+
+        await Match.update({
+          result_match: null,
+          status: "Not Started"
+        },
+          {
+            where: {
+              id: id,
+            }
+          });
+      res.status(200).send('match reseted')
+    } 
+  }
+  catch (error) {
+    next(error)
+  }
+});
+
+router.put('/groupsSimulation', async (req, res, next) => {
+
+  try {
+
+    let simulate = req.query.sim
+
+    console.log(simulate)
+
+     let poitnsObj = {
+      win: 3,
+      draw: 1,
+      tie: 1,
+      lose: 0
+    }
+
+    function getMatchResult() {
+      function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+      }
+      let a = ["home","away","tie"]
+      let b = a[getRandomInt(3)]
+      return b
+    }
+
+    let matchesNotUp = await Match.findAll()
+
+    if (simulate === "simulate") {
+
+      matchesNotUp.map(async (el) => {
+
+        if (!el.result_match) {
+          await Match.update({
+            result_match: getMatchResult(),
+            status: "Finished"
+          },
+            {
+              where: {
+                id: el.id,
+              }
+            });
+        }
+      })
+      res.status(200).send('all matches updated')
+    }
+    if (simulate === "reset") {
+
+      matchesNotUp.map(async (el) => {
+        await Match.update({
+          result_match: null,
+          status: "Not Started"
+        },
+          {
+            where: {
+              id: el.id,
+            }
+          });
+      })
+      res.status(200).send('all matches reseted')
+    } 
   }
   catch (error) {
     next(error)
