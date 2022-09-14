@@ -1,11 +1,16 @@
 require("dotenv").config();
 const { Router } = require("express");
-const { Bet, Match, User } = require("../../db.js");
+const { Bet, Match, User, Team } = require("../../db.js");
+const { validateToken } = require('../tokenController.js');
 
 const router = Router();
 
 router.post("/newBet", async (req, res, next) => {
   // el next esta para que luego se vaya al siguiente middleware, que es el control de errores que esta en app
+  const token = validateToken(req.cookies.acces_token || '');
+  if (token === '') {
+    res.json('Usuario invalido');
+  }
   try {
     var {
       fecha_hora,
@@ -14,8 +19,7 @@ router.post("/newBet", async (req, res, next) => {
       condition,
       expected_profit,
       final_profit,
-      matchId,
-      userId
+      matchId
     } = req.body;
 
     let newBet = await Bet.findOrCreate({
@@ -27,12 +31,10 @@ router.post("/newBet", async (req, res, next) => {
         expected_profit,
         final_profit,
         matchId,
-        userId
+        userId: token.id
       },
     });
-
-
-    res.status(201).send(newBet);
+    res.status(201).send('La apuesta se creo correctamente');
   } catch (error) {
     next(error);
   }
@@ -216,34 +218,34 @@ router.get('/calculateProfits', async (req, res, next) => {
       console.log("Hola Mundo");
    },30000); */
 
-    let matchId = Number (req.query.matchId)
+    let matchId = Number(req.query.matchId)
     let matchWinner = req.query.matchWinner
 
-    if(matchWinner === "draw"){
+    if (matchWinner === "draw") {
 
-    await Match.update({
-      result_match: "tie"
-    },
-      {
-        where: {
-          id: matchId,
-        }
-      });
+      await Match.update({
+        result_match: "tie"
+      },
+        {
+          where: {
+            id: matchId,
+          }
+        });
 
     }
 
-    if(matchWinner !== "draw"){
+    if (matchWinner !== "draw") {
 
-    await Match.update({
-      result_match: matchWinner
-    },
-      {
-        where: {
-          id: matchId,
-        }
-      });
+      await Match.update({
+        result_match: matchWinner
+      },
+        {
+          where: {
+            id: matchId,
+          }
+        });
 
-    }  
+    }
 
     let allBets = await Bet.findAll({
       where: {
@@ -257,48 +259,48 @@ router.get('/calculateProfits', async (req, res, next) => {
 
       let currentProfit = identifyBet(matchDB.home_team_id, matchDB.away_team_id)
 
-      let actualCoef=-1
+      let actualCoef = -1
 
-      if(matchWinner==="home") actualCoef = currentProfit.profitCoefHome
-      if(matchWinner==="draw") actualCoef = currentProfit.profitCoefDraw
-      if(matchWinner==="away") actualCoef = currentProfit.profitCoefAway
+      if (matchWinner === "home") actualCoef = currentProfit.profitCoefHome
+      if (matchWinner === "draw") actualCoef = currentProfit.profitCoefDraw
+      if (matchWinner === "away") actualCoef = currentProfit.profitCoefAway
 
-       if (el.result === matchDB.result_match) { 
+      if (el.result === matchDB.result_match) {
 
         await Bet.update({
-          expected_profit: el.money_bet*actualCoef,
-          final_profit: el.money_bet*actualCoef,
+          expected_profit: el.money_bet * actualCoef,
+          final_profit: el.money_bet * actualCoef,
         },
-           {
+          {
             where: {
               id: el.id,
             }
           });
-       }
-       else if (el.result === "draw" && matchDB.result_match === "tie") { 
+      }
+      else if (el.result === "draw" && matchDB.result_match === "tie") {
 
         await Bet.update({
-          expected_profit: el.money_bet*actualCoef,
-          final_profit: el.money_bet*actualCoef,
+          expected_profit: el.money_bet * actualCoef,
+          final_profit: el.money_bet * actualCoef,
         },
-           {
+          {
             where: {
               id: el.id,
             }
           });
-       }
-       else /* (el.result !== matchDB.result_match) */ { 
+      }
+      else /* (el.result !== matchDB.result_match) */ {
 
         await Bet.update({
-          expected_profit: el.money_bet*actualCoef,
+          expected_profit: el.money_bet * actualCoef,
           final_profit: 0,
         },
-           {
+          {
             where: {
               id: el.id,
             }
           });
-       }
+      }
     })
     res.status(200).send('all final profits added')
   }
@@ -307,5 +309,90 @@ router.get('/calculateProfits', async (req, res, next) => {
     next(error)
   }
 });
+
+router.get('/bets5', async (req, res, next) => {
+
+  function bubbleSort(array) {
+    
+    for (let i = 0; i < array.length - 1; i++) {                                                                                                         
+      for(let j = 0; j < array.length - 1 - i; j++){
+  
+        if(array[j].count > array[j+1].count){
+  
+        let tmp = array[j];
+        array[j]=array[j+1];
+        array[j+1] = tmp; 
+      }
+    }
+  }
+   return array;
+  }
+
+  try {
+
+    let betArray = [];
+
+    let allBets = await Bet.findAll({
+      order : [
+        ['matchId', 'ASC']
+      ],
+    });
+
+    var count = 0
+
+    function increaseCount (){
+      count++
+      return count
+    }
+    let a = allBets[0].matchId
+    let superArray=[]
+
+    await allBets.map(async (el) => {
+      
+      if (a !== el.matchId){
+        superArray.push({
+          matchId: a,
+          count: count,
+        })
+        count = 0;
+        a = el.matchId
+      }
+      betArray.push({
+        matchId: el.matchId,
+        count: increaseCount(),
+      })
+    })
+
+    let newArray = await bubbleSort(superArray)
+    let sliceArray = await newArray.slice(newArray.length-5,newArray.length)    
+    let allMatches = await Match.findAll()
+    let auxMatches=[]
+
+    await allMatches.map(async(el1)=>{
+      await sliceArray.map((el2)=>{
+      if (el2.matchId===el1.id) auxMatches.push(el1)
+    })})
+
+    for (let g = 0; g < auxMatches.length; g++){
+     let homeName = await Team.findByPk(auxMatches[g].home_team_id,{
+      attributes: ['name']
+     }) 
+     let awayName = await Team.findByPk(auxMatches[g].away_team_id,{
+      attributes: ['name']
+     })
+     auxMatches[g] = {
+      matchData: auxMatches[g],
+      homeName: homeName,
+      awayName: awayName 
+    }   
+    }
+
+    res.status(200).send(auxMatches)
+  }
+  catch (error) {
+    next(error)
+  }
+}); 
+
 
 module.exports = router;
