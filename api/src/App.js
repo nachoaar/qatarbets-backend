@@ -7,18 +7,23 @@ const routes = require('./routes/index.js');
 //const { FRONT_HOST, DEPLOY_URL } = process.env;
 const URL = "http://localhost:3000" || process.env.DEPLOY_URL;
 const server = express();
+const { ALLOW_ALL} = require('./DB_variables.js');
 
 server.use(express.urlencoded({ extended: false}));
 server.use(express.json() );
 server.use(cookieParser());
 server.use(morgan('dev'));
 server.use((req, res, next) => {
-  /*  res.header('Access-Control-Allow-Origin', `${URL}`);  */
+  //res.header('Access-Control-Allow-Origin', `https://qatarbets-frontend-git-develop-nachoaar.vercel.app`); 
   const allowedOrigins = [ process.env.DEPLOY_URL, 'https://qatarbets-frontend-git-develop-nachoaar.vercel.app', 'http://localhost:3000'];
   const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
+  
+  if (ALLOW_ALL === 1) {
+    res.setHeader('Access-Control-Allow-Origin', "*");
+  }else if (allowedOrigins.includes(origin)) {
        res.setHeader('Access-Control-Allow-Origin', origin);
-  } 
+  }
+
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
