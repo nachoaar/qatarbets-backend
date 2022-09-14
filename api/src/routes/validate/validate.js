@@ -2,7 +2,6 @@ const express = require('express');
 const { validateToken } = require('../tokenController');
 const { User } = require('../../db');
 const bcryptjs = require('bcryptjs');
-const { where } = require('sequelize/types');
 
 const router = express();
 
