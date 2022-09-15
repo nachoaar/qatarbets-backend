@@ -36,6 +36,7 @@ router.get("/profile", validateToken, (req, res) => {
 //La ruta login con todas sus validaciones
 router.post("/login", async (req, res) => {
   const { pass, email } = req.body;
+  
   try {
     if (!pass || !email) return res.json({ error: "Complete todos los parametros"});
     const UserInfo = await User.findOne({ where: { email: email } })
@@ -64,8 +65,55 @@ router.post("/login", async (req, res) => {
         res.json({
           avatar: UserInfo.avatar,
           name: UserInfo.name,
+          
         });
       }
+    });
+  } catch (error) {
+    res.json("a" + error);
+  }
+});
+
+router.post("/login/mobile", async (req, res) => {
+  var { pass, email } = req.body;
+  email= email.toLowerCase()
+  try {
+    if (!pass || !email) return res.json({ error: "Complete todos los parametros"});
+    const UserInfo = await User.findOne({ where: { email: email } })
+    if (!UserInfo) return res.json({ error: "Combinacion de email y contraseña incorrecta" });
+    const UserPass = UserInfo.pass;
+    // const UserEmail = UserInfo.email;
+    // const UserName = UserInfo.name;
+    /* if(!await bcryptjs.compare(pass, UserPass)) return res.json('Contraseña incorrecta')
+      else{
+        req.session.name = UserName;
+        res.send('Logueado correctamente como ' + UserName)
+      } */
+    bcryptjs.compare(pass, UserPass).then((match) => {
+      if (match === false) {
+        res.json({ error: "Combinacion de email y contraseña incorrecta" });
+      } else {
+        const accessToken = createTokens(UserInfo);
+
+        res.cookie("acces_token", accessToken, {
+          maxAge: 60 * 60 * 24 * 1000,
+          sameSite: "none",
+          secure: true,
+          httpOnly: true,
+        });
+        if (UserInfo.rol === "admin"){
+        res.json({
+          avatar: UserInfo.avatar,
+          name: UserInfo.name,
+          token: accessToken
+        });
+      } else {
+        res.json({
+          error: "Usuario no admitido",
+        });
+      }
+      }
+      
     });
   } catch (error) {
     res.json("a" + error);
