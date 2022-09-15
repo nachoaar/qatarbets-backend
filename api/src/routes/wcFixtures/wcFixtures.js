@@ -3,6 +3,7 @@ const { Router } = require('express');
 const axios = require('axios');
 const { Match, Team, Headtohead, Stage_fixture } = require('../../db.js');
 const { API_KEY } = require('../../DB_variables.js');
+const { identifyBet } = require('../profitCoefCalculation.js');
 
 
 const router = Router();
@@ -278,62 +279,62 @@ router.put('/matchSimulation', async (req, res, next) => {
           }
         });
 
-     /*  if (auxResult === "home") {
-        await Team.update({
-
-          group_points: home.group_points + 3
-        },
-          {
-            where: {
-              id: matchFound.home_team_id,
-            }
-          });
-        await Team.update({
-          group_points: away.group_points + 0
-        },
-          {
-            where: {
-              id: matchFound.away_team_id,
-            }
-          });
-      }
-      if (auxResult === "tie") {
-        await Team.update({
-          group_points: home.group_points + 1
-        },
-          {
-            where: {
-              id: matchFound.home_team_id,
-            }
-          });
-        await Team.update({
-          group_points: away.group_points + 1
-        },
-          {
-            where: {
-              id: matchFound.away_team_id,
-            }
-          });
-      }
-      if (auxResult === "away") {
-        await Team.update({
-          group_points: home.group_points + 0
-        },
-          {
-            where: {
-              id: matchFound.home_team_id,
-            }
-          });
-        await Team.update({
-
-          group_points: away.group_points + 3
-        },
-          {
-            where: {
-              id: matchFound.away_team_id,
-            }
-          });
-      } */
+      /*  if (auxResult === "home") {
+         await Team.update({
+ 
+           group_points: home.group_points + 3
+         },
+           {
+             where: {
+               id: matchFound.home_team_id,
+             }
+           });
+         await Team.update({
+           group_points: away.group_points + 0
+         },
+           {
+             where: {
+               id: matchFound.away_team_id,
+             }
+           });
+       }
+       if (auxResult === "tie") {
+         await Team.update({
+           group_points: home.group_points + 1
+         },
+           {
+             where: {
+               id: matchFound.home_team_id,
+             }
+           });
+         await Team.update({
+           group_points: away.group_points + 1
+         },
+           {
+             where: {
+               id: matchFound.away_team_id,
+             }
+           });
+       }
+       if (auxResult === "away") {
+         await Team.update({
+           group_points: home.group_points + 0
+         },
+           {
+             where: {
+               id: matchFound.home_team_id,
+             }
+           });
+         await Team.update({
+ 
+           group_points: away.group_points + 3
+         },
+           {
+             where: {
+               id: matchFound.away_team_id,
+             }
+           });
+       } */
 
 
       let matchFoundAux = await Match.findAll({ where: { id: id } })
@@ -351,22 +352,22 @@ router.put('/matchSimulation', async (req, res, next) => {
             id: id,
           }
         });
-     /*  await Team.update({
-        group_points: null
-      },
-        {
-          where: {
-            id: matchFound.home_team_id,
-          }
-        });
-      await Team.update({
-        group_points: null
-      },
-        {
-          where: {
-            id: matchFound.away_team_id,
-          }
-        }); */
+      /*  await Team.update({
+         group_points: null
+       },
+         {
+           where: {
+             id: matchFound.home_team_id,
+           }
+         });
+       await Team.update({
+         group_points: null
+       },
+         {
+           where: {
+             id: matchFound.away_team_id,
+           }
+         }); */
       res.status(200).send('match reseted')
     }
   }
@@ -380,8 +381,6 @@ router.put('/groupsSimulation', async (req, res, next) => {
   try {
 
     let simulate = req.query.sim
-
-    console.log(simulate)
 
     function getMatchResult() {
       function getRandomInt(max) {
@@ -418,7 +417,7 @@ router.put('/groupsSimulation', async (req, res, next) => {
 
         let homeMatches = await Match.findAll({ where: { home_team_id: el1.id } })
         let awayMatches = await Match.findAll({ where: { away_team_id: el1.id } })
-        
+
         let currentPoints = 0
 
         for (let n = 0; n < homeMatches.length; n++) {
@@ -427,7 +426,7 @@ router.put('/groupsSimulation', async (req, res, next) => {
             currentPoints = currentPoints + 3
           }
           if (homeMatches[n].result_match === "tie") {
-            currentPoints = currentPoints + 1 
+            currentPoints = currentPoints + 1
           }
           if (homeMatches[n].result_match === "away") {
             currentPoints = currentPoints + 0
@@ -440,7 +439,7 @@ router.put('/groupsSimulation', async (req, res, next) => {
             currentPoints = currentPoints + 0
           }
           if (awayMatches[m].result_match === "tie") {
-            currentPoints = currentPoints + 1 
+            currentPoints = currentPoints + 1
           }
           if (awayMatches[m].result_match === "away") {
             currentPoints = currentPoints + 3
@@ -454,9 +453,6 @@ router.put('/groupsSimulation', async (req, res, next) => {
               id: el1.id,
             }
           });
-
-        console.log(currentPoints)
-
       })
 
       res.status(200).send('all matches updated')
@@ -505,31 +501,31 @@ router.post('/8stageSimulation/postStage', async (req, res, next) => {
   try {
 
     function bubbleSort(array) {
-    
-      for (let i = 0; i < array.length - 1; i++) {                                                                                                         
-        for(let j = 0; j < array.length - 1 - i; j++){
-    
-          if(array[j].group_points < array[j+1].group_points){
-    
-          let tmp = array[j];
-          array[j]=array[j+1];
-          array[j+1] = tmp; 
+
+      for (let i = 0; i < array.length - 1; i++) {
+        for (let j = 0; j < array.length - 1 - i; j++) {
+
+          if (array[j].group_points < array[j + 1].group_points) {
+
+            let tmp = array[j];
+            array[j] = array[j + 1];
+            array[j + 1] = tmp;
+          }
         }
       }
-    }
-     return array;
+      return array;
     }
 
     //groups
 
-    let teamsA = await Team.findAll({where:{groupId:1}});
-    let teamsB = await Team.findAll({where:{groupId:2}});
-    let teamsC = await Team.findAll({where:{groupId:3}});
-    let teamsD = await Team.findAll({where:{groupId:4}});
-    let teamsE = await Team.findAll({where:{groupId:5}});
-    let teamsF = await Team.findAll({where:{groupId:6}});
-    let teamsG = await Team.findAll({where:{groupId:7}});
-    let teamsH = await Team.findAll({where:{groupId:8}});
+    let teamsA = await Team.findAll({ where: { groupId: 1 } });
+    let teamsB = await Team.findAll({ where: { groupId: 2 } });
+    let teamsC = await Team.findAll({ where: { groupId: 3 } });
+    let teamsD = await Team.findAll({ where: { groupId: 4 } });
+    let teamsE = await Team.findAll({ where: { groupId: 5 } });
+    let teamsF = await Team.findAll({ where: { groupId: 6 } });
+    let teamsG = await Team.findAll({ where: { groupId: 7 } });
+    let teamsH = await Team.findAll({ where: { groupId: 8 } });
     let orderedTeamsA = bubbleSort(teamsA);
     let orderedTeamsB = bubbleSort(teamsB);
     let orderedTeamsC = bubbleSort(teamsC);
@@ -539,155 +535,175 @@ router.post('/8stageSimulation/postStage', async (req, res, next) => {
     let orderedTeamsG = bubbleSort(teamsG);
     let orderedTeamsH = bubbleSort(teamsH);
 
-    let responseArray=[
-      {
-        a1:orderedTeamsA[0],
-        a2:orderedTeamsA[1]
-      },
-      {
-        b1:orderedTeamsB[0],
-        b2:orderedTeamsB[1]
-      },
-      {
-        c1:orderedTeamsC[0],
-        c2:orderedTeamsC[1]
-      },
-      {
-        d1:orderedTeamsD[0],
-        d2:orderedTeamsD[1]
-      },
-      {
-        e1:orderedTeamsE[0],
-        e2:orderedTeamsE[1]
-      },
-      {
-        f1:orderedTeamsF[0],
-        f2:orderedTeamsF[1]
-      },
-      {
-        g1:orderedTeamsG[0],
-        g2:orderedTeamsG[1]
-      },
-      {
-        h1:orderedTeamsH[0],
-        h2:orderedTeamsH[1]
-      },
-    ]
+    let allStages = await Stage_fixture.findAll()
 
-    // a1 y b2
-    let allStages =  await Stage_fixture.findAll()
-    
-    if (allStages.length>0){
-    allStages.map(async(el)=>{
-      Stage_fixture.findByPk(el.id)
-      .then(function (stageid) {
-        stageid.destroy();
-      })   
-    })
+    if (allStages.length > 0) {
+      allStages.map(async (el) => {
+        await Stage_fixture.findByPk(el.id)
+          .then(function (stageid) {
+            stageid.destroy();
+          })
+      })
     }
 
-    
-
-    await Stage_fixture.findOrCreate({
-        where: {
-             id: 1,  
-           home_team_id: orderedTeamsA[0].id,
-          away_team_id: orderedTeamsB[1].id,
-          home_name: orderedTeamsA[0].name,
-          away_name: orderedTeamsB[1].name,
-           home_stage_position: "a1",
-          away_stage_position: "b2",
-          stage: "8"  
-        }
-      });
-
-       // a2 y b1
-
-      await Stage_fixture.findOrCreate({
-        where: {
-             id: 2,  
-          home_team_id: orderedTeamsB[0].id,
-          away_team_id: orderedTeamsA[1].id,
-          home_name: orderedTeamsB[0].name,
-          away_name: orderedTeamsA[1].name,
-           home_stage_position: "b1",
-          away_stage_position: "a2",
-          stage: "8"  
-        }
-      });
-
-       // c1 y d2
-
-      await Stage_fixture.findOrCreate({
-        where: {
-             id: 3, 
-           home_team_id: orderedTeamsC[0].id,
-          away_team_id: orderedTeamsD[1].id,
-          home_name: orderedTeamsC[0].name,
-          away_name: orderedTeamsD[1].name,
-           home_stage_position: "c1",
-          away_stage_position: "d2",
-          stage: "8"  
-        }
-      });
-
-       // c2 y d1
-
-      await Stage_fixture.findOrCreate({
-        where: {
-             id: 4, 
-          home_team_id: orderedTeamsD[0].id,
-          away_team_id: orderedTeamsC[1].id,
-          home_name: orderedTeamsD[0].name,
-          away_name: orderedTeamsC[1].name,
-           home_stage_position: "d1",
-          away_stage_position: "c2",
-          stage: "8"  
-        }
-      });
-
-       // e1 y f2
+    // a1 y b2
 
     await Stage_fixture.findOrCreate({
       where: {
-           id: 5,  
-         home_team_id: orderedTeamsE[0].id,
-        away_team_id: orderedTeamsF[1].id,
-        home_name: orderedTeamsE[0].name,
-        away_name: orderedTeamsF[1].name,
-         home_stage_position: "e1",
-        away_stage_position: "f2",
-        stage: "8"  
+        id: 1,
+        date: new Date("2022-12-03T15:00:00.000Z"),
+        status: "Not Started",
+        home_team_id: orderedTeamsA[0].id,
+        away_team_id: orderedTeamsB[1].id,
+        home_name: orderedTeamsA[0].name,
+        away_name: orderedTeamsB[1].name,
+        result_match: null,
+        profit_coef_home: (identifyBet(orderedTeamsA[0].id, orderedTeamsB[1].id)).profitCoefHome,
+        profit_coef_draw: (identifyBet(orderedTeamsA[0].id, orderedTeamsB[1].id)).profitCoefDraw,
+        profit_coef_away: (identifyBet(orderedTeamsA[0].id, orderedTeamsB[1].id)).profitCoefAway,
+        stadium_name: "Khalifa International Stadium",
+        city: "Doha",
+        home_stage_position: "a1",
+        away_stage_position: "b2",
+        stage: "8"
       }
     });
 
-     // e2 y f1
+    // a2 y b1
 
-     await Stage_fixture.findOrCreate({
+    await Stage_fixture.findOrCreate({
       where: {
-           id: 6,  
+        id: 2,
+        date: new Date("2022-12-04T19:00:00.000Z"),
+        status: "Not Started",
+        home_team_id: orderedTeamsB[0].id,
+        away_team_id: orderedTeamsA[1].id,
+        home_name: orderedTeamsB[0].name,
+        away_name: orderedTeamsA[1].name,
+        result_match: null,
+        profit_coef_home: (identifyBet(orderedTeamsB[0].id, orderedTeamsA[1].id)).profitCoefHome,
+        profit_coef_draw: (identifyBet(orderedTeamsB[0].id, orderedTeamsA[1].id)).profitCoefDraw,
+        profit_coef_away: (identifyBet(orderedTeamsB[0].id, orderedTeamsA[1].id)).profitCoefAway,
+        stadium_name: "Al Bayt Stadium",
+        city: "Al-Khor",
+        home_stage_position: "b1",
+        away_stage_position: "a2",
+        stage: "8"
+      }
+    });
+
+    // c1 y d2
+
+    await Stage_fixture.findOrCreate({
+      where: {
+        id: 3,
+        date: new Date("2022-12-03T19:00:00.000Z"),
+        status: "Not Started",
+        home_team_id: orderedTeamsC[0].id,
+        away_team_id: orderedTeamsD[1].id,
+        home_name: orderedTeamsC[0].name,
+        away_name: orderedTeamsD[1].name,
+        result_match: null,
+        profit_coef_home: (identifyBet(orderedTeamsC[0].id, orderedTeamsD[1].id)).profitCoefHome,
+        profit_coef_draw: (identifyBet(orderedTeamsC[0].id, orderedTeamsD[1].id)).profitCoefDraw,
+        profit_coef_away: (identifyBet(orderedTeamsC[0].id, orderedTeamsD[1].id)).profitCoefAway,
+        stadium_name: "Ahmed bin Ali Stadium",
+        city: "Ar-Rayyan",
+        home_stage_position: "c1",
+        away_stage_position: "d2",
+        stage: "8"
+      }
+    });
+
+    // c2 y d1
+
+    await Stage_fixture.findOrCreate({
+      where: {
+        id: 4,
+        date: new Date("2022-12-04T15:00:00.000Z"),
+        status: "Not Started",
+        home_team_id: orderedTeamsD[0].id,
+        away_team_id: orderedTeamsC[1].id,
+        home_name: orderedTeamsD[0].name,
+        away_name: orderedTeamsC[1].name,
+        result_match: null,
+        profit_coef_home: (identifyBet(orderedTeamsD[0].id, orderedTeamsC[1].id)).profitCoefHome,
+        profit_coef_draw: (identifyBet(orderedTeamsD[0].id, orderedTeamsC[1].id)).profitCoefDraw,
+        profit_coef_away: (identifyBet(orderedTeamsD[0].id, orderedTeamsC[1].id)).profitCoefAway,
+        stadium_name: "Al Thumama Stadium",
+        city: "Doha",
+        home_stage_position: "d1",
+        away_stage_position: "c2",
+        stage: "8"
+      }
+    });
+
+    // e1 y f2
+
+    await Stage_fixture.findOrCreate({
+      where: {
+        id: 5,
+        date: new Date("2022-12-05T15:00:00.000Z"),
+        status: "Not Started",
+        home_team_id: orderedTeamsE[0].id,
+        away_team_id: orderedTeamsF[1].id,
+        home_name: orderedTeamsE[0].name,
+        away_name: orderedTeamsF[1].name,
+        result_match: null,
+        profit_coef_home: (identifyBet(orderedTeamsE[0].id, orderedTeamsF[1].id)).profitCoefHome,
+        profit_coef_draw: (identifyBet(orderedTeamsE[0].id, orderedTeamsF[1].id)).profitCoefDraw,
+        profit_coef_away: (identifyBet(orderedTeamsE[0].id, orderedTeamsF[1].id)).profitCoefAway,
+        stadium_name: "Al Janoub Stadium",
+        city: "Al Wakrah",
+        home_stage_position: "e1",
+        away_stage_position: "f2",
+        stage: "8"
+      }
+    });
+
+    // e2 y f1
+
+    await Stage_fixture.findOrCreate({
+      where: {
+        id: 6,
+        date: new Date("2022-12-06T15:00:00.000Z"),
+        status: "Not Started",
         home_team_id: orderedTeamsF[0].id,
         away_team_id: orderedTeamsE[1].id,
         home_name: orderedTeamsF[0].name,
         away_name: orderedTeamsE[1].name,
-         home_stage_position: "f1",
+        result_match: null,
+        profit_coef_home: (identifyBet(orderedTeamsF[0].id, orderedTeamsE[1].id)).profitCoefHome,
+        profit_coef_draw: (identifyBet(orderedTeamsF[0].id, orderedTeamsE[1].id)).profitCoefDraw,
+        profit_coef_away: (identifyBet(orderedTeamsF[0].id, orderedTeamsE[1].id)).profitCoefAway,
+        stadium_name: "Education City Stadium",
+        city: "Ar-Rayyan",
+        home_stage_position: "f1",
         away_stage_position: "e2",
-        stage: "8"  
+        stage: "8"
       }
     });
 
-     // g1 y h2
+    // g1 y h2
 
-     await Stage_fixture.findOrCreate({
+    await Stage_fixture.findOrCreate({
       where: {
-           id: 7,  
-         home_team_id: orderedTeamsG[0].id,
+        id: 7,
+        date: new Date("2022-12-05T19:00:00.000Z"),
+        status: "Not Started",
+        home_team_id: orderedTeamsG[0].id,
         away_team_id: orderedTeamsH[1].id,
         home_name: orderedTeamsG[0].name,
         away_name: orderedTeamsH[1].name,
-         home_stage_position: "g1",
+        result_match: null,
+        profit_coef_home: (identifyBet(orderedTeamsG[0].id, orderedTeamsH[1].id)).profitCoefHome,
+        profit_coef_draw: (identifyBet(orderedTeamsG[0].id, orderedTeamsH[1].id)).profitCoefDraw,
+        profit_coef_away: (identifyBet(orderedTeamsG[0].id, orderedTeamsH[1].id)).profitCoefAway,
+        stadium_name: "Stadium 974",
+        city: "Doha",
+        home_stage_position: "g1",
         away_stage_position: "h2",
-        stage: "8"  
+        stage: "8"
       }
     });
 
@@ -695,23 +711,121 @@ router.post('/8stageSimulation/postStage', async (req, res, next) => {
 
     await Stage_fixture.findOrCreate({
       where: {
-           id: 8,  
+        id: 8,
+        date: new Date("2022-12-06T19:00:00.000Z"),
+        status: "Not Started",
         home_team_id: orderedTeamsH[0].id,
         away_team_id: orderedTeamsG[1].id,
         home_name: orderedTeamsH[0].name,
         away_name: orderedTeamsG[1].name,
-         home_stage_position: "h1",
+        result_match: null,
+        profit_coef_home: (identifyBet(orderedTeamsH[0].id, orderedTeamsG[1].id)).profitCoefHome,
+        profit_coef_draw: (identifyBet(orderedTeamsH[0].id, orderedTeamsG[1].id)).profitCoefDraw,
+        profit_coef_away: (identifyBet(orderedTeamsH[0].id, orderedTeamsG[1].id)).profitCoefAway,
+        stadium_name: "Lusail Iconic Stadium",
+        city: "Lusail",
+        home_stage_position: "h1",
         away_stage_position: "g2",
-        stage: "8"  
+        stage: "8"
       }
     });
-    
+
+    let responseArray = [
+      {
+        a1: orderedTeamsA[0],
+        a2: orderedTeamsA[1]
+      },
+      {
+        b1: orderedTeamsB[0],
+        b2: orderedTeamsB[1]
+      },
+      {
+        c1: orderedTeamsC[0],
+        c2: orderedTeamsC[1]
+      },
+      {
+        d1: orderedTeamsD[0],
+        d2: orderedTeamsD[1]
+      },
+      {
+        e1: orderedTeamsE[0],
+        e2: orderedTeamsE[1]
+      },
+      {
+        f1: orderedTeamsF[0],
+        f2: orderedTeamsF[1]
+      },
+      {
+        g1: orderedTeamsG[0],
+        g2: orderedTeamsG[1]
+      },
+      {
+        h1: orderedTeamsH[0],
+        h2: orderedTeamsH[1]
+      },
+      all8matches = await Stage_fixture.findAll()
+    ]
+
     res.status(200).send(responseArray)
   }
   catch (error) {
     next(error)
   }
 });
+
+router.put('/8stageMatchSimulation', async (req, res, next) => {
+
+  try {
+
+    let id = Number(req.query.id)
+    let simulate = req.query.sim
+
+    function getMatchResult() {
+      function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+      }
+      let a = ["home", "away"]
+      let b = a[getRandomInt(2)]
+      return b
+    }
+    let auxResult
+    if (simulate === "simulate") {
+
+      auxResult = getMatchResult()
+
+      await Stage_fixture.update({
+        result_match: auxResult,
+        status: "Finished"
+      },
+        {
+          where: {
+            id: id,
+          }
+        });
+
+      let matchFoundAux = await Stage_fixture.findAll({ where: { id: id } })
+      res.status(200).send(matchFoundAux)
+    }
+
+    if (simulate === "reset") {
+
+      await Stage_fixture.update({
+        result_match: null,
+        status: "Not Started"
+      },
+        {
+          where: {
+            id: id,
+          }
+        });
+      res.status(200).send('match reseted')
+    }
+  }
+  catch (error) {
+    next(error)
+  }
+});
+
 
 
 module.exports = router;

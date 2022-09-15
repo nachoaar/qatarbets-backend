@@ -17,13 +17,7 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: "QatarBets2022@gmail.com", // generated ethereal user
     pass: "pcuclpxdckaayvbw", // generated ethereal password
-  },
-  // habilitar la siguiente linea de codigo para que funcione el back en local host
-
-     /*  tls: {
-    // do not fail on invalid certs
-    rejectUnauthorized: false
- },  */ 
+  },  
 });
 
 
