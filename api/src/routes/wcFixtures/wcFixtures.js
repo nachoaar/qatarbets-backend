@@ -500,7 +500,7 @@ router.put('/groupsSimulation', async (req, res, next) => {
 
 
 
-router.get('/8stageSimulation/get', async (req, res, next) => {
+router.post('/8stageSimulation/postStage', async (req, res, next) => {
 
   try {
 
@@ -575,10 +575,22 @@ router.get('/8stageSimulation/get', async (req, res, next) => {
     ]
 
     // a1 y b2
+    let allStages =  await Stage_fixture.findAll()
+    
+    if (allStages.length>0){
+    allStages.map(async(el)=>{
+      Stage_fixture.findByPk(el.id)
+      .then(function (stageid) {
+        stageid.destroy();
+      })   
+    })
+    }
+
+    
 
     await Stage_fixture.findOrCreate({
         where: {
-            id: 1, 
+             id: 1,  
            home_team_id: orderedTeamsA[0].id,
           away_team_id: orderedTeamsB[1].id,
           home_name: orderedTeamsA[0].name,
@@ -593,7 +605,7 @@ router.get('/8stageSimulation/get', async (req, res, next) => {
 
       await Stage_fixture.findOrCreate({
         where: {
-            id: 2, 
+             id: 2,  
           home_team_id: orderedTeamsB[0].id,
           away_team_id: orderedTeamsA[1].id,
           home_name: orderedTeamsB[0].name,
@@ -608,7 +620,7 @@ router.get('/8stageSimulation/get', async (req, res, next) => {
 
       await Stage_fixture.findOrCreate({
         where: {
-            id: 3, 
+             id: 3, 
            home_team_id: orderedTeamsC[0].id,
           away_team_id: orderedTeamsD[1].id,
           home_name: orderedTeamsC[0].name,
@@ -623,7 +635,7 @@ router.get('/8stageSimulation/get', async (req, res, next) => {
 
       await Stage_fixture.findOrCreate({
         where: {
-            id: 4, 
+             id: 4, 
           home_team_id: orderedTeamsD[0].id,
           away_team_id: orderedTeamsC[1].id,
           home_name: orderedTeamsD[0].name,
@@ -638,7 +650,7 @@ router.get('/8stageSimulation/get', async (req, res, next) => {
 
     await Stage_fixture.findOrCreate({
       where: {
-          id: 5, 
+           id: 5,  
          home_team_id: orderedTeamsE[0].id,
         away_team_id: orderedTeamsF[1].id,
         home_name: orderedTeamsE[0].name,
@@ -653,7 +665,7 @@ router.get('/8stageSimulation/get', async (req, res, next) => {
 
      await Stage_fixture.findOrCreate({
       where: {
-          id: 6, 
+           id: 6,  
         home_team_id: orderedTeamsF[0].id,
         away_team_id: orderedTeamsE[1].id,
         home_name: orderedTeamsF[0].name,
@@ -668,7 +680,7 @@ router.get('/8stageSimulation/get', async (req, res, next) => {
 
      await Stage_fixture.findOrCreate({
       where: {
-          id: 7, 
+           id: 7,  
          home_team_id: orderedTeamsG[0].id,
         away_team_id: orderedTeamsH[1].id,
         home_name: orderedTeamsG[0].name,
@@ -683,7 +695,7 @@ router.get('/8stageSimulation/get', async (req, res, next) => {
 
     await Stage_fixture.findOrCreate({
       where: {
-          id: 8, 
+           id: 8,  
         home_team_id: orderedTeamsH[0].id,
         away_team_id: orderedTeamsG[1].id,
         home_name: orderedTeamsH[0].name,
