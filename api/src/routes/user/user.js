@@ -65,6 +65,7 @@ router.post("/login", async (req, res) => {
         res.json({
           avatar: UserInfo.avatar,
           name: UserInfo.name,
+
           
         });
       }
@@ -105,7 +106,9 @@ router.post("/login/mobile", async (req, res) => {
         res.json({
           avatar: UserInfo.avatar,
           name: UserInfo.name,
-          token: accessToken
+          token: accessToken,
+          rol: UserInfo.rol
+          
         });
       } else {
         res.json({
@@ -196,7 +199,7 @@ router.post('/userForgottenPass', async (req, res, next) => {
     const EmailVal = await User.findOne({ where: { email: email } });
     if (!EmailVal) res.json("nonexistent email");
 
-    const token = jwt.sign({email: EmailVal.email}, `${SECRET_TOKEN}`, {
+    const token = jwt.sign({email: EmailVal.email}, `${TOKEN_SECRET}`, {
       expiresIn: '15m',
     })
 
