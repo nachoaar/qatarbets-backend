@@ -773,7 +773,7 @@ router.post('/8stageSimulation/postStage', async (req, res, next) => {
   }
 });
 
-router.put('/8stageMatchSimulation', async (req, res, next) => {
+router.post('/8stageMatchSimulation', async (req, res, next) => {
 
   try {
 
@@ -803,7 +803,8 @@ router.put('/8stageMatchSimulation', async (req, res, next) => {
           }
         });
 
-      let matchFoundAux = await Stage_fixture.findAll({ where: { id: id } })
+      for(let x = 0; x < 8; x++ )  
+      /* let matchFoundAux = await Stage_fixture.findAll({ where: { id: id } }); */
       res.status(200).send(matchFoundAux)
     }
 
@@ -819,6 +820,125 @@ router.put('/8stageMatchSimulation', async (req, res, next) => {
           }
         });
       res.status(200).send('match reseted')
+    }
+  }
+  catch (error) {
+    next(error)
+  }
+});
+
+router.put('/8stageAllSimulation', async (req, res, next) => {
+
+  try {
+
+    let simulate = req.query.sim
+
+    function getMatchResult() {
+      function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+      }
+      let a = ["home", "away"]
+      let b = a[getRandomInt(2)]
+      return b
+    }
+
+    let matchesNotUp = await Stage_fixture.findAll()
+
+    if (simulate === "simulate") {
+
+      matchesNotUp.map(async (el) => {
+
+        if (!el.result_match) {
+
+          let auxResult = getMatchResult()
+
+          await Match.update({
+            result_match: auxResult,
+            status: "Finished"
+          },
+            {
+              where: {
+                id: el.id,
+              }
+            });
+        }
+      })
+
+      let teams = await Team.findAll()
+      teams.map(async (el1) => {
+
+        let homeMatches = await Match.findAll({ where: { home_team_id: el1.id } })
+        let awayMatches = await Match.findAll({ where: { away_team_id: el1.id } })
+
+        let currentPoints = 0
+
+        for (let n = 0; n < homeMatches.length; n++) {
+
+          if (homeMatches[n].result_match === "home") {
+            currentPoints = currentPoints + 3
+          }
+          if (homeMatches[n].result_match === "tie") {
+            currentPoints = currentPoints + 1
+          }
+          if (homeMatches[n].result_match === "away") {
+            currentPoints = currentPoints + 0
+          }
+        }
+
+        for (let m = 0; m < awayMatches.length; m++) {
+
+          if (awayMatches[m].result_match === "home") {
+            currentPoints = currentPoints + 0
+          }
+          if (awayMatches[m].result_match === "tie") {
+            currentPoints = currentPoints + 1
+          }
+          if (awayMatches[m].result_match === "away") {
+            currentPoints = currentPoints + 3
+          }
+        }
+        await Team.update({
+          group_points: currentPoints
+        },
+          {
+            where: {
+              id: el1.id,
+            }
+          });
+      })
+
+      res.status(200).send('all matches updated')
+    }
+    if (simulate === "reset") {
+
+      matchesNotUp.map(async (el) => {
+        await Match.update({
+          result_match: null,
+          status: "Not Started"
+        },
+          {
+            where: {
+              id: el.id,
+            }
+          });
+        await Team.update({
+          group_points: 0
+        },
+          {
+            where: {
+              id: el.home_team_id,
+            }
+          });
+        await Team.update({
+          group_points: 0
+        },
+          {
+            where: {
+              id: el.away_team_id,
+            }
+          });
+      })
+      res.status(200).send('all matches reseted')
     }
   }
   catch (error) {
