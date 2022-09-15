@@ -20,10 +20,10 @@ const transporter = nodemailer.createTransport({
   },
   // habilitar la siguiente linea de codigo para que funcione el back en local host
 
-  /*   tls: {
+     /* tls: {
     // do not fail on invalid certs
     rejectUnauthorized: false
- },  */
+ }, */  
 });
 
 
