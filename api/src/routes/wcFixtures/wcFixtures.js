@@ -776,8 +776,8 @@ router.post('/8stageSimulation/postStage', async (req, res, next) => {
 router.post('/8stageMatchSimulation', async (req, res, next) => {
 
   try {
-
-    let id = Number(req.query.id)
+    
+     let id = Number(req.query.id)
     let simulate = req.query.sim
 
     function getMatchResult() {
@@ -803,9 +803,11 @@ router.post('/8stageMatchSimulation', async (req, res, next) => {
           }
         });
 
-      for (let x = 0; x < 8; x++)
-        /* let matchFoundAux = await Stage_fixture.findAll({ where: { id: id } }); */
+        
+        if (id > 0 && id < 9){
+        let matchFoundAux = await Stage_fixture.findAll({ where: { id: id } });
         res.status(200).send(matchFoundAux)
+        } else res.status(400).send("you must enter an id between 1 and 8")
     }
 
     if (simulate === "reset") {
@@ -820,12 +822,13 @@ router.post('/8stageMatchSimulation', async (req, res, next) => {
           }
         });
       res.status(200).send('match reseted')
-    }
+    } 
   }
   catch (error) {
     next(error)
   }
 });
+
 
 router.post('/8stageAllSimulation', async (req, res, next) => {
 
@@ -1127,6 +1130,254 @@ router.post('/8stageAllSimulation', async (req, res, next) => {
   }
 });
 
+
+router.post('/4stageAllSimulation', async (req, res, next) => {
+
+  try {
+
+    let simulate = req.query.sim
+
+    function getMatchResult() {
+      function getRandomInt(max) {
+        return  Math.floor(Math.random() * max);
+      }
+      let a = ["home", "away"]
+      let b =  a[getRandomInt(2)]
+      return b
+    }
+
+    let matchesNotUp = await Stage_fixture.findAll()
+
+    if (simulate === "simulate") {
+
+      await matchesNotUp.map(async (el) => {
+
+        if (!el.result_match) {
+
+          let auxResult = getMatchResult()
+          if (el.id !== 13 && el.id !== 14) {
+          await Stage_fixture.update({
+            result_match: auxResult,
+            status: "Finished"
+          },
+            {
+              where: {
+                id: el.id,
+              }
+            });
+          }
+        }
+      })
+        // this function is used to give time to update the DataBase before the next section of the code starts
+       setTimeout( async function(){
+        /* console.log("Hola Mundo"); */
+     
+      //winner of match 9
+
+      let matchFound9 = await Stage_fixture.findAll({ where: { id: 9 } })
+      if (matchFound9[0].result_match === "home") {
+        var match9winner = {
+          home_team_id: matchFound9[0].home_team_id,
+          home_name: matchFound9[0].home_name,
+        }
+      }
+      if (matchFound9[0].result_match === "away") {
+        var match9winner = {
+          home_team_id: matchFound9[0].away_team_id,
+          home_name: matchFound9[0].away_name,
+        }
+      }
+
+      //winner of match 10
+
+      let matchFound10 = await Stage_fixture.findAll({ where: { id: 10 } })
+      if (matchFound10[0].result_match === "home") {
+        var match10winner = {
+          home_team_id: matchFound10[0].home_team_id,
+          home_name: matchFound10[0].home_name,
+        }
+      }
+      if (matchFound10[0].result_match === "away") {
+        var match10winner = {
+          home_team_id: matchFound10[0].away_team_id,
+          home_name: matchFound10[0].away_name,
+        }
+      }
+
+      //winner of match 11
+
+      let matchFound11 = await Stage_fixture.findAll({ where: { id: 11 } })
+      if (matchFound11[0].result_match === "home") {
+        var match11winner = {
+          home_team_id: matchFound11[0].home_team_id,
+          home_name: matchFound11[0].home_name,
+        }
+      }
+      if (matchFound11[0].result_match === "away") {
+        var match11winner = {
+          home_team_id: matchFound11[0].away_team_id,
+          home_name: matchFound11[0].away_name,
+        }
+      }
+
+      //winner of match 12
+
+      let matchFound12 = await Stage_fixture.findAll({ where: { id: 12 } })
+      if (matchFound12[0].result_match === "home") {
+        var match12winner = {
+          home_team_id: matchFound12[0].home_team_id,
+          home_name: matchFound12[0].home_name,
+        }
+      }
+      if (matchFound12[0].result_match === "away") {
+        var match12winner = {
+          home_team_id: matchFound12[0].away_team_id,
+          home_name: matchFound12[0].away_name,
+        }
+      }
+
+      //winner of match 9 & winner of match 11
+
+      await Stage_fixture.findOrCreate({
+        where: {
+          id: 13,
+          date: new Date("2022-12-13T19:00:00.000Z"),
+          status: "Not Started",
+          home_team_id: match9winner.home_team_id,
+          away_team_id: match11winner.home_team_id,
+          home_name: match9winner.home_name,
+          away_name: match11winner.home_name,
+          result_match: null,
+          profit_coef_home: (identifyBet(match9winner.home_team_id, match11winner.home_team_id)).profitCoefHome,
+          profit_coef_draw: (identifyBet(match9winner.home_team_id, match11winner.home_team_id)).profitCoefDraw,
+          profit_coef_away: (identifyBet(match9winner.home_team_id, match11winner.home_team_id)).profitCoefAway,
+          stadium_name: "Education City Stadium",
+          city: "Ar-Rayyan",
+          home_stage_position: "match 9 winner",
+          away_stage_position: "match 11 winner",
+          stage: "4"
+        }
+      });
+
+      //winner of match 10 & winner of match 12
+
+      await Stage_fixture.findOrCreate({
+        where: {
+          id: 14,
+          date: new Date("2022-12-14T19:00:00.000Z"),
+          status: "Not Started",
+          home_team_id: match10winner.home_team_id,
+          away_team_id: match12winner.home_team_id,
+          home_name: match10winner.home_name,
+          away_name: match12winner.home_name,
+          result_match: null,
+          profit_coef_home: (identifyBet(match10winner.home_team_id, match12winner.home_team_id)).profitCoefHome,
+          profit_coef_draw: (identifyBet(match10winner.home_team_id, match12winner.home_team_id)).profitCoefDraw,
+          profit_coef_away: (identifyBet(match10winner.home_team_id, match12winner.home_team_id)).profitCoefAway,
+          stadium_name: "Al Bayt Stadium",
+          city: "Al-Khor",
+          home_stage_position: "match 10 winner",
+          away_stage_position: "match 12 winner",
+          stage: "4"
+        }
+      });
+
+      let stage4matches=[];  
+      for (let d = 13; d < 15 ; d++){ 
+      stage4matches.push(await Stage_fixture.findByPk(d))
+      }
+      res.status(200).send(stage4matches)
+        },1000);
+    }
+
+    if (simulate === "reset") {
+
+      let stage4mateches = await Stage_fixture.findAll()
+
+      stage4mateches.map(async (el) => {
+
+        if (el.id === 9 || el.id === 10 || el.id === 11 || el.id === 12){
+        await Stage_fixture.update({
+          result_match: null,
+          status: "Not Started"
+        },
+          {
+            where: {
+              id: el.id,
+            }
+          });
+        }
+       if (el.id === 13 || el.id === 14) {
+          await Stage_fixture.findByPk(el.id)
+            .then(function (stageid) {
+              stageid.destroy();
+            })
+        } 
+      })
+      res.status(200).send('all matches reseted')
+    }
+  }
+  catch (error) {
+    next(error)
+  }
+});
+
+router.post('/4stageMatchSimulation', async (req, res, next) => {
+
+  try {
+
+    let id = Number(req.query.id)
+    let simulate = req.query.sim
+
+    function getMatchResult() {
+      function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+      }
+      let a = ["home", "away"]
+      let b = a[getRandomInt(2)]
+      return b
+    }
+    let auxResult
+    if (simulate === "simulate") {
+
+      auxResult = getMatchResult()
+
+      await Stage_fixture.update({
+        result_match: auxResult,
+        status: "Finished"
+      },
+        {
+          where: {
+            id: id,
+          }
+        });
+
+        /* console.log("hola") */
+
+        if (id > 8 && id < 13){
+          let matchFoundAux = await Stage_fixture.findAll({ where: { id: id } });
+          res.status(200).send(matchFoundAux)
+          } else res.status(400).send("you must enter an id between 9 and 12")
+    }
+
+    if (simulate === "reset") {
+
+      await Stage_fixture.update({
+        result_match: null,
+        status: "Not Started"
+      },
+        {
+          where: {
+            id: id,
+          }
+        });
+      res.status(200).send('match reseted')
+    }
+  }
+  catch (error) {
+    next(error)
+  }
+});
 
 
 module.exports = router;
