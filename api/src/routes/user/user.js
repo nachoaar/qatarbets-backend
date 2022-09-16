@@ -126,7 +126,6 @@ router.post("/login/mobile", async (req, res) => {
 //ruta register con las validaciones y relaciones
 router.post("/register", async (req, res, next) => {
   const { name, age, pass, email, avatar, rol } = req.body;
-  console.log(req.body);
   try {
     //valiaciones del register para que hayan datos
     if (!name) return res.json("Se requiere un nombre!");
