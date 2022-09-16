@@ -66,7 +66,6 @@ router.post("/login", async (req, res) => {
           avatar: UserInfo.avatar,
           name: UserInfo.name,
           rol: UserInfo.rol
-          
         });
       }
     });

@@ -803,9 +803,9 @@ router.post('/8stageMatchSimulation', async (req, res, next) => {
           }
         });
 
-      for(let x = 0; x < 8; x++ )  
-      /* let matchFoundAux = await Stage_fixture.findAll({ where: { id: id } }); */
-      res.status(200).send(matchFoundAux)
+      for (let x = 0; x < 8; x++)
+        /* let matchFoundAux = await Stage_fixture.findAll({ where: { id: id } }); */
+        res.status(200).send(matchFoundAux)
     }
 
     if (simulate === "reset") {
@@ -827,7 +827,7 @@ router.post('/8stageMatchSimulation', async (req, res, next) => {
   }
 });
 
-router.put('/8stageAllSimulation', async (req, res, next) => {
+router.post('/8stageAllSimulation', async (req, res, next) => {
 
   try {
 
@@ -835,10 +835,10 @@ router.put('/8stageAllSimulation', async (req, res, next) => {
 
     function getMatchResult() {
       function getRandomInt(max) {
-        return Math.floor(Math.random() * max);
+        return  Math.floor(Math.random() * max);
       }
       let a = ["home", "away"]
-      let b = a[getRandomInt(2)]
+      let b =  a[getRandomInt(2)]
       return b
     }
 
@@ -846,13 +846,13 @@ router.put('/8stageAllSimulation', async (req, res, next) => {
 
     if (simulate === "simulate") {
 
-      matchesNotUp.map(async (el) => {
+      await matchesNotUp.map(async (el) => {
 
         if (!el.result_match) {
 
           let auxResult = getMatchResult()
-
-          await Match.update({
+          if (el.id !== 9 && el.id !== 10 && el.id !== 11 && el.id !== 12) {
+          await Stage_fixture.update({
             result_match: auxResult,
             status: "Finished"
           },
@@ -861,58 +861,249 @@ router.put('/8stageAllSimulation', async (req, res, next) => {
                 id: el.id,
               }
             });
+          }
         }
       })
+        // this function is used to give time to update the DataBase before the next section of the code starts
+       setTimeout( async function(){
+        /* console.log("Hola Mundo"); */
+     
+      //winner of match 1
 
-      let teams = await Team.findAll()
-      teams.map(async (el1) => {
-
-        let homeMatches = await Match.findAll({ where: { home_team_id: el1.id } })
-        let awayMatches = await Match.findAll({ where: { away_team_id: el1.id } })
-
-        let currentPoints = 0
-
-        for (let n = 0; n < homeMatches.length; n++) {
-
-          if (homeMatches[n].result_match === "home") {
-            currentPoints = currentPoints + 3
-          }
-          if (homeMatches[n].result_match === "tie") {
-            currentPoints = currentPoints + 1
-          }
-          if (homeMatches[n].result_match === "away") {
-            currentPoints = currentPoints + 0
-          }
+      let matchFound1 = await Stage_fixture.findAll({ where: { id: 1 } })
+      if (matchFound1[0].result_match === "home") {
+        var match1winner = {
+          home_team_id: matchFound1[0].home_team_id,
+          home_name: matchFound1[0].home_name,
         }
-
-        for (let m = 0; m < awayMatches.length; m++) {
-
-          if (awayMatches[m].result_match === "home") {
-            currentPoints = currentPoints + 0
-          }
-          if (awayMatches[m].result_match === "tie") {
-            currentPoints = currentPoints + 1
-          }
-          if (awayMatches[m].result_match === "away") {
-            currentPoints = currentPoints + 3
-          }
+      }
+      if (matchFound1[0].result_match === "away") {
+        var match1winner = {
+          home_team_id: matchFound1[0].away_team_id,
+          home_name: matchFound1[0].away_name,
         }
-        await Team.update({
-          group_points: currentPoints
-        },
-          {
-            where: {
-              id: el1.id,
-            }
-          });
-      })
+      }
 
-      res.status(200).send('all matches updated')
+      //winner of match 2
+
+      let matchFound2 = await Stage_fixture.findAll({ where: { id: 2 } })
+      if (matchFound2[0].result_match === "home") {
+        var match2winner = {
+          home_team_id: matchFound2[0].home_team_id,
+          home_name: matchFound2[0].home_name,
+        }
+      }
+      if (matchFound2[0].result_match === "away") {
+        var match2winner = {
+          home_team_id: matchFound2[0].away_team_id,
+          home_name: matchFound2[0].away_name,
+        }
+      }
+
+      //winner of match 3
+
+      let matchFound3 = await Stage_fixture.findAll({ where: { id: 3 } })
+      if (matchFound3[0].result_match === "home") {
+        var match3winner = {
+          home_team_id: matchFound3[0].home_team_id,
+          home_name: matchFound3[0].home_name,
+        }
+      }
+      if (matchFound3[0].result_match === "away") {
+        var match3winner = {
+          home_team_id: matchFound3[0].away_team_id,
+          home_name: matchFound3[0].away_name,
+        }
+      }
+
+      //winner of match 4
+
+      let matchFound4 = await Stage_fixture.findAll({ where: { id: 4 } })
+      if (matchFound4[0].result_match === "home") {
+        var match4winner = {
+          home_team_id: matchFound4[0].home_team_id,
+          home_name: matchFound4[0].home_name,
+        }
+      }
+      if (matchFound4[0].result_match === "away") {
+        var match4winner = {
+          home_team_id: matchFound4[0].away_team_id,
+          home_name: matchFound4[0].away_name,
+        }
+      }
+
+      //winner of match 5
+
+      let matchFound5 = await Stage_fixture.findAll({ where: { id: 5 } })
+      if (matchFound5[0].result_match === "home") {
+        var match5winner = {
+          home_team_id: matchFound5[0].home_team_id,
+          home_name: matchFound5[0].home_name,
+        }
+      }
+      if (matchFound5[0].result_match === "away") {
+        var match5winner = {
+          home_team_id: matchFound5[0].away_team_id,
+          home_name: matchFound5[0].away_name,
+        }
+      }
+
+      //winner of match 6
+
+      let matchFound6 = await Stage_fixture.findAll({ where: { id: 6 } })
+      if (matchFound6[0].result_match === "home") {
+        var match6winner = {
+          home_team_id: matchFound6[0].home_team_id,
+          home_name: matchFound6[0].home_name,
+        }
+      }
+      if (matchFound6[0].result_match === "away") {
+        var match6winner = {
+          home_team_id: matchFound6[0].away_team_id,
+          home_name: matchFound6[0].away_name,
+        }
+      }
+
+      //winner of match 7
+
+      let matchFound7 = await Stage_fixture.findAll({ where: { id: 7 } })
+      if (matchFound7[0].result_match === "home") {
+        var match7winner = {
+          home_team_id: matchFound7[0].home_team_id,
+          home_name: matchFound7[0].home_name,
+        }
+      }
+      if (matchFound7[0].result_match === "away") {
+        var match7winner = {
+          home_team_id: matchFound7[0].away_team_id,
+          home_name: matchFound7[0].away_name,
+        }
+      }
+      //winner of match 8
+
+      let matchFound8 = await Stage_fixture.findAll({ where: { id: 8 } })
+      if (matchFound8[0].result_match === "home") {
+        var match8winner = {
+          home_team_id: matchFound8[0].home_team_id,
+          home_name: matchFound8[0].home_name,
+        }
+      }
+      if (matchFound8[0].result_match === "away") {
+        var match8winner = {
+          home_team_id: matchFound8[0].away_team_id,
+          home_name: matchFound8[0].away_name,
+        }
+      }
+
+
+
+      //winner of match 1 & winner of match 3
+
+      await Stage_fixture.findOrCreate({
+        where: {
+          id: 9,
+          date: new Date("2022-12-09T19:00:00.000Z"),
+          status: "Not Started",
+          home_team_id: match1winner.home_team_id,
+          away_team_id: match3winner.home_team_id,
+          home_name: match1winner.home_name,
+          away_name: match3winner.home_name,
+          result_match: null,
+          profit_coef_home: (identifyBet(match1winner.home_team_id, match3winner.home_team_id)).profitCoefHome,
+          profit_coef_draw: (identifyBet(match1winner.home_team_id, match3winner.home_team_id)).profitCoefDraw,
+          profit_coef_away: (identifyBet(match1winner.home_team_id, match3winner.home_team_id)).profitCoefAway,
+          stadium_name: "Lusail Iconic Stadium",
+          city: "Lusail",
+          home_stage_position: "a1 - b2 winner",
+          away_stage_position: "c1 - d2 winner",
+          stage: "4"
+        }
+      });
+
+      //winner of match 2 & winner of match 4
+
+      await Stage_fixture.findOrCreate({
+        where: {
+          id: 10,
+          date: new Date("2022-12-10T19:00:00.000Z"),
+          status: "Not Started",
+          home_team_id: match2winner.home_team_id,
+          away_team_id: match4winner.home_team_id,
+          home_name: match2winner.home_name,
+          away_name: match4winner.home_name,
+          result_match: null,
+          profit_coef_home: (identifyBet(match2winner.home_team_id, match4winner.home_team_id)).profitCoefHome,
+          profit_coef_draw: (identifyBet(match2winner.home_team_id, match4winner.home_team_id)).profitCoefDraw,
+          profit_coef_away: (identifyBet(match2winner.home_team_id, match4winner.home_team_id)).profitCoefAway,
+          stadium_name: "Al Bayt Stadium",
+          city: "Al-Khor",
+          home_stage_position: "a2 - b1 winner",
+          away_stage_position: "c2 - d1 winner",
+          stage: "4"
+        }
+      });
+
+      //winner of match 5 & winner of match 7
+
+      await Stage_fixture.findOrCreate({
+        where: {
+          id: 11,
+          date: new Date("2022-12-09T15:00:00.000Z"),
+          status: "Not Started",
+          home_team_id: match5winner.home_team_id,
+          away_team_id: match7winner.home_team_id,
+          home_name: match5winner.home_name,
+          away_name: match7winner.home_name,
+          result_match: null,
+          profit_coef_home: (identifyBet(match5winner.home_team_id, match7winner.home_team_id)).profitCoefHome,
+          profit_coef_draw: (identifyBet(match5winner.home_team_id, match7winner.home_team_id)).profitCoefDraw,
+          profit_coef_away: (identifyBet(match5winner.home_team_id, match7winner.home_team_id)).profitCoefAway,
+          stadium_name: "Education City Stadium",
+          city: "Ar-Rayyan",
+          home_stage_position: "e1 - f2 winner",
+          away_stage_position: "g1 - h2 winner",
+          stage: "4"
+        }
+      });
+
+      //winner of match 6 & winner of match 8
+
+      await Stage_fixture.findOrCreate({
+        where: {
+          id: 12,
+          date: new Date("2022-12-10T15:00:00.000Z"),
+          status: "Not Started",
+          home_team_id: match6winner.home_team_id,
+          away_team_id: match8winner.home_team_id,
+          home_name: match6winner.home_name,
+          away_name: match8winner.home_name,
+          result_match: null,
+          profit_coef_home: (identifyBet(match6winner.home_team_id, match8winner.home_team_id)).profitCoefHome,
+          profit_coef_draw: (identifyBet(match6winner.home_team_id, match8winner.home_team_id)).profitCoefDraw,
+          profit_coef_away: (identifyBet(match6winner.home_team_id, match8winner.home_team_id)).profitCoefAway,
+          stadium_name: "Al Thumama Stadium",
+          city: "Doha",
+          home_stage_position: "e2 - f1 winner",
+          away_stage_position: "g2 - h1 winner",
+          stage: "4"
+        }
+      });
+
+      let stage4matches=[];  
+      for (let d = 9; d < 13 ; d++){ 
+      stage4matches.push(await Stage_fixture.findByPk(d))
+      }
+      res.status(200).send(stage4matches)
+        },1000);
     }
+
     if (simulate === "reset") {
 
-      matchesNotUp.map(async (el) => {
-        await Match.update({
+      let stage8mateches = await Stage_fixture.findAll()
+
+      stage8mateches.map(async (el) => {
+
+        await Stage_fixture.update({
           result_match: null,
           status: "Not Started"
         },
@@ -921,22 +1112,12 @@ router.put('/8stageAllSimulation', async (req, res, next) => {
               id: el.id,
             }
           });
-        await Team.update({
-          group_points: 0
-        },
-          {
-            where: {
-              id: el.home_team_id,
-            }
-          });
-        await Team.update({
-          group_points: 0
-        },
-          {
-            where: {
-              id: el.away_team_id,
-            }
-          });
+       if (el.id === 9 || el.id === 10 || el.id === 11 || el.id === 12) {
+          await Stage_fixture.findByPk(el.id)
+            .then(function (stageid) {
+              stageid.destroy();
+            })
+        } 
       })
       res.status(200).send('all matches reseted')
     }
