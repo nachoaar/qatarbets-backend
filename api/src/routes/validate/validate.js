@@ -49,7 +49,7 @@ router.get("/logout", (req, res, next) => {
 });
 
 router.get('/verify/:token', async (req, res, next) => {
-  const { token } = req.params;
+  const { token } = req.headers;
   try{
     const datos = validateToken(token)
     console.log(datos.email);

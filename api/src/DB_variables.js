@@ -8,7 +8,7 @@ git add .
 const DB_PASSWORD=1234;
 const DB_HOST="localhost";
 const API_KEY="24a8ce846af0f2ea149d31a7d48f829b";   
-const ALLOW_ALL=0 
+const ALLOW_ALL=1
  
 //variables MatiasM
  /* const DB_USER="postgres";

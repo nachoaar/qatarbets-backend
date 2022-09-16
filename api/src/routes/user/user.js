@@ -166,7 +166,8 @@ router.post('/userForgottenPass', async (req, res, next) => {
       html: `<b>Go to this link to get a new password</b>
       <a href="http://localhost:3000/passChange/${token}">Change your password</a>` //Texto del mail
     });
-    res.json(`Mail de recuperacion enviado a ${email}`);
+    
+    return res.json(`Mail de recuperacion enviado a ${email}`);
   } catch (error) {
     next(error);
   }
