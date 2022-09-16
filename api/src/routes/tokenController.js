@@ -5,6 +5,7 @@ const { TOKEN_SECRET } = process.env;
 const createTokens = (user) => {
   const accessToken = sign({
     name: user.name,
+    email: user.email,
     rol: user.rol,
     id: user.id,
   }, `${TOKEN_SECRET}`);
