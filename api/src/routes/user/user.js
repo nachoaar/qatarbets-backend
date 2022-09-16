@@ -65,8 +65,8 @@ router.post("/login", async (req, res) => {
         res.json({
           avatar: UserInfo.avatar,
           name: UserInfo.name,
+          rol: UserInfo.rol
 
-          
         });
       }
     });
