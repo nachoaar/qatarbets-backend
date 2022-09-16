@@ -54,7 +54,6 @@ router.post("/login", async (req, res) => {
         res.json({ error: "Combinacion de email y contraseña incorrecta" });
       } else {
         const accessToken = createTokens(UserInfo);
-
         res.cookie("acces_token", accessToken, {
           maxAge: 60 * 60 * 24 * 1000,
           sameSite: "none",
@@ -63,9 +62,10 @@ router.post("/login", async (req, res) => {
         });
 
         res.json({
+          message: 'Usuario logueado con exito!',
           avatar: UserInfo.avatar,
           name: UserInfo.name,
-
+          rol: UserInfo.rol
           
         });
       }
@@ -126,6 +126,7 @@ router.post("/login/mobile", async (req, res) => {
 //ruta register con las validaciones y relaciones
 router.post("/register", async (req, res, next) => {
   const { name, age, pass, email, avatar, rol } = req.body;
+  console.log(req.body);
   try {
     //valiaciones del register para que hayan datos
     if (!name) return res.json("Se requiere un nombre!");
