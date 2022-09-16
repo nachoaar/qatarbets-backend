@@ -54,7 +54,6 @@ router.post("/login", async (req, res) => {
         res.json({ error: "Combinacion de email y contraseña incorrecta" });
       } else {
         const accessToken = createTokens(UserInfo);
-
         res.cookie("acces_token", accessToken, {
           maxAge: 60 * 60 * 24 * 1000,
           sameSite: "none",
@@ -63,9 +62,10 @@ router.post("/login", async (req, res) => {
         });
 
         res.json({
+          message: 'Usuario logueado con exito!',
           avatar: UserInfo.avatar,
           name: UserInfo.name,
-
+          rol: UserInfo.rol
           
         });
       }
