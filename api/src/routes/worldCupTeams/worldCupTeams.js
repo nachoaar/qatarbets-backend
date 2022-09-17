@@ -166,35 +166,6 @@ const getCoachDataApi = async function (teamId) {
   return coachObject
 }
 
-/* router.get('/coachApi/:id', async (req, res, next) => {
-
-  const idCoach = req.params.id;
-
-  try {
-    let coachFound = await getCoachDataApi(idCoach);
-    coachArray.push(coachFound)
-
-    let teamDB = await Team.findByPk(idCoach)
-
-    if (Number(coachFound.teamId) === teamDB.id) {
-
-      await Team.update({
-        coach: coachFound.coach,
-      }, {
-        where: {
-          id: coachFound.teamId,
-        }
-      });
-      res.status(200).send(coachFound)
-
-    } else {
-      res.status(200).send('coach not founded in DB')
-    }
-  }
-  catch (error) {
-    next(error)
-  }
-}); */
 
 router.get('/coachApi/:id', async (req, res, next) => {
 
@@ -353,10 +324,6 @@ router.get('/coachDB', async (req, res, next) => {
 
       let teamDB = await Team.findByPk(el.teamId)
 
-      /* console.log('dbId')
-      console.log(dbId)
-      console.log(dbId.team.dataValues.id) */
-
       if (el.teamId === teamDB.id) {
 
         await Team.update({
@@ -423,8 +390,7 @@ router.get('/coachDB', async (req, res, next) => {
  router.get('/playersSquadApi/:id', async (req, res, next) => {
 
   const idApi = req.params.id;
-  console.log('hola')
-
+  
    try {
     let V = await getSquadDataApi(idApi) 
     res.status(200).send(V) 
@@ -506,6 +472,30 @@ router.get('/playersSquadDb11/:id', async (req, res, next) => {
   }
 });
 
+router.get('/allPlayersSquadDb', async (req, res, next) => {
+
+  try {
+
+    var squadArray=[];
+    let allTeams = await Team.findAll()
+
+    for (let i = 0; i < allTeams.length ; i++){
+       var currentSquad = await Player.findAll({
+        where:{
+          teamId: allTeams[i].id
+        }
+      }) 
+      var currentCoach = [{teamId: allTeams[i].id, coach : allTeams[i].coach}]
+
+      squadArray.push(currentCoach.concat(currentSquad))
+      
+    }
+    res.status(200).send(auxArray)
+  }
+  catch (error) {
+    next(error)
+  }
+});
 
 
 
