@@ -490,7 +490,7 @@ router.get('/allPlayersSquadDb', async (req, res, next) => {
       squadArray.push(currentCoach.concat(currentSquad))
       
     }
-    res.status(200).send(auxArray)
+    res.status(200).send(squadArray)
   }
   catch (error) {
     next(error)
