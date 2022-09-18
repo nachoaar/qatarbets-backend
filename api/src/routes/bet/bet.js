@@ -99,8 +99,6 @@ var identifyBet = function (id1, id2) {
 
   //home bestTeams
 
-  /* if (bestTeams.includes(id1)) console.log("si") */
-
   if (bestTeams.includes(id1) && bestTeams.includes(id2)) {
     profitCoefHome = 1.4
     profitCoefDraw = 1.2
@@ -219,7 +217,7 @@ router.get('/calculateProfits', async (req, res, next) => {
    },30000); */
 
     let matchId = Number(req.query.matchId)
-    let matchWinner = req.query.matchWinner
+    let matchWinner = req.query.matchWinner  // this can be only home, draw, away
 
     if (matchWinner === "draw") {
 
@@ -289,7 +287,7 @@ router.get('/calculateProfits', async (req, res, next) => {
             }
           });
       }
-      else /* (el.result !== matchDB.result_match) */ {
+      else {
 
         await Bet.update({
           expected_profit: el.money_bet * actualCoef,
@@ -302,7 +300,10 @@ router.get('/calculateProfits', async (req, res, next) => {
           });
       }
     })
-    res.status(200).send('all final profits added')
+    setTimeout(async function () {
+    let allProfitedBets = await Bet.findAll()
+    res.status(200).send(allProfitedBets)
+    }, 1000);
   }
 
   catch (error) {

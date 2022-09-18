@@ -17,13 +17,7 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: "QatarBets2022@gmail.com", // generated ethereal user
     pass: "pcuclpxdckaayvbw", // generated ethereal password
-  },
-  // habilitar la siguiente linea de codigo para que funcione el back en local host
-
-  /*   tls: {
-    // do not fail on invalid certs
-    rejectUnauthorized: false
- },  */
+  },  
 });
 
 
@@ -42,6 +36,47 @@ router.get("/profile", validateToken, (req, res) => {
 //La ruta login con todas sus validaciones
 router.post("/login", async (req, res) => {
   const { pass, email } = req.body;
+  
+  try {
+    if (!pass || !email) return res.json({ error: "Complete todos los parametros"});
+    const UserInfo = await User.findOne({ where: { email: email } })
+    if (!UserInfo) return res.json({ error: "Combinacion de email y contraseña incorrecta" });
+    const UserPass = UserInfo.pass;
+    // const UserEmail = UserInfo.email;
+    // const UserName = UserInfo.name;
+    /* if(!await bcryptjs.compare(pass, UserPass)) return res.json('Contraseña incorrecta')
+      else{
+        req.session.name = UserName;
+        res.send('Logueado correctamente como ' + UserName)
+      } */
+    bcryptjs.compare(pass, UserPass).then((match) => {
+      if (match === false) {
+        res.json({ error: "Combinacion de email y contraseña incorrecta" });
+      } else {
+        const accessToken = createTokens(UserInfo);
+        res.cookie("acces_token", accessToken, {
+          maxAge: 60 * 60 * 24 * 1000,
+          sameSite: "none",
+          secure: true,
+          httpOnly: true,
+        });
+
+        res.json({
+          message: 'Usuario logueado con exito!',
+          avatar: UserInfo.avatar,
+          name: UserInfo.name,
+          rol: UserInfo.rol
+        });
+      }
+    });
+  } catch (error) {
+    res.json("a" + error);
+  }
+});
+
+router.post("/login/mobile", async (req, res) => {
+  var { pass, email } = req.body;
+  email= email.toLowerCase()
   try {
     if (!pass || !email) return res.json({ error: "Complete todos los parametros"});
     const UserInfo = await User.findOne({ where: { email: email } })
@@ -66,12 +101,21 @@ router.post("/login", async (req, res) => {
           secure: true,
           httpOnly: true,
         });
-
+        if (UserInfo.rol === "admin"){
         res.json({
           avatar: UserInfo.avatar,
           name: UserInfo.name,
+          token: accessToken,
+          rol: UserInfo.rol
+          
+        });
+      } else {
+        res.json({
+          error: "Usuario no admitido",
         });
       }
+      }
+      
     });
   } catch (error) {
     res.json("a" + error);
@@ -138,6 +182,22 @@ router.get("/userId", async (req, res, next) => {
     let U = await User.findAll({
       where: {
         id: token.id,
+      },
+    });
+
+    res.status(200).send(U);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/userId/:userId", async (req, res, next) => {
+  const { userId } = req.params
+
+  try {
+    let U = await User.findAll({
+      where: {
+        id: userId,
       },
     });
 
