@@ -217,7 +217,7 @@ router.get('/calculateProfits', async (req, res, next) => {
    },30000); */
 
     let matchId = Number(req.query.matchId)
-    let matchWinner = req.query.matchWinner
+    let matchWinner = req.query.matchWinner  // this can be only home, draw, away
 
     if (matchWinner === "draw") {
 
@@ -300,7 +300,10 @@ router.get('/calculateProfits', async (req, res, next) => {
           });
       }
     })
-    res.status(200).send('all final profits added')
+    setTimeout(async function () {
+    let allProfitedBets = await Bet.findAll()
+    res.status(200).send(allProfitedBets)
+    }, 1000);
   }
 
   catch (error) {
