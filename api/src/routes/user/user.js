@@ -849,10 +849,7 @@ router.post("/register", async (req, res, next) => {
       </html>`,
     });
 
-    res.json({
-      key: passwordHash,
-      message: `user created successfully, go to email ${email} for verification`
-    })
+    res.json('Usuario registrado, confirme su cuenta en el email enviado');
   }} catch(error){next(error)}
 })
 
