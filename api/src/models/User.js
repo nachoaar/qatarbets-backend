@@ -32,11 +32,6 @@ module.exports = (sequelize) => {
         allowNull: false,
         defaultValue: false
       },
-      onlineToken: {
-        type: DataTypes.STRING,
-        allowNull: true,
-        defaultValue: "offline"
-      },
       avatar: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -46,10 +41,6 @@ module.exports = (sequelize) => {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false
-      },
-      resetToken:{
-        type: DataTypes.STRING,
-        allowNull: true,
       },
       rol: {
         type: DataTypes.ENUM({values: ['admin', 'gambler']}),

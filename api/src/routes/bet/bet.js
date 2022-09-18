@@ -99,8 +99,6 @@ var identifyBet = function (id1, id2) {
 
   //home bestTeams
 
-  /* if (bestTeams.includes(id1)) console.log("si") */
-
   if (bestTeams.includes(id1) && bestTeams.includes(id2)) {
     profitCoefHome = 1.4
     profitCoefDraw = 1.2
@@ -289,7 +287,7 @@ router.get('/calculateProfits', async (req, res, next) => {
             }
           });
       }
-      else /* (el.result !== matchDB.result_match) */ {
+      else {
 
         await Bet.update({
           expected_profit: el.money_bet * actualCoef,
