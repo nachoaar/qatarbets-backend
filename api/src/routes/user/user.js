@@ -172,23 +172,32 @@ router.post("/register", async (req, res, next) => {
   }} catch(error){next(error)}
 })
 
-router.get("/userId/:userId", async (req, res, next) => {
-  const { userId } = req.body;
-  let id;
-  if (!userId) {
-    const token = validateToken(req.cookies.acces_token || "");
-    if (token === "") {
-      return res.status(400).json("Usuario invalido");
-    }
-    id = token.id;
-  }else {
-    id = userId;
+router.get("/userId", async (req, res, next) => {
+  const token = validateToken(req.cookies.acces_token || "");
+  if (token === "") {
+    res.json("Usuario invalido");
   }
 
   try {
     let U = await User.findAll({
       where: {
-        id: id,
+        id: token.id,
+      },
+    });
+
+    res.status(200).send(U);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/userId/:userId", async (req, res, next) => {
+  const { userId } = req.params
+
+  try {
+    let U = await User.findAll({
+      where: {
+        id: userId,
       },
     });
 
