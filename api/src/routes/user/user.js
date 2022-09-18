@@ -809,7 +809,7 @@ router.post("/register", async (req, res, next) => {
               <p style="font-size: 20px; font-weight: bold;">Bienvenido ${name} a QATARBETS!!</p>
               <p style="line-height: 23px; font-size: 15px; padding: 5px 0 15px;">Ya se ha registrado correctamente en QATARBETS, solo le queda cumplir un último paso para completar su registro.</p>
               <p style="line-height: 23px; font-size: 15px; padding: 5px 0 15px;">Para que pueda acceder a todos nuestros servicios es necesario que verifique su cuenta:</p>
-              <a href="http://localhost:3001/verify/${EmailVerify}" class="boton">Aquí</a>
+              <a href="https://qatarbets-backend-production-ab54.up.railway.app/verify/${EmailVerify}" class="boton">Verifique su cuenta aquí</a>
               </td>
             </tr>
           </table>
