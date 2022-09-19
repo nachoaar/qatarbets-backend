@@ -15,55 +15,55 @@ var identifyBet = function (id1, id2) {
     //home bestTeams
 
     if (bestTeams.includes(id1) && bestTeams.includes(id2)) {
-        profitCoefHome = 1.4
-        profitCoefDraw = 1.2
-        profitCoefAway = 1.4
+        profitCoefHome = 1.6
+        profitCoefDraw = 1.3
+        profitCoefAway = 1.6
     }
     if (bestTeams.includes(id1) && regularTeams.includes(id2)) {
-        profitCoefHome = 1.2
-        profitCoefDraw = 1.3
-        profitCoefAway = 1.5
+        profitCoefHome = 1.3
+        profitCoefDraw = 1.5
+        profitCoefAway = 1.9
     }
     if (bestTeams.includes(id1) && worstTeams.includes(id2)) {
-        profitCoefHome = 1.15
-        profitCoefDraw = 1.35
-        profitCoefAway = 1.6
+        profitCoefHome = 1.45
+        profitCoefDraw = 1.85
+        profitCoefAway = 3
     }
 
     //home RegularTeams 
 
     if (regularTeams.includes(id1) && bestTeams.includes(id2)) {
-        profitCoefHome = 1.5
-        profitCoefDraw = 1.3
-        profitCoefAway = 1.2
+        profitCoefHome = 1.9
+        profitCoefDraw = 1.65
+        profitCoefAway = 1.3
     }
     if (regularTeams.includes(id1) && regularTeams.includes(id2)) {
-        profitCoefHome = 1.4
-        profitCoefDraw = 1.2
-        profitCoefAway = 1.4
+        profitCoefHome = 1.85
+        profitCoefDraw = 1.4
+        profitCoefAway = 1.85
     }
     if (regularTeams.includes(id1) && worstTeams.includes(id2)) {
-        profitCoefHome = 1.2
-        profitCoefDraw = 1.3
-        profitCoefAway = 1.5
+        profitCoefHome = 1.3
+        profitCoefDraw = 1.75
+        profitCoefAway = 2.5
     }
 
     //home worstTeams 
 
     if (worstTeams.includes(id1) && bestTeams.includes(id2)) {
-        profitCoefHome = 1.6
-        profitCoefDraw = 1.35
-        profitCoefAway = 1.15
+        profitCoefHome = 2.65
+        profitCoefDraw = 1.75
+        profitCoefAway = 1.35
     }
     if (worstTeams.includes(id1) && regularTeams.includes(id2)) {
-        profitCoefHome = 1.5
-        profitCoefDraw = 1.3
-        profitCoefAway = 1.2
+        profitCoefHome = 2
+        profitCoefDraw = 1.55
+        profitCoefAway = 1.4
     }
     if (worstTeams.includes(id1) && worstTeams.includes(id2)) {
-        profitCoefHome = 1.4
-        profitCoefDraw = 1.2
-        profitCoefAway = 1.4
+        profitCoefHome = 1.95
+        profitCoefDraw = 1.35
+        profitCoefAway = 1.95
     }
 
     let betCoefobj = {
