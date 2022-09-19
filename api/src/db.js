@@ -70,7 +70,7 @@ sequelize.models = Object.fromEntries(capsEntries);
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
 
-const { Group, Match, Player, Team, Bet, HisBets, User } = sequelize.models;
+const { Group, Match, Player, Team, Bet, HisBets, User, Stage_fixture } = sequelize.models;
 
 // Aca vendrian las relaciones
 // Product.hasMany(Reviews);
@@ -95,6 +95,7 @@ HisBets.hasMany(User)
 
 Match.hasMany(Bet)
 
+
 //User.hasMany(Bet)
 
 // relacion de 1 a n de match con team
@@ -104,6 +105,10 @@ Team.belongsToMany(Match, {through: 'match_team'})
 //relacion de 1 a n 
 Match.hasMany(Bet)
 Bet.belongsTo(Match)
+
+//relacion de 1 a n 
+/* Stage_fixture.hasMany(Bet)
+Bet.belongsTo(Stage_fixture) */
 
 // relacion de 1 a n
 User.hasMany(Bet)
