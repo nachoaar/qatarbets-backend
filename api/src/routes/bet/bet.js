@@ -472,7 +472,7 @@ router.get('/bets5', async (req, res, next) => {
   }
   catch (error) {
     next(error)
-  }
+  }  
 }); 
 
 
