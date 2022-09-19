@@ -1,6 +1,6 @@
 require("dotenv").config();
 const { Router } = require("express");
-const { Bet, Match, User, Team } = require("../../db.js");
+const { Bet, Match, User, Team, Stage_fixture } = require("../../db.js");
 const { validateToken } = require('../tokenController.js');
 
 const router = Router();
@@ -10,7 +10,7 @@ router.post("/newBet", async (req, res, next) => {
   const token = validateToken(req.cookies.acces_token || '');
   if (token === '') {
     res.json('Usuario invalido');
-  }
+  } 
   try {
     var {
       fecha_hora,
@@ -31,7 +31,7 @@ router.post("/newBet", async (req, res, next) => {
         expected_profit,
         final_profit,
         matchId,
-        userId: token.id
+        userId: token.id 
       },
     });
     res.status(201).send('La apuesta se creo correctamente');
@@ -301,8 +301,88 @@ router.get('/calculateProfits', async (req, res, next) => {
       }
     })
     setTimeout(async function () {
-    let allProfitedBets = await Bet.findAll()
-    res.status(200).send(allProfitedBets)
+    let allBetsSend = await Bet.findAll()
+    res.status(200).send(allBetsSend)
+    }, 1000);
+  }
+
+  catch (error) {
+    next(error)
+  }
+});
+
+router.get('/calculateProfitsStage', async (req, res, next) => {
+
+  try {
+
+    let matchIdN = Number(req.query.matchId)
+    let matchId = req.query.matchId
+    
+     let matchWinner = req.query.matchWinner  // this can be only home, draw, away
+
+     if(matchIdN < 1 || matchIdN > 16){
+      return res.status(400).send('match id must be a number between 1 and 16')
+     } 
+
+     if (!(matchWinner === "home" || matchWinner === "away")) {
+      return res.status(400).send('You must enter the result of the match as home or away only, nor tie or draw are allowed')
+     }
+
+    let allBets = await Bet.findAll({
+      where: {
+        condition: matchId,
+      },
+    });
+
+    allBets.map(async (el) => {
+
+      let matchDB = await Stage_fixture.findByPk(matchId)
+      let actualCoef = -1
+
+      if (matchWinner === "home") actualCoef = matchDB.profit_coef_home
+      if (matchWinner === "draw") actualCoef = matchDB.profit_coef_draw
+      if (matchWinner === "away") actualCoef = matchDB.profit_coef_away
+
+      if (el.result === matchDB.result_match) {
+
+        await Bet.update({
+          expected_profit: el.money_bet * actualCoef,
+          final_profit: el.money_bet * actualCoef,
+        },
+          {
+            where: {
+              id: el.id,
+            }
+          });
+      }
+      else if (el.result === "draw" && matchDB.result_match === "tie") {
+
+        await Bet.update({
+          expected_profit: el.money_bet * actualCoef,
+          final_profit: el.money_bet * actualCoef,
+        },
+          {
+            where: {
+              id: el.id,
+            }
+          });
+      }
+      else {
+
+        await Bet.update({
+          expected_profit: el.money_bet * actualCoef,
+          final_profit: 0,
+        },
+          {
+            where: {
+              id: el.id,
+            }
+          });
+      }
+    })
+    setTimeout(async function () {
+    let allBetsSend = await Bet.findAll()
+    res.status(200).send(allBetsSend)
     }, 1000);
   }
 
