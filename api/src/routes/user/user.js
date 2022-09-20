@@ -53,6 +53,7 @@ router.get(function (req, res) {
   res.render("home");
 })
 
+
 router.put('/logout', async (req, res, next) => {
   const onlineToke = req.headers['online']
   try{
@@ -112,7 +113,7 @@ router.post("/login", async (req, res, next) => {
     await transporter.sendMail({
       from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
       to: email, //Receptor
-      subject: "Mail Verification", //Asunto
+      subject: "QATARBETS login", //Asunto
       html: `<!DOCTYPE html>
       <html lang="eng">
       <head>
@@ -506,7 +507,7 @@ router.post("/login/mobile", async (req, res) => {
     await transporter.sendMail({
       from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
       to: email, //Receptor
-      subject: "Mail Verification", //Asunto
+      subject: "QATARBETS login", //Asunto
       html: `<!DOCTYPE html>
       <html lang="eng">
       <head>
@@ -679,6 +680,7 @@ router.post("/register", async (req, res, next) => {
     if (EmailVal) return res.json("El mail ya existe!");
 
     //hago una variable llamada passwordHash la cual me encripta la pass
+
     let passwordHash = await bcryptjs.hash(pass, 8);
 
    //validacion de si existen los datos, que cree al usuario
@@ -701,7 +703,7 @@ router.post("/register", async (req, res, next) => {
     await transporter.sendMail({
       from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
       to: email, //Receptor
-      subject: "Mail Verification", //Asunto
+      subject: "Verificación de cuenta de QATARBETS", //Asunto
       html: `<!DOCTYPE html>
       <html lang="eng">
       <head>
@@ -902,13 +904,9 @@ router.post('/userForgottenPass', async (req, res, next) => {
 
     //Envio del mail para recuperacion de contraseña
     await transporter.sendMail({
-      from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
-      to: email, //Receptor
-      subject: "Forgotten Password", //Asunto
-      html: await transporter.sendMail({
         from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
         to: email, //Receptor
-        subject: "Mail Verification", //Asunto
+        subject: "Contraseña olvidada", //Asunto
         html: `<!DOCTYPE html>
         <html lang="eng">
         <head>
@@ -1015,7 +1013,7 @@ router.post('/userForgottenPass', async (req, res, next) => {
                 <td style="text-align: center; padding: 15px;">
                 <p style="font-size: 20px; font-weight: bold;">¿Has olvidado tu contraseña?</p>
                 <p style="line-height: 23px; font-size: 15px; padding: 5px 0 15px;">Nos ha llegado una solicitud de cambio de contraseña. De ser así por favor haga click en el siguiente boton</p>
-                <a href="" class="boton">Cambia tu contraseña</a>
+                <a href="http://localhost:3000/passChange/${token}" class="boton">Cambia tu contraseña</a>
                 </td>
               </tr>
             </table>
@@ -1053,8 +1051,7 @@ router.post('/userForgottenPass', async (req, res, next) => {
         </center>
         </body>
         </html>`,
-      }), 
-    });
+      });
     res.json(`Mail de recuperacion enviado a ${email}`);
   } catch (error) {
     next(error);
@@ -1071,8 +1068,7 @@ router.post('/userForgottenPass', async (req, res, next) => {
 //     if(!user) res.json('No se encontró a la victima')
 
 //     await user.update({userbanned: true}, { where: { userbanned : false } });
-
-//     res.json('LE DIERON AL MONOOO')
+//     res.json(a casa platita)
 // });
 
 // router.post('/newPass', async (req, res, next) => {

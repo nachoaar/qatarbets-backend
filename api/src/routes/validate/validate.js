@@ -99,18 +99,12 @@ router.post('/changePass/:token', async (req, res, next) => {
     let passwordHash = await bcryptjs.hash(newPass, 8);
     await user.update({pass: passwordHash }, {where: { pass : UserOldPass }});
 
-    res.json('contraseña cambiada corrrectamente')
-    
-  
-
-    res.json('Estas validado pa')
-    
+    res.json('contraseña cambiada corrrectamente')  
 
   } catch(error) {
     next(error)
   }
 })
-
 
 
 module.exports = router;
