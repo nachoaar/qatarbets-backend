@@ -627,7 +627,7 @@ router.get('/bets5', async (req, res, next) => {
 
     await allMatches.map(async(el1)=>{
       await sliceArray.map((el2)=>{
-      if (el2.matchId===el1.id) auxMatches.push(el1)
+      if (el2.matchId === el1.id) auxMatches.push(el1)
     })})
 
     for (let g = 0; g < auxMatches.length; g++){
@@ -648,7 +648,7 @@ router.get('/bets5', async (req, res, next) => {
   }
   catch (error) {
     next(error)
-  }
+  }  
 }); 
 
 
