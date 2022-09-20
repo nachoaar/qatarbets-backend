@@ -37,7 +37,7 @@ router.post('/', async (req, res, next) => {
       from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
       to: token.email, //Receptor
       subject: "Mail Verification", //Asunto
-      html: `<b>Has realizado una apuesta de ${amount}</b>`, //Texto del mail
+      html: `<b>Has realizado una apuesta de ${amount/100}</b>`, //Texto del mail
     });
     
     return res.status(200).json({ message: "Successful Payment" });
