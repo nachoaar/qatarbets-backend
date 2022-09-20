@@ -2,7 +2,7 @@ const { DataTypes, Sequelize } = require("sequelize");
 
 module.exports = (Sequelize) => {
   Sequelize.define(
-    "match",
+    "stage_fixture",
     {
       id: {
         type: DataTypes.INTEGER,
@@ -11,28 +11,27 @@ module.exports = (Sequelize) => {
       },
       date: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: true,
       },
       status: {
         type: DataTypes.STRING,
+        allowNull: true,
       },
       home_team_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          as: 'home',
-          model: 'teams',
-          key: 'id',
-        }
+        allowNull: true,
       },
       away_team_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          as: 'away',
-          model: 'teams',
-          key: 'id',
-        }
+        allowNull: true,
+      },
+      home_name: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      away_name: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
       result_match: {
         type: DataTypes.ENUM({
@@ -54,11 +53,23 @@ module.exports = (Sequelize) => {
       },
       stadium_name: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       city: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
+      },
+      home_stage_position: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      away_stage_position: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      stage: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
     },
     {

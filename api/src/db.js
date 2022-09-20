@@ -2,18 +2,49 @@ require("dotenv").config();
 const { Sequelize } = require("sequelize");
 const fs = require("fs");
 const path = require("path");
-const { match } = require("assert");
-const { DB_USER, DB_PASSWORD, DB_HOST } = process.env;
+const { PGUSER, PGPASSWORD, PGHOST, PGPORT, PGDATABASE, } = process.env;
+const { DB_USER, DB_PASSWORD, DB_HOST } = require('./DB_variables.js');
 
-const sequelize = new Sequelize(
+/* const sequelize = new Sequelize(
   `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/qatarbets`,
   {
     logging: false, // set to console.log to see the raw SQL queries
     native: false, // lets Sequelize know we can use pg-native for ~30% more speed
   }
-);
-const basename = path.basename(__filename);
+); */
 
+let sequelize =
+  process.env.NODE_ENV === "production"
+    ? new Sequelize({
+      database: PGDATABASE,
+      dialect: "postgres",
+      host: PGHOST,
+      port: PGPORT,
+      username: PGUSER,
+      password: PGPASSWORD,
+      pool: {
+        max: 3,
+        min: 1,
+        idle: 10000,
+      },
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false,
+        },
+        keepAlive: true,
+      },
+      ssl: true,
+    })
+    : new Sequelize(
+      `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/qatarbets`,
+      { logging: false, native: false }
+    );
+
+
+//postgresql://${{ PGUSER }}:${{ PGPASSWORD }}@${{ PGHOST }}:${{ PGPORT }}/${{ PGDATABASE }}
+//postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/qatarbets
+const basename = path.basename(__filename);
 const modelDefiners = [];
 
 // Leemos todos los archivos de la carpeta Models, los requerimos y agregamos al arreglo modelDefiners
@@ -39,7 +70,7 @@ sequelize.models = Object.fromEntries(capsEntries);
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
 
-const { Group, Match, Player, Team, Bet, HisBets,User } = sequelize.models;
+const { Group, Match, Player, Team, Bet, HisBets, User, Stage_fixture } = sequelize.models;
 
 // Aca vendrian las relaciones
 // Product.hasMany(Reviews);
@@ -66,6 +97,8 @@ Match.hasMany(Bet)
 
 User.hasMany(Bet)
 
+//User.hasMany(Bet)
+
 // relacion de 1 a n de match con team
 Match.belongsToMany(Team, {through: 'match_team'})
 Team.belongsToMany(Match, {through: 'match_team'})
@@ -73,6 +106,10 @@ Team.belongsToMany(Match, {through: 'match_team'})
 //relacion de 1 a n 
 Match.hasMany(Bet)
 Bet.belongsTo(Match)
+
+//relacion de 1 a n 
+/* Stage_fixture.hasMany(Bet)
+Bet.belongsTo(Stage_fixture) */
 
 // relacion de 1 a n
 User.hasMany(Bet)
@@ -95,7 +132,7 @@ HisBets.hasMany(User)
 
 Match.hasMany(Bet)
 
-User.hasMany(Bet)
+//User.hasMany(Bet)
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
