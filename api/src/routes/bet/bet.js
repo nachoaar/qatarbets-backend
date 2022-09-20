@@ -169,8 +169,8 @@ router.post("/newBet", async (req, res, next) => {
           <table style="background-color:#ffffff; width: 100%;">
             <tr>
               <td style="text-align: center; padding: 15px;">
-              <p style="font-size: 20px; font-weight: bold;">Has realizado correctamente la apuesta al partido de ${localName} - ${visitanteName}</p>
-              <p style="line-height: 23px; font-size: 15px; padding: 5px 0 15px;">Felicidades, has realizado con éxito la apuesta en el partido de ${localName} - ${visitanteName} que se realizará el día ${partido.date}</p>
+              <p style="font-size: 20px; font-weight: bold;">Has realizado correctamente la apuesta al partido de</p>
+              <p style="line-height: 23px; font-size: 15px; padding: 5px 0 15px;">Felicidades, has realizado con éxito la apuesta en el partido de que se realizará el día AAAA</p>
               <a href="https://qatarbets-frontend-git-develop-nachoaar.vercel.app" class="boton">Mira aquí tus apuestas</a>
               </td>
             </tr>
