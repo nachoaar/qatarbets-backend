@@ -42,8 +42,10 @@ router.post('/', async (req, res, next) => {
     }); */
     
     let partidoId = matchId;
+    console.log("matchId")
+    console.log(matchId)
 
-    let partido = Match.findOne({ where: { matchId: partidoId } })
+    /* let partido = Match.findOne({ where: { matchId: partidoId } })
     let partidoLocal = partido.home_team_id;
     let partidoVisitante =  partido.away_team_id;
     
@@ -51,7 +53,7 @@ router.post('/', async (req, res, next) => {
     let Visitante = Team.findOne({ where: { id : partidoVisitante } });
 
     let localName = Local.name;
-    let visitanteName = Visitante.name;
+    let visitanteName = Visitante.name; */
     let email = token.email;
 
     await transporter.sendMail({
@@ -162,8 +164,8 @@ router.post('/', async (req, res, next) => {
           <table style="background-color:#ffffff; width: 100%;">
             <tr>
               <td style="text-align: center; padding: 15px;">
-              <p style="font-size: 20px; font-weight: bold;">Has realizado correctamente la apuesta al partido de ${localName} VS ${visitanteName}</p>
-              <p style="line-height: 23px; font-size: 15px; padding: 5px 0 15px;">Felicidades, has realizado con éxito la apuesta en el partido de ${localName} VS ${visitanteName} que se realizará el día ${partido.date}</p>
+              <p style="font-size: 20px; font-weight: bold;">Has realizado correctamente la apuesta al partido de </p>
+              <p style="line-height: 23px; font-size: 15px; padding: 5px 0 15px;">Felicidades, has realizado con éxito la apuesta en el partido de  que se realizará el día </p>
               <a href="https://qatarbets-frontend-git-develop-nachoaar.vercel.app" class="boton">Mira aquí tus apuestas</a>
               </td>
             </tr>
