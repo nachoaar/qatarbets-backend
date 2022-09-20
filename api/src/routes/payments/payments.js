@@ -4,6 +4,7 @@ const Stripe = require('stripe');
 const stripe = new Stripe(`${process.env.STRIPE_SECRET}`);
 const nodemailer = require('nodemailer');
 const { validateToken } = require("../tokenController");
+const { Match } = require("../../db.js");
 
 const router = Router();
 
@@ -19,7 +20,7 @@ const transporter = nodemailer.createTransport({
 
 router.post('/', async (req, res, next) => {
 
-  const { id, amount } = req.body;
+  const { id, amount, matchId } = req.body;
   const token = validateToken(req.cookies.acces_token || '');
   if (token === '') {
     res.json('Usuario invalido');
@@ -38,11 +39,24 @@ router.post('/', async (req, res, next) => {
       to: token.email, //Receptor
       subject: "Mail Verification", //Asunto
       html: `<b>Has realizado una apuesta de ${amount/100}</b>`, //Texto del mail
-    }); */ 
+    }); */
+    
+    let partidoId = matchId;
+
+    let partido = Match.findOne({ where: { matchId: partidoId } })
+    let partidoLocal = partido.home_team_id;
+    let partidoVisitante =  partido.away_team_id;
+    
+    let Local = Team.findOne({ where: { id : partidoLocal } });
+    let Visitante = Team.findOne({ where: { id : partidoVisitante } });
+
+    let localName = Local.name;
+    let visitanteName = Visitante.name;
+    let email = token.email;
 
     await transporter.sendMail({
       from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
-      to: token.email, //Receptor
+      to: email, //Receptor
       subject: "Apuesta realizada con éxito", //Asunto
       html: `<!DOCTYPE html>
       <html lang="eng">
@@ -148,8 +162,8 @@ router.post('/', async (req, res, next) => {
           <table style="background-color:#ffffff; width: 100%;">
             <tr>
               <td style="text-align: center; padding: 15px;">
-              <p style="font-size: 20px; font-weight: bold;">Has realizado correctamente la apuesta al partido de</p>
-              <p style="line-height: 23px; font-size: 15px; padding: 5px 0 15px;">Felicidades, has realizado con éxito la apuesta en el partido de que se realizará el día AAAA</p>
+              <p style="font-size: 20px; font-weight: bold;">Has realizado correctamente la apuesta al partido de ${localName} VS ${visitanteName}</p>
+              <p style="line-height: 23px; font-size: 15px; padding: 5px 0 15px;">Felicidades, has realizado con éxito la apuesta en el partido de ${localName} VS ${visitanteName} que se realizará el día ${partido.date}</p>
               <a href="https://qatarbets-frontend-git-develop-nachoaar.vercel.app" class="boton">Mira aquí tus apuestas</a>
               </td>
             </tr>
