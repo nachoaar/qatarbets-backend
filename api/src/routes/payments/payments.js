@@ -41,11 +41,11 @@ router.post('/', async (req, res, next) => {
       html: `<b>Has realizado una apuesta de ${amount/100}</b>`, //Texto del mail
     }); */
     
-    let partidoId = matchId;
+    let partidoId = Number(matchId);
     console.log("matchId")
     console.log(matchId)
 
-    /* let partido = Match.findOne({ where: { matchId: partidoId } })
+    let partido = Match.findOne({ where: { matchId: partidoId } })
     let partidoLocal = partido.home_team_id;
     let partidoVisitante =  partido.away_team_id;
     
@@ -53,7 +53,7 @@ router.post('/', async (req, res, next) => {
     let Visitante = Team.findOne({ where: { id : partidoVisitante } });
 
     let localName = Local.name;
-    let visitanteName = Visitante.name; */
+    let visitanteName = Visitante.name; 
     let email = token.email;
 
     await transporter.sendMail({
