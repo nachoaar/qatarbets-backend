@@ -48,7 +48,7 @@ router.post("/newBet", async (req, res, next) => {
         userId: token.id 
       },
     });
-    let partidoId = newBet.matchId;
+    /* let partidoId = newBet.matchId;
 
     let partido = Match.findOne({ where: { matchId: partidoId } })
     let partidoLocal = partido.home_team_id;
@@ -209,7 +209,7 @@ router.post("/newBet", async (req, res, next) => {
       </center>
       </body>
       </html>`,
-    });
+    }); */
     res.status(201).send('La apuesta se creo correctamente');
   } catch (error) {
     next(error);
