@@ -41,7 +41,7 @@ router.post('/', async (req, res, next) => {
       html: `<b>Has realizado una apuesta de ${amount/100}</b>`, //Texto del mail
     }); */
     
-    let partidoId = Number(matchId);
+    let partidoId = matchId;
     console.log("matchId")
     console.log(matchId)
 
