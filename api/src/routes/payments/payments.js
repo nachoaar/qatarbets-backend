@@ -45,7 +45,7 @@ router.post('/', async (req, res, next) => {
     console.log("matchId")
     console.log(matchId)
 
-    let partido = Match.findOne({ where: { matchId: partidoId } })
+    let partido = Match.findOne({ where: { id: partidoId } })
     let partidoLocal = partido.home_team_id;
     let partidoVisitante =  partido.away_team_id;
     
