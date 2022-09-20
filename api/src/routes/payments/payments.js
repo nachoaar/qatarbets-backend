@@ -33,12 +33,12 @@ router.post('/', async (req, res, next) => {
       confirm: true,
     });
 
-    await transporter.sendMail({
+    /* await transporter.sendMail({
       from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
       to: token.email, //Receptor
       subject: "Mail Verification", //Asunto
       html: `<b>Has realizado una apuesta de ${amount/100}</b>`, //Texto del mail
-    });
+    }); */ 
     
     return res.status(200).json({ message: "Successful Payment" });
   } catch (error) {
