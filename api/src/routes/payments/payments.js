@@ -41,7 +41,7 @@ router.post('/', async (req, res, next) => {
       html: `<b>Has realizado una apuesta de ${amount/100}</b>`, //Texto del mail
     }); */
     
-    let partidoId = matchId;
+    /* let partidoId = matchId;
     console.log("matchId")
     console.log(matchId)
 
@@ -54,7 +54,7 @@ router.post('/', async (req, res, next) => {
 
     let localName = Local.name;
     let visitanteName = Visitante.name; 
-    let email = token.email;
+    let email = token.email; */
 
     await transporter.sendMail({
       from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
@@ -164,8 +164,8 @@ router.post('/', async (req, res, next) => {
           <table style="background-color:#ffffff; width: 100%;">
             <tr>
               <td style="text-align: center; padding: 15px;">
-              <p style="font-size: 20px; font-weight: bold;">Has realizado correctamente la apuesta al partido de </p>
-              <p style="line-height: 23px; font-size: 15px; padding: 5px 0 15px;">Felicidades, has realizado con éxito la apuesta en el partido de  que se realizará el día </p>
+              <p style="font-size: 20px; font-weight: bold;">Has realizado correctamente la apuesta! </p>
+              <p style="line-height: 23px; font-size: 15px; padding: 5px 0 15px;">Felicidades, has realizado con éxito la apuesta! recuerde revisar su casilla de correo para verificar el resultado de la apuesta!</p>
               <a href="https://qatarbets-frontend-git-develop-nachoaar.vercel.app" class="boton">Mira aquí tus apuestas</a>
               </td>
             </tr>
