@@ -58,7 +58,7 @@ router.post('/', async (req, res, next) => {
 
     await transporter.sendMail({
       from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
-      to: email, //Receptor
+      to: token.email, //Receptor
       subject: "Apuesta realizada con éxito", //Asunto
       html: `<!DOCTYPE html>
       <html lang="eng">
