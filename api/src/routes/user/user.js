@@ -681,7 +681,7 @@ router.post("/register", async (req, res, next) => {
 
     //hago una variable llamada passwordHash la cual me encripta la pass
 
-    // let passwordHash = await bcryptjs.hash(pass, 8);
+    let passwordHash = await bcryptjs.hash(pass, 8);
 
    //validacion de si existen los datos, que cree al usuario
   if(name && pass && email){
@@ -689,7 +689,7 @@ router.post("/register", async (req, res, next) => {
     let usuario = await User.create({
       name: name,
       age: age,
-      pass: pass,
+      pass: passwordHash,
       email: email,
       avatar: avatar,
       rol: rol,
