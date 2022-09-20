@@ -4,7 +4,7 @@ const Stripe = require('stripe');
 const stripe = new Stripe(`${process.env.STRIPE_SECRET}`);
 const nodemailer = require('nodemailer');
 const { validateToken } = require("../tokenController");
-const { Match } = require("../../db.js");
+const { Match, Team } = require("../../db.js");
 
 const router = Router();
 
