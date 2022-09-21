@@ -1139,6 +1139,33 @@ router.put('/changeAvatar', async (req, res, next) => {
   }
 });
 
+router.put('/changeUserName', async (req, res, next) => {
 
+  let newNameDb = req.query.newName;
+  let id = req.query.userId;
+  
+  try {
+    
+
+     await User.update({
+      name: newNameDb,
+    },
+      {
+        where: {
+          id: id,
+        }
+      });
+
+      setTimeout(async function () {
+      let newName = await User.findByPk(id) 
+    res.status(200).send(newName)
+  }, 500);
+  }
+  catch (error) {
+    next(error)
+  }
+});
+
+ 
 
 module.exports = router;
