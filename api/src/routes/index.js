@@ -9,6 +9,8 @@ const hisBetsRoute = require('./hisBets/hisBets.js');
 const UserConfig= require('./user/user');
 const paymentRoute = require('./payments/payments');
 const validateRoute = require('./validate/validate.js')
+const pfp = require('./Cloudinary/cloudinary.js')
+
 
 const router = Router();
 router.use(express.json());
@@ -26,4 +28,5 @@ router.use('/groups', groups);
 router.use('/user', UserConfig);
 router.use('/pay', paymentRoute)
 router.use('/validate', validateRoute);
+router.use('/avatar', pfp)
 module.exports = router;
