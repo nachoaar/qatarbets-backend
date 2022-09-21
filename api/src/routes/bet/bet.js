@@ -2,12 +2,12 @@ require("dotenv").config();
 const { Router } = require("express");
 const { Bet, Match, User, Team, Stage_fixture } = require("../../db.js");
 const { validateToken } = require('../tokenController.js');
-const nodemailer = require("nodemailer"); 
+const nodemailer = require("nodemailer");
 const { identifyMail } = require('../typesOfMails.js');
 
 const router = Router();
 
- const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
   secure: true, // true for 465, false for other ports
@@ -17,8 +17,8 @@ const router = Router();
   auth: {
     user: "QatarBets2022@gmail.com", // generated ethereal user
     pass: "pcuclpxdckaayvbw", // generated ethereal password
-  },  
-}); 
+  },
+});
 
 router.post("/newBet", async (req, res, next) => {
   // el next esta para que luego se vaya al siguiente middleware, que es el control de errores que esta en app
@@ -49,7 +49,7 @@ router.post("/newBet", async (req, res, next) => {
         userId: token.id 
       },
     });
-    
+
     res.status(201).send('La apuesta se creo correctamente');
   } catch (error) {
     next(error);
@@ -317,8 +317,8 @@ router.get('/calculateProfits', async (req, res, next) => {
       }
     })
     setTimeout(async function () {
-    let allBetsSend = await Bet.findAll()
-    res.status(200).send(allBetsSend)
+      let allBetsSend = await Bet.findAll()
+      res.status(200).send(allBetsSend)
     }, 1000);
   }
 
@@ -333,16 +333,16 @@ router.get('/calculateProfitsStage', async (req, res, next) => {
 
     let matchIdN = Number(req.query.matchId)
     let matchId = req.query.matchId
-    
-     let matchWinner = req.query.matchWinner  // this can be only home, draw, away
 
-     if(matchIdN < 1 || matchIdN > 16){
+    let matchWinner = req.query.matchWinner  // this can be only home, draw, away
+
+    if (matchIdN < 1 || matchIdN > 16) {
       return res.status(400).send('match id must be a number between 1 and 16')
-     } 
+    }
 
-     if (!(matchWinner === "home" || matchWinner === "away")) {
+    if (!(matchWinner === "home" || matchWinner === "away")) {
       return res.status(400).send('You must enter the result of the match as home or away only, nor tie or draw are allowed')
-     }
+    }
 
     let allBets = await Bet.findAll({
       where: {
@@ -397,8 +397,8 @@ router.get('/calculateProfitsStage', async (req, res, next) => {
       }
     })
     setTimeout(async function () {
-    let allBetsSend = await Bet.findAll()
-    res.status(200).send(allBetsSend)
+      let allBetsSend = await Bet.findAll()
+      res.status(200).send(allBetsSend)
     }, 1000);
   }
 
@@ -410,19 +410,19 @@ router.get('/calculateProfitsStage', async (req, res, next) => {
 router.get('/bets5', async (req, res, next) => {
 
   function bubbleSort(array) {
-    
-    for (let i = 0; i < array.length - 1; i++) {                                                                                                         
-      for(let j = 0; j < array.length - 1 - i; j++){
-  
-        if(array[j].count > array[j+1].count){
-  
-        let tmp = array[j];
-        array[j]=array[j+1];
-        array[j+1] = tmp; 
+
+    for (let i = 0; i < array.length - 1; i++) {
+      for (let j = 0; j < array.length - 1 - i; j++) {
+
+        if (array[j].count > array[j + 1].count) {
+
+          let tmp = array[j];
+          array[j] = array[j + 1];
+          array[j + 1] = tmp;
+        }
       }
     }
-  }
-   return array;
+    return array;
   }
 
   try {
@@ -430,23 +430,23 @@ router.get('/bets5', async (req, res, next) => {
     let betArray = [];
 
     let allBets = await Bet.findAll({
-      order : [
+      order: [
         ['matchId', 'ASC']
       ],
     });
 
     var count = 0
 
-    function increaseCount (){
+    function increaseCount() {
       count++
       return count
     }
     let a = allBets[0].matchId
-    let superArray=[]
+    let superArray = []
 
     await allBets.map(async (el) => {
-      
-      if (a !== el.matchId){
+
+      if (a !== el.matchId) {
         superArray.push({
           matchId: a,
           count: count,
@@ -461,35 +461,36 @@ router.get('/bets5', async (req, res, next) => {
     })
 
     let newArray = await bubbleSort(superArray)
-    let sliceArray = await newArray.slice(newArray.length-5,newArray.length)    
+    let sliceArray = await newArray.slice(newArray.length - 5, newArray.length)
     let allMatches = await Match.findAll()
-    let auxMatches=[]
+    let auxMatches = []
 
-    await allMatches.map(async(el1)=>{
-      await sliceArray.map((el2)=>{
-      if (el2.matchId === el1.id) auxMatches.push(el1)
-    })})
+    await allMatches.map(async (el1) => {
+      await sliceArray.map((el2) => {
+        if (el2.matchId === el1.id) auxMatches.push(el1)
+      })
+    })
 
-    for (let g = 0; g < auxMatches.length; g++){
-     let homeName = await Team.findByPk(auxMatches[g].home_team_id,{
-      attributes: ['name']
-     }) 
-     let awayName = await Team.findByPk(auxMatches[g].away_team_id,{
-      attributes: ['name']
-     })
-     auxMatches[g] = {
-      matchData: auxMatches[g],
-      homeName: homeName,
-      awayName: awayName 
-    }   
+    for (let g = 0; g < auxMatches.length; g++) {
+      let homeName = await Team.findByPk(auxMatches[g].home_team_id, {
+        attributes: ['name']
+      })
+      let awayName = await Team.findByPk(auxMatches[g].away_team_id, {
+        attributes: ['name']
+      })
+      auxMatches[g] = {
+        matchData: auxMatches[g],
+        homeName: homeName,
+        awayName: awayName
+      }
     }
 
     res.status(200).send(auxMatches)
   }
   catch (error) {
     next(error)
-  }  
-}); 
+  }
+});
 
 
 // Mails for bets winners and losers
@@ -498,72 +499,90 @@ router.get('/mailResults', async (req, res, next) => {
 
   try {
 
-    setTimeout(async function () {
-    let allBets = await Bet.findAll();
+    let simulate = req.query.sim
 
-    for (let i = 0; i < allBets.length; i++){
+    if (simulate === "reset") {
+      await Bet.update({
+        condition: "ready",
+      },
+        {
+          where: {
+            condition: "finished",
+          }
+        });
 
-    /* allBets.map(async(el1)=>{ */
+      return res.status(200).send("bets reseted")
+    }
 
-       if (allBets[i].final_profit === 0 && allBets[i].condition !== "finished") { 
+    if (simulate === "simulate") {
 
-        var foundMatch = await Match.findByPk(allBets[i].matchId)
+      setTimeout(async function () {
+        let allBets = await Bet.findAll();
 
-        var foundHome = await Team.findByPk(foundMatch.home_team_id)
+        for (let i = 0; i < allBets.length; i++) {
 
-        var betResult="perdedor";
+          /* allBets.map(async(el1)=>{ */
+          if (allBets[i].final_profit !== null && allBets[i].final_profit > -1) {
 
-        var foundAway = await Team.findByPk(foundMatch.away_team_id) 
-       
-        var finalProfit = 0; 
-       
-        var userMail = await User.findByPk(allBets[i].userId)
+            if (allBets[i].final_profit === 0 && allBets[i].condition === "ready") {
 
-        await Bet.update({
-          condition: "finished",
-        },
-          {
-            where: {
-              id: allBets[i].id,
+              var foundMatch = await Match.findByPk(allBets[i].matchId)
+
+              var foundHome = await Team.findByPk(foundMatch.home_team_id)
+
+              var betResult = "perdedor";
+
+              var foundAway = await Team.findByPk(foundMatch.away_team_id)
+
+              var finalProfit = 0;
+
+              var userMail = await User.findByPk(allBets[i].userId)
+
+              await Bet.update({
+                condition: "finished",
+              },
+                {
+                  where: {
+                    id: allBets[i].id,
+                  }
+                });
+              /* console.log(userMail) */
+              /* let email = userMail.email
+              console.log(email) */
             }
-          });
-        /* console.log(userMail) */
-        /* let email = userMail.email
-        console.log(email) */
-       }
 
-       if (allBets[i].final_profit > 0 && allBets[i].condition !== "finished"){ 
+            if (allBets[i].final_profit > 0 && allBets[i].condition === "ready") {
 
-        var foundMatch = await Match.findByPk(allBets[i].matchId)
+              var foundMatch = await Match.findByPk(allBets[i].matchId)
 
-        var foundHome = await Team.findByPk(foundMatch.home_team_id)
+              var foundHome = await Team.findByPk(foundMatch.home_team_id)
 
-        var betResult= "ganador";
+              var betResult = "ganador";
 
-        var foundAway = await Team.findByPk(foundMatch.away_team_id) 
-       
-        var finalProfit = allBets[i].final_profit; 
-       
-        var userMail = await User.findByPk(allBets[i].userId)
+              var foundAway = await Team.findByPk(foundMatch.away_team_id)
 
-        await Bet.update({
-          condition: "finished",
-        },
-          {
-            where: {
-              id: allBets[i].id,
+              var finalProfit = allBets[i].final_profit;
+
+              var userMail = await User.findByPk(allBets[i].userId)
+
+              await Bet.update({
+                condition: "finished",
+              },
+                {
+                  where: {
+                    id: allBets[i].id,
+                  }
+                });
+              
             }
-          });
-        /* console.log(userMail) */
-        /* let email = userMail.email
-        console.log(email) */
-       }
+            
+            if (userMail !== undefined) {
 
-      await transporter.sendMail({
-          from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
-          to: userMail.email, //Receptor
-          subject: "QATARBETS login", //Asunto
-          html: `<!DOCTYPE html>
+              await transporter.sendMail({
+                from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
+                to: userMail.email, //Receptor
+                subject: "QATARBETS login", //Asunto
+                html: `<!DOCTYPE html>
           <html lang="eng">
           <head>
           <meta charset="utf-8"/>
@@ -668,7 +687,7 @@ router.get('/mailResults', async (req, res, next) => {
                 <tr>
                   <td style="text-align: center; padding: 15px;">
                   <p style="font-size: 20px; font-weight: bold;">El resultado de tu apuesta ya esta aqui!!</p>
-                  <p style="line-height: 23px; font-size: 15px; padding: 5px 0 15px;">El resultado de tu apuesta del partido de ${foundHome.name} vs ${foundAway.name} es ${betResult} y el monto resultante es: ${finalProfit}</p>
+                  <p style="line-height: 23px; font-size: 15px; padding: 5px 0 15px;">El resultado de tu apuesta del partido de ${foundHome.name} vs ${foundAway.name} es ${betResult} y el monto resultante es: $${finalProfit} USD</p>
                   <a href="https://qatarbets-frontend-git-develop-nachoaar.vercel.app" class="boton">Siga apostando en nuestro sitio web</a>
                   </td>
                 </tr>
@@ -707,16 +726,17 @@ router.get('/mailResults', async (req, res, next) => {
           </center>
           </body>
           </html>`,
-        });
+              });
 
-      
-    /* }) */
+            }
+
+           
+          }
+        }
+       
+        res.status(200).send("mails sended")
+      }, 2000);
     }
-    /* 
-    setTimeout(async function () { */
-    /* let allBetsSend = await Bet.findAll() */
-    res.status(200).send("mails sended")
-    }, 2000);
   }
 
   catch (error) {
