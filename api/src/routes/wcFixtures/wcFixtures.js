@@ -279,64 +279,6 @@ router.put('/matchSimulation', async (req, res, next) => {
           }
         });
 
-      /*  if (auxResult === "home") {
-         await Team.update({
- 
-           group_points: home.group_points + 3
-         },
-           {
-             where: {
-               id: matchFound.home_team_id,
-             }
-           });
-         await Team.update({
-           group_points: away.group_points + 0
-         },
-           {
-             where: {
-               id: matchFound.away_team_id,
-             }
-           });
-       }
-       if (auxResult === "tie") {
-         await Team.update({
-           group_points: home.group_points + 1
-         },
-           {
-             where: {
-               id: matchFound.home_team_id,
-             }
-           });
-         await Team.update({
-           group_points: away.group_points + 1
-         },
-           {
-             where: {
-               id: matchFound.away_team_id,
-             }
-           });
-       }
-       if (auxResult === "away") {
-         await Team.update({
-           group_points: home.group_points + 0
-         },
-           {
-             where: {
-               id: matchFound.home_team_id,
-             }
-           });
-         await Team.update({
- 
-           group_points: away.group_points + 3
-         },
-           {
-             where: {
-               id: matchFound.away_team_id,
-             }
-           });
-       } */
-
-
       let matchFoundAux = await Match.findAll({ where: { id: id } })
       res.status(200).send(matchFoundAux)
     }
@@ -352,22 +294,7 @@ router.put('/matchSimulation', async (req, res, next) => {
             id: id,
           }
         });
-      /*  await Team.update({
-         group_points: null
-       },
-         {
-           where: {
-             id: matchFound.home_team_id,
-           }
-         });
-       await Team.update({
-         group_points: null
-       },
-         {
-           where: {
-             id: matchFound.away_team_id,
-           }
-         }); */
+      
       res.status(200).send('match reseted')
     }
   }
@@ -1742,6 +1669,19 @@ router.post('/finalStageAllSimulation', async (req, res, next) => {
       })
       res.status(200).send('all matches reseted')
     }
+  }
+  catch (error) {
+    next(error)
+  }
+});
+
+router.get('/StageFixture/allMatches', async (req, res, next) => {
+
+  let allMatches = await Stage_fixture.findAll()
+  
+  try {
+    let allMatches = await Stage_fixture.findAll()
+    res.status(200).send(allMatches)
   }
   catch (error) {
     next(error)
