@@ -546,9 +546,6 @@ router.get('/mailResults', async (req, res, next) => {
                     id: allBets[i].id,
                   }
                 });
-              /* console.log(userMail) */
-              /* let email = userMail.email
-              console.log(email) */
             }
 
             if (allBets[i].final_profit > 0 && allBets[i].condition === "ready") {
@@ -573,7 +570,6 @@ router.get('/mailResults', async (req, res, next) => {
                     id: allBets[i].id,
                   }
                 });
-              
             }
             
             if (userMail !== undefined) {
