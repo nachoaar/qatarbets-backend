@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const routes = require('./routes/index.js');
 //const { FRONT_HOST, DEPLOY_URL } = process.env;
-const URL = "http://localhost:3000" || process.env.DEPLOY_URL;
+const URL = "http://localhost:300" || process.env.DEPLOY_URL;
 const server = express();
 const { ALLOW_ALL} = require('./DB_variables.js');
 
@@ -21,7 +21,7 @@ server.use((req, res, next) => {
   if (ALLOW_ALL === 1) {
     res.setHeader('Access-Control-Allow-Origin', "*");
   }else if (allowedOrigins.includes(origin)) {
-       res.setHeader('Access-Control-Allow-Origin', origin);
+       res.setHeader('Access-Control-Allow-Origin', "*");
   }
 
   res.header('Access-Control-Allow-Credentials', 'true');

@@ -52,7 +52,6 @@ router.get('/verify/:token', async (req, res, next) => {
   const { token } = req.params;
   try{
     const datos = validateToken(token)
-    console.log(datos.email);
     if(datos === null){
       return res.json('Token invalido o inexistente')
     }
