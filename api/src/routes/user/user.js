@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const bcryptjs = require("bcryptjs");
 const router = Router();
-const { User } = require('../../db');
+const { User } = require("../../db");
 const nodemailer = require("nodemailer");
 
 const jwt = require("jsonwebtoken");
@@ -15,14 +15,13 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true, // true for 465, false for other ports
   tls: {
-    rejectUnauthorized: false
+    rejectUnauthorized: false,
   },
   auth: {
     user: "QatarBets2022@gmail.com", // generated ethereal user
     pass: "pcuclpxdckaayvbw", // generated ethereal password
-  },  
+  },
 });
-
 
 transporter.verify().then(() => {
   console.log("Listo para enviar emails");
@@ -64,7 +63,7 @@ router.put('/logout', async (req, res, next) => {
   }catch(error){
     next(error)
   }
-})
+});
 
 router.get("/", async (req, res) => {
   res.json(await User.findAll());
@@ -77,11 +76,15 @@ router.get("/profile", validateToken, (req, res) => {
 //La ruta login con todas sus validaciones
 router.post("/login", async (req, res, next) => {
   const { pass, email } = req.body;
-  
+
   try {
-    if (!pass || !email) return res.json({ error: "Complete todos los parametros"});
-    const UserInfo = await User.findOne({ where: { email: email } })
-    if (!UserInfo) return res.json({ error: "Combinacion de email y contraseña incorrecta" });
+    if (!pass || !email)
+      return res.json({ error: "Complete todos los parametros" });
+    const UserInfo = await User.findOne({ where: { email: email } });
+    if (!UserInfo)
+      return res.json({
+        error: "Combinacion de email y contraseña incorrecta",
+      });
     const UserPass = UserInfo.pass;
     // const UserEmail = UserInfo.email;
     // const UserName = UserInfo.name;
@@ -90,6 +93,9 @@ router.post("/login", async (req, res, next) => {
         req.session.name = UserName;
         res.send('Logueado correctamente como ' + UserName)
       } */
+    if (UserInfo.emailvalidate === false) {
+      return res.json({ error: "El usuario no esta validado!" });
+    }
     bcryptjs.compare(pass, UserPass).then((match) => {
       if (match === false) {
         res.json({ error: "Combinacion de email y contraseña incorrecta" });
@@ -103,10 +109,10 @@ router.post("/login", async (req, res, next) => {
         });
 
         res.json({
-          message: 'Usuario logueado con exito!',
+          message: "Usuario logueado con exito!",
           avatar: UserInfo.avatar,
           name: UserInfo.name,
-          rol: UserInfo.rol
+          rol: UserInfo.rol,
         });
       }
     });
@@ -298,9 +304,9 @@ router.post("/login", async (req, res, next) => {
 //           avatar: UserInfo.avatar,
 //           name: UserInfo.name,
 //           rol: UserInfo.rol
-          
-//         });        
-//       }   
+
+//         });
+//       }
 //     });
 
 //     await transporter.sendMail({
@@ -338,7 +344,7 @@ router.post("/login", async (req, res, next) => {
 //           margin: 0 auto;
 //           width: 100%;
 //           max-width: 600px;
-//           border-spacing: 0; 
+//           border-spacing: 0;
 //           font-family: sans-serif;
 //           color: #171a1b;
 //         }
@@ -350,7 +356,7 @@ router.post("/login", async (req, res, next) => {
 //           width: 100%;
 //           max-width: 300px;
 //           display: inline-block;
-//           vertical-align: top;  
+//           vertical-align: top;
 //           text-align: center;
 //         }
 //         .boton{
@@ -361,7 +367,7 @@ router.post("/login", async (req, res, next) => {
 //           border-radius: 5px;
 //           font-weight: bold;
 //         }
-//       </style>   
+//       </style>
 //       </head>
 //       <body>
 //       <center class="wrapper">
@@ -374,18 +380,18 @@ router.post("/login", async (req, res, next) => {
 
 //       <!-- SECCION DE LOGOS -->
 //       <tr>
-//          <td style="padding: 14px 0 4px; background-color: rgb(96, 2, 96);">   
+//          <td style="padding: 14px 0 4px; background-color: rgb(96, 2, 96);">
 //              <table width="100%">
 
 //                 <tr>
 //                    <td class="dos-columnas">
-                   
+
 //                        <table class="columna">
 //                           <tr>
 //                              <td style="padding: 0 62px 10px;">
 //                                <a href="https://qatarbets-frontend-git-develop-nachoaar.vercel.app"><img src="https://i.imgur.com/cf7jqcN.png" width="250" alt="Encabezado" title="Encabezado logo"/></a>
 //                              </td>
-//                           </tr>   
+//                           </tr>
 //                        </table>
 
 //                        <table class="columna">
@@ -396,7 +402,7 @@ router.post("/login", async (req, res, next) => {
 //                              <a style="margin-left: 5px;" href="https://www.instagram.com/qatar_bets/"><img src="https://i.imgur.com/31bbcEa.png" width="27" alt="instagram"/></a>
 //                              <a style="margin-left: 5px;" href="https://www.linkedin.com/company/qatar-bets/"><img src="https://i.imgur.com/st6Gh4d.png" width="27" alt="linkedin"/></a>
 //                            </td>
-//                         </tr>   
+//                         </tr>
 //                      </table>
 
 //                    </td>
@@ -407,7 +413,7 @@ router.post("/login", async (req, res, next) => {
 //       </tr>
 //       <!-- MENSAJE -->
 //       <tr>
-//         <td style="padding: 15px 0 50px; background-color: #ffffff;"> 
+//         <td style="padding: 15px 0 50px; background-color: #ffffff;">
 //           <table style="background-color:#ffffff; width: 100%;">
 //             <tr>
 //               <td style="text-align: center; padding: 15px;">
@@ -461,11 +467,15 @@ router.post("/login", async (req, res, next) => {
 
 router.post("/login/mobile", async (req, res) => {
   var { pass, email } = req.body;
-  email= email.toLowerCase()
+  email = email.toLowerCase();
   try {
-    if (!pass || !email) return res.json({ error: "Complete todos los parametros"});
-    const UserInfo = await User.findOne({ where: { email: email } })
-    if (!UserInfo) return res.json({ error: "Combinacion de email y contraseña incorrecta" });
+    if (!pass || !email)
+      return res.json({ error: "Complete todos los parametros" });
+    const UserInfo = await User.findOne({ where: { email: email } });
+    if (!UserInfo)
+      return res.json({
+        error: "Combinacion de email y contraseña incorrecta",
+      });
     const UserPass = UserInfo.pass;
     // const UserEmail = UserInfo.email;
     // const UserName = UserInfo.name;
@@ -476,7 +486,9 @@ router.post("/login/mobile", async (req, res) => {
       } */
     bcryptjs.compare(pass, UserPass).then((match) => {
       if (match === false) {
-        return res.json({ error: "Combinacion de email y contraseña incorrecta" });
+        return res.json({
+          error: "Combinacion de email y contraseña incorrecta",
+        });
       } else {
         const accessToken = createTokens(UserInfo);
 
@@ -486,23 +498,19 @@ router.post("/login/mobile", async (req, res) => {
         //   secure: true,
         //   httpOnly: true,
         // });
-        if (UserInfo.rol === "admin"){
-        res.json({
-          avatar: UserInfo.avatar,
-          name: UserInfo.name,
-          token: accessToken,
-          rol: UserInfo.rol
-          
-        });
-
-      } else {
-        res.json({
-          error: "Usuario no admitido",
-        });
+        if (UserInfo.rol === "admin") {
+          res.json({
+            avatar: UserInfo.avatar,
+            name: UserInfo.name,
+            token: accessToken,
+            rol: UserInfo.rol,
+          });
+        } else {
+          res.json({
+            error: "Usuario no admitido",
+          });
+        }
       }
-      }
-      
-
     });
     await transporter.sendMail({
       from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
@@ -654,7 +662,6 @@ router.post("/login/mobile", async (req, res) => {
       </center>
       </body>
       </html>`,
-
     });
   } catch (error) {
     res.json("a" + error);
@@ -663,7 +670,7 @@ router.post("/login/mobile", async (req, res) => {
 
 //ruta register con las validaciones y relaciones
 router.post("/register", async (req, res, next) => {
-  const { name, age, pass, email, avatar, rol } = req.body;
+  const { name, age, pass, email, avatar, rol, emailvalidate } = req.body;
   try {
     //valiaciones del register para que hayan datos
     if (!name) return res.json("Se requiere un nombre!");
@@ -673,7 +680,9 @@ router.post("/register", async (req, res, next) => {
     if (isNaN(Number(age))) return res.json("La edad debe ser un número!");
     if (age < 18) return res.json("Se debe ser mayor de edad!");
     if (pass.length < 8)
-      return res.json("La contraseña tiene que tener un minimo de 8 caracteres!");
+      return res.json(
+        "La contraseña tiene que tener un minimo de 8 caracteres!"
+      );
 
     //validacion para que no se repitan datos en db
     const EmailVal = await User.findOne({ where: { email: email } });
@@ -683,28 +692,33 @@ router.post("/register", async (req, res, next) => {
 
     let passwordHash = await bcryptjs.hash(pass, 8);
 
-   //validacion de si existen los datos, que cree al usuario
-  if(name && pass && email){
-    //defino la variable que me va a crear al usuario
-    let usuario = await User.create({
-      name: name,
-      age: age,
-      pass: passwordHash,
-      email: email,
-      avatar: avatar,
-      rol: rol,
-    })
+    //validacion de si existen los datos, que cree al usuario
+    if (name && pass && email) {
+      //defino la variable que me va a crear al usuario
+      let usuario = await User.create({
+        name: name,
+        age: age,
+        pass: passwordHash,
+        email: email,
+        avatar: avatar,
+        rol: rol,
+        emailvalidate: emailvalidate,
+      });
 
-    const EmailVerify = jwt.sign({email: email, name: name }, `${TOKEN_SECRET}`, {
-      expiresIn: '1h',
-    })
-
-    //Hago en envío del mail de verificación
-    await transporter.sendMail({
-      from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
-      to: email, //Receptor
-      subject: "Verificación de cuenta de QATARBETS", //Asunto
-      html: `<!DOCTYPE html>
+      if (!emailvalidate) {
+        const EmailVerify = jwt.sign(
+          { email: email, name: name },
+          `${TOKEN_SECRET}`,
+          {
+            expiresIn: "1h",
+          }
+        );
+        //Hago en envío del mail de verificación
+        await transporter.sendMail({
+          from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
+          to: email, //Receptor
+          subject: "Mail Verification", //Asunto
+          html: `<!DOCTYPE html>
       <html lang="eng">
       <head>
       <meta charset="utf-8"/>
@@ -849,12 +863,18 @@ router.post("/register", async (req, res, next) => {
       </center>
       </body>
       </html>`,
-    });
+        });
 
-    res.json('Usuario registrado, confirme su cuenta en el email enviado');
-  }} catch(error){next(error)}
-})
-
+        return res.json(
+          "Usuario registrado, confirme su cuenta en el email enviado"
+        );
+      }
+      res.json("Usuario registrado")
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.get("/userId", async (req, res, next) => {
   const token = validateToken(req.cookies.acces_token || "");
@@ -873,10 +893,10 @@ router.get("/userId", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-}); 
+});
 
 router.get("/userId/:userId", async (req, res, next) => {
-  const { userId } = req.params
+  const { userId } = req.params;
 
   try {
     let U = await User.findAll({
@@ -891,16 +911,16 @@ router.get("/userId/:userId", async (req, res, next) => {
   }
 });
 
-router.post('/userForgottenPass', async (req, res, next) => {
+router.post("/userForgottenPass", async (req, res, next) => {
   const { email } = req.body;
   try {
     if (!email) res.json("the email is required");
     const EmailVal = await User.findOne({ where: { email: email } });
     if (!EmailVal) res.json("nonexistent email");
 
-    const token = jwt.sign({email: EmailVal.email}, `${TOKEN_SECRET}`, {
-      expiresIn: '15m',
-    })
+    const token = jwt.sign({ email: EmailVal.email }, `${TOKEN_SECRET}`, {
+      expiresIn: "15m",
+    });
 
     //Envio del mail para recuperacion de contraseña
     await transporter.sendMail({

@@ -95,6 +95,7 @@ HisBets.hasMany(User)
 
 Match.hasMany(Bet)
 
+User.hasMany(Bet)
 
 //User.hasMany(Bet)
 
