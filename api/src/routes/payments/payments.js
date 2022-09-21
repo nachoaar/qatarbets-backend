@@ -41,21 +41,7 @@ router.post('/', async (req, res, next) => {
       html: `<b>Has realizado una apuesta de ${amount/100}</b>`, //Texto del mail
     }); */
     
-    /* let partidoId = matchId;
-    console.log("matchId")
-    console.log(matchId)
-
-    let partido = Match.findOne({ where: { id: partidoId } })
-    let partidoLocal = partido.home_team_id;
-    let partidoVisitante =  partido.away_team_id;
-    
-    let Local = Team.findOne({ where: { id : partidoLocal } });
-    let Visitante = Team.findOne({ where: { id : partidoVisitante } });
-
-    let localName = Local.name;
-    let visitanteName = Visitante.name; 
-    let email = token.email; */
-
+  
     await transporter.sendMail({
       from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
       to: token.email, //Receptor
