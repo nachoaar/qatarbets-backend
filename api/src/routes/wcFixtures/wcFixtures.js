@@ -1703,7 +1703,7 @@ router.get('/StageFixture/allMatches', async (req, res, next) => {
   catch (error) {
     next(error)
   } 
-});
-
+}); 
+   
 
 module.exports = router; 
