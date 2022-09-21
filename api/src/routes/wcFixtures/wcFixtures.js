@@ -1113,7 +1113,7 @@ router.post('/8stageAllSimulation', async (req, res, next) => {
         });
 
         let stage4matches = [];
-        for (let d = 9; d < 13; d++) {
+        for (let d = 1; d < 13; d++) {
           stage4matches.push(await Stage_fixture.findByPk(d))
         }
         res.status(200).send(stage4matches)
@@ -1303,7 +1303,7 @@ router.post('/4stageAllSimulation', async (req, res, next) => {
         });
 
         let stage4matches = [];
-        for (let d = 13; d < 15; d++) {
+        for (let d = 1; d < 15; d++) {
           stage4matches.push(await Stage_fixture.findByPk(d))
         }
         res.status(200).send(stage4matches)
@@ -1580,7 +1580,7 @@ router.post('/semiStageAllSimulation', async (req, res, next) => {
         });
 
         let stage4matches = [];
-        for (let d = 15; d < 17; d++) {
+        for (let d = 1; d < 17; d++) {
           stage4matches.push(await Stage_fixture.findByPk(d))
         }
         res.status(200).send(stage4matches)
@@ -1715,7 +1715,7 @@ router.post('/finalStageAllSimulation', async (req, res, next) => {
       setTimeout(async function () {
         
         let stage4matches = [];
-        for (let d = 15; d < 17; d++) {
+        for (let d = 1; d < 17; d++) {
           stage4matches.push(await Stage_fixture.findByPk(d))
         }
         res.status(200).send(stage4matches)
