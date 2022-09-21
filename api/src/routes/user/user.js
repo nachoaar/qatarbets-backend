@@ -1092,4 +1092,33 @@ router.post('/userForgottenPass', async (req, res, next) => {
 // }
 // });
 
+router.put('/changeAvatar', async (req, res, next) => {
+
+  let newLink = req.query.avatarLink;
+  let id = req.query.userId;
+  
+  try {
+    
+
+     await User.update({
+      avatar: newLink,
+    },
+      {
+        where: {
+          id: id,
+        }
+      });
+
+      setTimeout(async function () {
+      let newAvatar = await User.findByPk(id) 
+    res.status(200).send(newAvatar)
+  }, 500);
+  }
+  catch (error) {
+    next(error)
+  }
+});
+
+
+
 module.exports = router;
