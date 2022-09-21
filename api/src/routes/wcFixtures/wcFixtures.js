@@ -1680,7 +1680,24 @@ router.get('/StageFixture/allMatches', async (req, res, next) => {
   let allMatches = await Stage_fixture.findAll()
   
   try {
-    let allMatches = await Stage_fixture.findAll()
+
+    function bubbleSort(array) {
+
+      for (let i = 0; i < array.length - 1; i++) {
+        for (let j = 0; j < array.length - 1 - i; j++) {
+
+          if (array[j].id > array[j + 1].id) {
+
+            let tmp = array[j];
+            array[j] = array[j + 1];
+            array[j + 1] = tmp;
+          }
+        }
+      }
+      return array;
+    }
+
+    let allMatches = bubbleSort(await Stage_fixture.findAll())
     res.status(200).send(allMatches)
   }
   catch (error) {
