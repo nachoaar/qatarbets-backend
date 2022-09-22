@@ -12,7 +12,8 @@ router.get('/cloud/pfp', async(req,res)=>{
     .expression('folder:qatar-bets-users-avatar')
     .sort_by('public_id','desc')
     .execute()
-    const publicsId =  resources.map((file) =>file.url )
+    const publicsId = await resources.map((file) =>file.url )
+    /* console.log(publicsId ) */
     res.send(publicsId)
     }catch(error){
         res.send(error)
