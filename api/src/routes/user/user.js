@@ -464,7 +464,7 @@ router.post("/login", async (req, res, next) => {
 //   }
 // });
 
-router.post("/login/mobile", async (req, res) => {git 
+router.post("/login/mobile", async (req, res) => {
   var { pass, email } = req.body;
   email = email.toLowerCase();
   try {
