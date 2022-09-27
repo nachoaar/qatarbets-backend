@@ -1,30 +1,178 @@
+
+![Logo](https://media.discordapp.net/attachments/1024420821558636644/1024426610004340736/header.png)
+
+
 # Qatarbets Backend
 
-AGREGAR UN ARCHIVO .env DENTRO DE LA CARPETA /api QUE CONSISTA DE LA SIGUIENTE FORMA:
+Servidor utilizado para manejar la información de la app Qatarbets.
 
-```env
-FRONT_HOST=hostDelFrontEnd
-BACK_HOST=hostDelBackEnd
-API_KEY=apiKeyDeAPISport
-DB_USER=usuarioDePostgres
-DB_PASSWORD=contraseñaDePostgres
-DB_HOST=hostDePostgres
+El servidor actualmente esta deployado y se puede acceder a partir de este endpoint:
 ```
-------------------------------------
-Facu
+https://qatarbets-backend-production.up.railway.app
+```
+\
+Gran parte de la información usada proviene de [API-SPORT](https://api-sports.io/)
 
-Agregue la opcion de que se conecte al servidor del back con el .env o el puerto 3000 en /api/index.js 
-porque no me dejaba abrir el localhost ya que me lo tiraba undefined
+### Iniciar el servidor
+Para iniciar el servidor debe pararse sobre la carpeta /api y ejecutar los siguientes comandos en la terminal:
 
-Cambie node por nodemon en el npm start del package.json de /api porque resetea el server cuando guarda un archivo 
-(tambien me gusta que salgan colores cuando lo inicio)
+- Para iniciar el servidor de forma normal:
+```bash
+  npm start
+```
 
-Instale dependencias para realizar el login, asi que van a tener que hacer un npm i de bcryptjs(Encriptacion de pass)
+- Para iniciar el proyecto con Nodemon:
+```bash
+  npm run dev
+```
 
-modificar el .env y agregar lo siguiente:
-DB_USER = UsuarioDeSuDB
-DB_PASSWORD = PassDeSuDB
-DB_DATABASE= NombreDeSuDB
+## Ejemplos de usos de la API
 
-------------------------------------
+#### Obtener todos los partidos del fixture
 
+```
+  GET /fixture/get
+```
+Ejemplo:
+```json
+{},
+{
+    "id": 855752,
+    "date": "2022-11-26T19:00:00.000Z",
+    "status": "Finished",
+    "home_team_id": 26,
+    "home_team": {
+        "id": 26,
+        "name": "Argentina",
+        "logo": "https://media.api-sports.io/football/teams/26.png",
+        "coach": "L. Scaloni",
+        "group_points": 6,
+        "code": "ARG",
+        "founded": 1893,
+        "groupId": 3
+    },
+    "away_team_id": 16,
+    "away_team": {},
+    "result_match": "away",
+    "stadium_name": "Lusail Iconic Stadium",
+    "profit_coef_home": 1.2,
+    "profit_coef_draw": 1.3,
+    "profit_coef_away": 1.5,
+    "city": "Lusail",
+    "groupId": 3
+
+},
+{},
+```
+
+#### Obtener un partido en especifico
+
+```
+  GET /fixture/${id}
+```
+
+| Parameter | Type     | Description |
+| :-------- | :------- | :------------|
+| `id`      | `number` | **Requerido**.|
+
+Ejemplo:
+```json
+[
+    {
+        "id": 855752,
+        "date": "2022-11-26T19:00:00.000Z",
+        "status": "Finished",
+        "home_team_id": 26,
+        "home_team": {},
+        "away_team_id": 16,
+        "away_team": {},
+        "result_match": "away",
+        "stadium_name": "Lusail Iconic Stadium",
+        "profit_coef_home": 1.2,
+        "profit_coef_draw": 1.3,
+        "profit_coef_away": 1.5,
+        "city": "Lusail",
+        "groupId": 3
+    }
+]
+```
+#### Obtener todos los grupos
+
+```
+  GET /groups
+```
+Ejemplo:
+
+```json
+{},
+{
+
+    "id": 3,
+    "name": "grupo_C",
+    "teams": [
+        {
+            "name": "Saudi Arabia",
+            "logo": "https://media.api-sports.io/football/teams/23.png"
+        },
+        {
+            "name": "Mexico",
+            "logo": "https://media.api-sports.io/football/teams/16.png"
+        },
+        {
+            "name": "Poland",
+            "logo": "https://media.api-sports.io/football/teams/24.png"
+        },
+        {
+            "name": "Argentina",
+            "logo": "https://media.api-sports.io/football/teams/26.png"
+        }
+    ]
+
+},
+{},
+```
+
+#### Logearse con email y contraseña
+
+```
+  POST /user/login
+```
+
+Ejemplo:
+
+request por body: 
+```json
+{
+    "email": "email@example.com",
+    "pass": "password_example"
+}
+```
+
+respuesta: 
+```json
+{
+    "message": "Usuario logueado con exito!",
+    "avatar": "avatar_de_usuario",
+    "name": "nombre_de_usuario",
+    "rol": "rol_de_usuario",
+}
+```
+### Tecnologias usadas
+- NodeJS
+- Express
+- Sequelize
+- PostgreSQL
+- Nodemailer
+- Stripe
+
+
+## Autores
+
+- [@nachoaar](https://github.com/nachoaar)
+- [@matuxer](https://www.github.com/matuxer)
+- [@faramir07](https://github.com/faramir07)
+- [@Faku0](https://github.com/Faku0)
+- [@gastonfuentes](https://github.com/gastonfuentes)
+- [@matiasmanuelmontes](https://github.com/matiasmanuelmontes)
+- [@Maikyls](https://github.com/Maikyls)
+- [@JorgeCanale](https://github.com/JorgeCanale)
