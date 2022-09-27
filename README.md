@@ -24,10 +24,10 @@ Para hacer correr el proyecto debe pararse sobre la carpeta /api y ejecutar los 
 
 #### Obtener todos los partidos del fixture
 
-```
+```http
   GET /fixture/get
 ```
-
+Ejemplo:
 ```json
 {},
 {
@@ -61,13 +61,38 @@ Para hacer correr el proyecto debe pararse sobre la carpeta /api y ejecutar los 
 
 #### Obtener un partido en especifico
 
-```
+```http
   GET /fixture/${id}
 ```
 
 | Parameter | Type     | Description |
 | :-------- | :------- | :------------|
 | `id`      | `number` | **Requerido**.|
+
+Ejemplo:
+```json
+[
+    {
+        "id": 855752,
+        "date": "2022-11-26T19:00:00.000Z",
+        "status": "Finished",
+        "home_team_id": 26,
+        "home_team": {},
+        "away_team_id": 16,
+        "away_team": {},
+        "result_match": "away",
+        "stadium_name": "Lusail Iconic Stadium",
+        "profit_coef_home": 1.2,
+        "profit_coef_draw": 1.3,
+        "profit_coef_away": 1.5,
+        "city": "Lusail",
+        "groupId": 3
+    }
+]
+```
+
+
+
 
 #### add(num1, num2)
 
