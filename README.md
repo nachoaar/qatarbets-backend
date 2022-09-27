@@ -29,7 +29,7 @@ Para hacer correr el proyecto debe pararse sobre la carpeta /api y ejecutar los 
 ```
 
 ```json
-{...},
+{},
 {
     "id": 855752,
     "date": "2022-11-26T19:00:00.000Z",
