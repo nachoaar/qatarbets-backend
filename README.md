@@ -134,7 +134,7 @@ Ejemplo:
 
 Ejemplo:
 
-request por body: 
+Request por body: 
 ```json
 {
     "email": "email@example.com",
@@ -142,7 +142,7 @@ request por body:
 }
 ```
 
-respuesta: 
+Respuesta: 
 ```json
 {
     "message": "Usuario logueado con exito!",
