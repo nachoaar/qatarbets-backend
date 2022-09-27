@@ -24,7 +24,7 @@ Para hacer correr el proyecto debe pararse sobre la carpeta /api y ejecutar los 
 
 #### Obtener todos los partidos del fixture
 
-```http
+```
   GET /fixture/get
 ```
 Ejemplo:
@@ -61,7 +61,7 @@ Ejemplo:
 
 #### Obtener un partido en especifico
 
-```http
+```
   GET /fixture/${id}
 ```
 
