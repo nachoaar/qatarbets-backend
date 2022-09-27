@@ -46,7 +46,7 @@ Para hacer correr el proyecto debe pararse sobre la carpeta /api y ejecutar los 
         "groupId": 3
     },
     "away_team_id": 16,
-    "away_team": {...},
+    "away_team": {},
     "result_match": "away",
     "stadium_name": "Lusail Iconic Stadium",
     "profit_coef_home": 1.2,
@@ -56,7 +56,7 @@ Para hacer correr el proyecto debe pararse sobre la carpeta /api y ejecutar los 
     "groupId": 3
 
 },
-{...},
+{},
 ```
 
 #### Obtener un partido en especifico
