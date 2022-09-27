@@ -6,9 +6,15 @@
 
 Servidor utilizado para manejar la información de la app Qatarbets.
 
+El servidor actualmente esta deployado y se puede acceder a partir de este endpoint:
+```
+https://qatarbets-backend-production.up.railway.app
+```
+\
 Gran parte de la información usada proviene de [API-SPORT](https://api-sports.io/)
 
-Para hacer correr el proyecto debe pararse sobre la carpeta /api y ejecutar los siguientes comandos en la terminal:
+### Iniciar el servidor
+Para iniciar el servidor debe pararse sobre la carpeta /api y ejecutar los siguientes comandos en la terminal:
 
 - Para iniciar el servidor de forma normal:
 ```bash
@@ -134,7 +140,7 @@ Ejemplo:
 
 Ejemplo:
 
-Request por body: 
+request por body: 
 ```json
 {
     "email": "email@example.com",
@@ -142,7 +148,7 @@ Request por body:
 }
 ```
 
-Respuesta: 
+respuesta: 
 ```json
 {
     "message": "Usuario logueado con exito!",
@@ -159,3 +165,14 @@ Respuesta:
 - Nodemailer
 - Stripe
 
+
+## Autores
+
+- [@nachoaar](https://github.com/nachoaar)
+- [@matuxer](https://www.github.com/matuxer)
+- [@faramir07](https://github.com/faramir07)
+- [@Faku0](https://github.com/Faku0)
+- [@gastonfuentes](https://github.com/gastonfuentes)
+- [@matiasmanuelmontes](https://github.com/matiasmanuelmontes)
+- [@Maikyls](https://github.com/Maikyls)
+- [@JorgeCanale](https://github.com/JorgeCanale)
