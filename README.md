@@ -6,8 +6,7 @@
 
 Servidor utilizado para manejar la información de la app Qatarbets.
 
-Gran parte de la información usada proviene de 
-![API-SPORT](https://api-sports.io/)
+Gran parte de la información usada proviene de [API-SPORT](https://api-sports.io/)
 ## Tecnologias usadas
 - NodeJS
 - Express
