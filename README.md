@@ -24,7 +24,7 @@ Para hacer correr el proyecto debe pararse sobre la carpeta /api y ejecutar los 
 
 #### Obtener todos los partidos del fixture
 
-```
+```http
   GET /fixture/get
 ```
 Ejemplo:
@@ -61,7 +61,7 @@ Ejemplo:
 
 #### Obtener un partido en especifico
 
-```
+```http
   GET /fixture/${id}
 ```
 
@@ -90,15 +90,67 @@ Ejemplo:
     }
 ]
 ```
+#### Obtener todos los grupos
 
+```
+  GET /groups
+```
+Ejemplo:
 
+```json
+{},
+{
 
+    "id": 3,
+    "name": "grupo_C",
+    "teams": [
+        {
+            "name": "Saudi Arabia",
+            "logo": "https://media.api-sports.io/football/teams/23.png"
+        },
+        {
+            "name": "Mexico",
+            "logo": "https://media.api-sports.io/football/teams/16.png"
+        },
+        {
+            "name": "Poland",
+            "logo": "https://media.api-sports.io/football/teams/24.png"
+        },
+        {
+            "name": "Argentina",
+            "logo": "https://media.api-sports.io/football/teams/26.png"
+        }
+    ]
 
-#### add(num1, num2)
+},
+{},
+```
 
-Takes two numbers and returns the sum.
+#### Logearse con email y contraseña
 
+```
+  POST /user/login
+```
 
+Ejemplo:
+
+request por body: 
+```json
+{
+    "email": "email@example.com",
+    "pass": "password_example"
+}
+```
+
+respuesta: 
+```json
+{
+    "message": "Usuario logueado con exito!",
+    "avatar": "avatar_de_usuario",
+    "name": "nombre_de_usuario",
+    "rol": "rol_de_usuario",
+}
+```
 ### Tecnologias usadas
 - NodeJS
 - Express
