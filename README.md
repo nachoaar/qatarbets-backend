@@ -61,7 +61,7 @@ Para hacer correr el proyecto debe pararse sobre la carpeta /api y ejecutar los 
 
 #### Obtener un partido en especifico
 
-```http
+```
   GET /fixture/${id}
 ```
 
