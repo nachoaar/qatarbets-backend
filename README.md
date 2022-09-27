@@ -7,7 +7,20 @@
 Servidor utilizado para manejar la información de la app Qatarbets.
 
 Gran parte de la información usada proviene de [API-SPORT](https://api-sports.io/)
-## Tecnologias usadas
+
+Para hacer correr el proyecto debe pararse sobre la carpeta /api y ejecutar los siguientes comandos en la terminal:
+
+- Para iniciar el servidor de forma normal:
+```bash
+  npm start
+```
+
+- Para iniciar el proyecto con Nodemon:
+```bash
+  npm run dev
+```
+
+### Tecnologias usadas
 - NodeJS
 - Express
 - Sequelize
