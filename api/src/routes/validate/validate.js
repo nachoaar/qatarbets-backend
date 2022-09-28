@@ -83,7 +83,6 @@ router.post('/changePass/:token', async (req, res, next) => {
   try{
     if(!newPass){
       res.json('Ingrese su nueva contraseña')
-      console.log(newPass)
     }
 
 

@@ -201,8 +201,6 @@ router.get('/headToHeadApi/:id_home/:id_away', async (req, res, next) => {
   let idApi1 = req.params.id_home;
   let idApi2 = req.params.id_away;
 
-  console.log('hola')
-
   try {
     let x = await headtoheadDataApi(idApi1, idApi2)
     res.status(200).send(x)

@@ -261,8 +261,6 @@ const allCoachs = [
 
 router.get('/coachDB', async (req, res, next) => {
 
-  console.log(coachArray)
-
   try {
 
     allCoachs.map(async (el) => {

@@ -11,9 +11,3 @@ conn.sync({ force: false }).then(() => {
   });
 });
 
-/* server.listen(process.env.PORT || PORT, () => {
-  console.log(`Servidor Activo!`);
-});
- */
- 
-
