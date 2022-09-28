@@ -11,10 +11,10 @@ const router = Router();
 const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 465,
-      secure: true, // true for 465, false for other ports
+      secure: true, 
       auth: {
-        user: 'QatarBets2022@gmail.com', // generated ethereal user
-        pass: 'pcuclpxdckaayvbw', // generated ethereal password
+        user: 'QatarBets2022@gmail.com',
+        pass: 'pcuclpxdckaayvbw',
       },
     });
 
@@ -33,19 +33,11 @@ router.post('/', async (req, res, next) => {
       payment_method: id,
       confirm: true,
     });
-
-    /* await transporter.sendMail({
-      from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
-      to: token.email, //Receptor
-      subject: "Mail Verification", //Asunto
-      html: `<b>Has realizado una apuesta de ${amount/100}</b>`, //Texto del mail
-    }); */
-    
   
     await transporter.sendMail({
-      from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
-      to: token.email, //Receptor
-      subject: "Apuesta realizada con éxito", //Asunto
+      from: '"QatarBets" <QatarBets2022@gmail.com>',
+      to: token.email,
+      subject: "Apuesta realizada con éxito", 
       html: `<!DOCTYPE html>
       <html lang="eng">
       <head>

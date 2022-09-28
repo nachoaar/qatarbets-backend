@@ -10,18 +10,17 @@ const router = Router();
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
-  secure: true, // true for 465, false for other ports
+  secure: true,
   tls: {
     rejectUnauthorized: false
   },
   auth: {
-    user: "QatarBets2022@gmail.com", // generated ethereal user
-    pass: "pcuclpxdckaayvbw", // generated ethereal password
+    user: "QatarBets2022@gmail.com",
+    pass: "pcuclpxdckaayvbw",
   },
 });
 
 router.post("/newBet", async (req, res, next) => {
-  // el next esta para que luego se vaya al siguiente middleware, que es el control de errores que esta en app
   const token = validateToken(req.cookies.acces_token || '');
   if (token === '') {
     res.json('Usuario invalido');
@@ -39,7 +38,7 @@ router.post("/newBet", async (req, res, next) => {
 
     let newBet = await Bet.findOrCreate({
       where: {
-        fecha_hora, // ver validacion del date en el front (evaluar usar new Date en el handleSubmit)
+        fecha_hora, 
         money_bet,
         result,
         condition,
@@ -96,9 +95,6 @@ router.get("/betId/:id", async (req, res, next) => {
     next(error);
   }
 });
-
-
-// in these arrays there are the id of the teams in order to identify which are que best ones, regular and worst ones
 
 var bestTeams = [1, 2, 6, 9, 10, 25, 1118, 26];
 var regularTeams = [14, 15, 16, 3, 21, 24, 27, 2382, 2384, 7];
@@ -227,13 +223,8 @@ router.get('/pushProfitsDb', async (req, res, next) => {
 router.get('/calculateProfits', async (req, res, next) => {
 
   try {
-
-    /* setTimeout(function(){
-      console.log("Hola Mundo");
-   },30000); */
-
     let matchId = Number(req.query.matchId)
-    let matchWinner = req.query.matchWinner  // this can be only home, draw, away
+    let matchWinner = req.query.matchWinner  
 
     if (matchWinner === "draw") {
 
@@ -334,7 +325,7 @@ router.get('/calculateProfitsStage', async (req, res, next) => {
     let matchIdN = Number(req.query.matchId)
     let matchId = req.query.matchId
 
-    let matchWinner = req.query.matchWinner  // this can be only home, draw, away
+    let matchWinner = req.query.matchWinner 
 
     if (matchIdN < 1 || matchIdN > 16) {
       return res.status(400).send('match id must be a number between 1 and 16')
@@ -492,9 +483,6 @@ router.get('/bets5', async (req, res, next) => {
   }
 });
 
-
-// Mails for bets winners and losers
-
 router.get('/mailResults', async (req, res, next) => {
 
   try {
@@ -521,7 +509,6 @@ router.get('/mailResults', async (req, res, next) => {
 
         for (let i = 0; i < allBets.length; i++) {
 
-          /* allBets.map(async(el1)=>{ */
           if (allBets[i].final_profit !== null && allBets[i].final_profit > -1) {
 
             if (allBets[i].final_profit === 0 && allBets[i].condition === "ready") {
@@ -575,9 +562,9 @@ router.get('/mailResults', async (req, res, next) => {
             if (userMail !== undefined) {
 
               await transporter.sendMail({
-                from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
-                to: userMail.email, //Receptor
-                subject: "QATARBETS login", //Asunto
+                from: '"QatarBets" <QatarBets2022@gmail.com>', 
+                to: userMail.email, 
+                subject: "QATARBETS login", 
                 html: `<!DOCTYPE html>
           <html lang="eng">
           <head>
@@ -821,9 +808,9 @@ router.get('/mailResultsStage', async (req, res, next) => {
             if (userMail !== undefined) {
 
               await transporter.sendMail({
-                from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
-                to: userMail.email, //Receptor
-                subject: "QATARBETS login", //Asunto
+                from: '"QatarBets" <QatarBets2022@gmail.com>',
+                to: userMail.email, 
+                subject: "QATARBETS login", 
                 html: `<!DOCTYPE html>
           <html lang="eng">
           <head>
