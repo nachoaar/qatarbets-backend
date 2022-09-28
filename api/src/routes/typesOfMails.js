@@ -5,20 +5,20 @@ var identifyMail= async function (finalProfit, betResult, matchHome, matchAway) 
     const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         port: 465,
-        secure: true, // true for 465, false for other ports
+        secure: true, 
         tls: {
           rejectUnauthorized: false
         },
         auth: {
-          user: "QatarBets2022@gmail.com", // generated ethereal user
-          pass: "pcuclpxdckaayvbw", // generated ethereal password
+          user: "QatarBets2022@gmail.com",
+          pass: "pcuclpxdckaayvbw", 
         },  
       });
 
     let response = await transporter.sendMail({
-        from: '"QatarBets" <QatarBets2022@gmail.com>', //Emisor
-        to: email, //Receptor
-        subject: "QATARBETS login", //Asunto
+        from: '"QatarBets" <QatarBets2022@gmail.com>',
+        to: email, 
+        subject: "QATARBETS login",
         html: `<!DOCTYPE html>
         <html lang="eng">
         <head>

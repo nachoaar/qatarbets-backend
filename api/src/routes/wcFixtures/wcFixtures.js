@@ -55,13 +55,6 @@ router.get('/', async (req, res, next) => {
 router.get('/get', async (req, res, next) => {
   try {
     let matches = await Match.findAll({
-      /* include: {
-        model: Team,
-        on: {
-          'id': { [Op.eq]: { [Op.col]: 'matches.home_team_id' } }
-        },
-        
-      }, */
       raw: true,
     });
 
@@ -207,8 +200,6 @@ router.get('/headToHeadApi/:id_home/:id_away', async (req, res, next) => {
 
   let idApi1 = req.params.id_home;
   let idApi2 = req.params.id_away;
-
-  console.log('hola')
 
   try {
     let x = await headtoheadDataApi(idApi1, idApi2)
@@ -815,7 +806,6 @@ router.post('/8stageAllSimulation', async (req, res, next) => {
           }
         }
       })
-      // this function is used to give time to update the DataBase before the next section of the code starts
       setTimeout(async function () {
         
         //winner of match 1
@@ -1115,9 +1105,7 @@ router.post('/4stageAllSimulation', async (req, res, next) => {
           }
         }
       })
-      // this function is used to give time to update the DataBase before the next section of the code starts
       setTimeout(async function () {
-        /* console.log("Hola Mundo"); */
 
         //winner of match 9
 
@@ -1416,9 +1404,7 @@ router.post('/semiStageAllSimulation', async (req, res, next) => {
           }
         }
       })
-      // this function is used to give time to update the DataBase before the next section of the code starts
       setTimeout(async function () {
-        /* console.log("Hola Mundo"); */
 
         //winner of match 13
 
@@ -1638,7 +1624,6 @@ router.post('/finalStageAllSimulation', async (req, res, next) => {
           
         }
       })
-      // this function is used to give time to update the DataBase before the next section of the code starts
       setTimeout(async function () {
         
         let stage4matches = [];

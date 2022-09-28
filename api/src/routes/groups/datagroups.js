@@ -8,7 +8,6 @@ async function dataGroups() {
   })
 
   if(getGroupsDB.length === 0){
-    //const data = ['grupo_A', 'grupo_B', 'grupo_C', 'grupo_D', 'grupo_E', 'grupo_F', 'grupo_G', 'grupo_H']
     const data = [
       { id: 1, name: 'grupo_A' },
       { id: 2, name: 'grupo_B' },

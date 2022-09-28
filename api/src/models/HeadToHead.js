@@ -1,8 +1,6 @@
 const { DataTypes, INTEGER } = require("sequelize");
-// Exportamos una funcion que define el modelo
-// Luego le injectamos la conexion a sequelize.
+
 module.exports = (sequelize) => {
-  // defino el modelo
   sequelize.define(
     "headtohead",
     {
@@ -29,15 +27,6 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-     // matches: {
-     //   type: DataTypes.ARRAY(),
-     //   get: function() {
-     //       return JSON.parse(this.getDataValue('matches'));
-     //   }, 
-     //   set: function(val) {
-     //       return this.setDataValue('matches', JSON.stringify(val));
-     //   }
-     // },
     },
     {
       timestamps: false,

@@ -13,7 +13,6 @@ router.get('/cloud/pfp', async(req,res)=>{
     .sort_by('public_id','desc')
     .execute()
     const publicsId = await resources.map((file) =>file.url )
-    /* console.log(publicsId ) */
     res.send(publicsId)
     }catch(error){
         res.send(error)
