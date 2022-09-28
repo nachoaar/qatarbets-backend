@@ -31,6 +31,5 @@ module.exports = (sequelize) =>{
         final_profit:{
             type: DataTypes.FLOAT
         }
-
     })
 }
